@@ -7,3 +7,23 @@ info:
 
 servers:
   - url: /
+
+paths:
+  /videos:
+    post:
+      tags:
+        - video-controller
+      summary: 'Initial path, please replace this'
+      operationId: initialPath
+      responses:
+        404:
+          description: NOT FOUND - not defined yet
+      security:
+        - Bearer: [ ]
+
+components:
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header
