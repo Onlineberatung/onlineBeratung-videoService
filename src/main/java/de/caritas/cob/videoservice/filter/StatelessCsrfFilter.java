@@ -19,8 +19,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * This custom filter checks CSRF cookie and header token for equality
- *
+ * This custom filter checks CSRF cookie and header token for equality.
  */
 public class StatelessCsrfFilter extends OncePerRequestFilter {
 

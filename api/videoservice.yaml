@@ -9,19 +9,55 @@ servers:
   - url: /
 
 paths:
-  /videos:
+  /videocalls/new:
     post:
       tags:
         - video-controller
-      summary: 'Initial path, please replace this'
-      operationId: initialPath
+      summary: 'Create a new video call room Id [Authorization: Role: consultant]'
+      operationId: createVideoCall
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateVideoCallDTO'
+        required: true
       responses:
-        404:
-          description: NOT FOUND - not defined yet
+        201:
+          description: CREATED - video call room Id was successfully created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CreateVideoCallResponseDTO'
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: FORBIDDEN - no/invalid CSRF token
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
       security:
         - Bearer: [ ]
 
 components:
+  schemas:
+    CreateVideoCallDTO:
+      type: object
+      required:
+        - sessionId
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+    CreateVideoCallResponseDTO:
+      type: object
+      required:
+        - videoCallUrl
+      properties:
+        videoCallUrl:
+          type: string
+          example: 332a573d-7c74-4080-8353-7954eca066f9
+
   securitySchemes:
     Bearer:
       type: apiKey

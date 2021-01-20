@@ -37,14 +37,12 @@
     <property name="eachLine" value="true"/>
   </module>
 
-  <!--
   <module name="LineLength">
     <property name="fileExtensions" value="java"/>
     <property name="max" value="100"/>
     <property name="ignorePattern"
       value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
   </module>
-  -->
 
   <module name="TreeWalker">
     <module name="OuterTypeFilename"/>
@@ -283,7 +281,7 @@
       <property name="tokens" value="VARIABLE_DEF"/>
       <property name="allowSamelineMultipleAnnotations" value="true"/>
     </module>
-    <!--
+
     <module name="NonEmptyAtclauseDescription"/>
     <module name="InvalidJavadocPosition"/>
     <module name="JavadocTagContinuationIndentation"/>
@@ -297,7 +295,7 @@
         <property name="target"
          value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
     </module>
-    -->
+
     <module name="JavadocMethod">
       <property name="scope" value="public"/>
       <property name="allowMissingParamTags" value="true"/>
