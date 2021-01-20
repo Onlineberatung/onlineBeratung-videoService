@@ -49,14 +49,14 @@ public class SpringFoxConfig {
    */
   public static final String[] WHITE_LIST =
       new String[] {
-        "/videos/docs",
-        "/videos/docs/**",
-        "/v2/api-docs",
-        "/configuration/ui",
-        "/swagger-resources/**",
-        "/configuration/security",
-        "/swagger-ui.html",
-        "/webjars/**"
+          "/videocalls/docs",
+          "/videocalls/docs/**",
+          "/v2/api-docs",
+          "/configuration/ui",
+          "/swagger-resources/**",
+          "/configuration/security",
+          "/swagger-ui.html",
+          "/webjars/**"
       };
 
   /**
