@@ -3,12 +3,12 @@ package de.caritas.cob.videoservice.api.service.liveevent;
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.liveservice.generated.web.LiveControllerApi;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
+import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 
 /**
  * Service class to provide live event triggers to the LiveService.
