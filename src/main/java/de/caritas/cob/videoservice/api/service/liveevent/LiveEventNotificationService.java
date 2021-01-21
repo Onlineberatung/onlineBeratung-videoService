@@ -2,12 +2,13 @@ package de.caritas.cob.videoservice.api.service.liveevent;
 
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.liveservice.generated.web.LiveControllerApi;
+import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
-import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoEventType;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 
 /**
  * Service class to provide live event triggers to the LiveService.
@@ -28,14 +29,17 @@ public class LiveEventNotificationService {
    */
   public void sendVideoCallRequestLiveEvent(String videoChatUrl, String rcGroupId,
       List<String> userIds) {
+    liveControllerApi.sendLiveEvent(userIds, buildLiveEventMessage(videoChatUrl, rcGroupId));
+  }
 
+  private LiveEventMessage buildLiveEventMessage(String videoChatUrl, String rcGroupId) {
     VideoCallRequestDTO videoCallRequestDto = new VideoCallRequestDTO()
-        .eventType(VideoEventType.VIDEOCALLREQUEST)
-        .videoChatUrl(videoChatUrl)
+        .videoCallUrl(videoChatUrl)
         .rcRoomId(rcGroupId)
         .usernameConsultant(authenticatedUser.getUsername());
 
-    // TODO
-    //liveControllerApi.videoCallRequest(userIds, videoCallRequestDto);
+    return new LiveEventMessage()
+        .eventType(EventType.VIDEOCALLREQUEST)
+        .eventContent(videoCallRequestDto);
   }
 }
