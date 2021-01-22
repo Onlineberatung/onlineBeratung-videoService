@@ -17,6 +17,15 @@ public class LogService {
   }
 
   /**
+   * Logs an info message.
+   *
+   * @param msg The message
+   */
+  public static void logInfo(String msg) {
+    LOGGER.info(msg);
+  }
+
+  /**
    * Logs a warning message.
    *
    * @param exception The exception
