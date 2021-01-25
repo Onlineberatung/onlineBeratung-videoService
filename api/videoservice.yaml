@@ -56,7 +56,7 @@ components:
       properties:
         videoCallUrl:
           type: string
-          example: 332a573d-7c74-4080-8353-7954eca066f9
+          example: http;//video.call/332a573d-7c74-4080-8353-7954eca066f9
 
   securitySchemes:
     Bearer:

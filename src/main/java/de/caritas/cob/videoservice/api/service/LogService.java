@@ -31,7 +31,7 @@ public class LogService {
    * @param exception The exception
    */
   public static void logWarning(Exception exception) {
-    LOGGER.warn(getStackTrace(exception));
+    LOGGER.warn("VideoService API: {}", getStackTrace(exception));
   }
 
   /**
@@ -50,6 +50,6 @@ public class LogService {
    * @param exception the exception to be logged
    */
   public static void logInternalServerError(Exception exception) {
-    LOGGER.error("AgencyService API: 500 Internal Server Error: {}", getStackTrace(exception));
+    LOGGER.error("VideoService API: 500 Internal Server Error: {}", getStackTrace(exception));
   }
 }

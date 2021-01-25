@@ -123,6 +123,13 @@
 			<scope>test</scope>
 			<version>2.0.2</version>
 		</dependency>
+		<!-- EasyRandom -->
+		<dependency>
+			<groupId>org.jeasy</groupId>
+			<artifactId>easy-random-core</artifactId>
+			<version>4.3.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

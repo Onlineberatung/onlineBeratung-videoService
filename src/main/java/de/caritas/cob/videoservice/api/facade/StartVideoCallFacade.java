@@ -62,7 +62,7 @@ public class StartVideoCallFacade {
           .toURL()
           .toString();
 
-    } catch (MalformedURLException ex) {
+    } catch (MalformedURLException | IllegalArgumentException ex) {
       throw new InternalServerErrorException("Could not generate video call URL.");
     }
   }

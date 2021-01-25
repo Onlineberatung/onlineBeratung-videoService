@@ -4,7 +4,6 @@ import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.helper.ServiceHelper;
-import de.caritas.cob.videoservice.userservice.generated.ApiClient;
 import de.caritas.cob.videoservice.userservice.generated.web.UserControllerApi;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
 import java.util.Arrays;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
 /**
  * Service class to provide handle session methods of the UserService.
@@ -33,11 +33,11 @@ public class SessionService {
    * @return {@link ConsultantSessionDTO}
    */
   public ConsultantSessionDTO findSessionOfCurrentConsultant(Long sessionId) {
-    addDefaultHeaders(this.userControllerApi.getApiClient());
+    addDefaultHeaders();
 
     try {
       return userControllerApi.fetchSessionForConsultant(sessionId);
-    } catch (HttpClientErrorException ex) {
+    } catch (RestClientException ex) {
 
       checkIfIsClientBadRequest(sessionId, ex);
 
@@ -47,22 +47,27 @@ public class SessionService {
     }
   }
 
-  private void checkIfIsClientBadRequest(Long sessionId, HttpClientErrorException ex) {
-    if (isClientBadRequest(ex.getStatusCode())) {
+  private void checkIfIsClientBadRequest(Long sessionId, RestClientException ex) {
+    if (isClientBadRequest(ex)) {
       throw new BadRequestException(
           String.format("Could not get session %s for consultant %s.", sessionId,
               authenticatedUser.getUserId()), LogService::logWarning);
     }
   }
 
-  private void addDefaultHeaders(ApiClient apiClient) {
+  private void addDefaultHeaders() {
     HttpHeaders headers = this.serviceHelper.getKeycloakAndCsrfHttpHeaders();
-    headers.forEach((key, value) -> apiClient.addDefaultHeader(key, value.iterator().next()));
+    headers.forEach((key, value) -> this.userControllerApi.getApiClient()
+        .addDefaultHeader(key, value.iterator().next()));
   }
 
-  private boolean isClientBadRequest(HttpStatus status) {
-    return Arrays
-        .asList(HttpStatus.FORBIDDEN, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND)
-        .contains(status);
+  private boolean isClientBadRequest(RestClientException ex) {
+    if (ex instanceof HttpClientErrorException) {
+      return Arrays
+          .asList(HttpStatus.FORBIDDEN, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND)
+          .contains(((HttpClientErrorException) ex).getStatusCode());
+    }
+
+    return false;
   }
 }
