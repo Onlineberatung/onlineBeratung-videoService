@@ -1,4 +1,4 @@
-package de.caritas.cob.videoservice.api.config;
+package de.caritas.cob.videoservice.config;
 
 import java.time.LocalTime;
 import java.util.Collections;

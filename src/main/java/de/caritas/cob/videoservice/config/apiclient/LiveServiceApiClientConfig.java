@@ -1,4 +1,4 @@
-package de.caritas.cob.videoservice.api.config.apiclient;
+package de.caritas.cob.videoservice.config.apiclient;
 
 import de.caritas.cob.videoservice.liveservice.generated.ApiClient;
 import de.caritas.cob.videoservice.liveservice.generated.web.LiveControllerApi;

@@ -3,7 +3,7 @@ package de.caritas.cob.videoservice.filter;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import de.caritas.cob.videoservice.api.config.SpringFoxConfig;
+import de.caritas.cob.videoservice.config.SpringFoxConfig;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.regex.Pattern;

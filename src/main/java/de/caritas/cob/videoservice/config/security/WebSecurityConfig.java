@@ -3,7 +3,7 @@ package de.caritas.cob.videoservice.config.security;
 import static de.caritas.cob.videoservice.api.authorization.Authority.CONSULTANT;
 
 import de.caritas.cob.videoservice.api.authorization.RoleAuthorizationAuthorityMapper;
-import de.caritas.cob.videoservice.api.config.SpringFoxConfig;
+import de.caritas.cob.videoservice.config.SpringFoxConfig;
 import de.caritas.cob.videoservice.filter.StatelessCsrfFilter;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
