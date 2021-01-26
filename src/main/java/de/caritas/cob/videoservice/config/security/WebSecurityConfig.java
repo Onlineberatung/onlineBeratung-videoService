@@ -63,7 +63,7 @@ public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .antMatchers("/videocalls/new")
         .hasAuthority(CONSULTANT.getAuthority())
         .antMatchers("/videocalls/reject")
-        .hasAnyAuthority(USER.getAuthority(), CONSULTANT.getAuthority())
+        .hasAnyAuthority(USER.getAuthority())
         .anyRequest().denyAll()
         .and()
         .exceptionHandling()

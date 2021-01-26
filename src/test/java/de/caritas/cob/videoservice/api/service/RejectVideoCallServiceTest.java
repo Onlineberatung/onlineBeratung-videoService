@@ -35,7 +35,7 @@ public class RejectVideoCallServiceTest {
   private ApiClient apiClient;
 
   @Test
-  public void rejectVideoCall_Should_useServicesCorretly() {
+  public void rejectVideoCall_Should_useServicesCorrectly() {
     when(this.messageControllerApi.getApiClient()).thenReturn(this.apiClient);
     when(this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders()).thenReturn(new HttpHeaders());
     RejectVideoCallDTO rejectVideoCallDto = new EasyRandom().nextObject(RejectVideoCallDTO.class);
