@@ -1,0 +1,54 @@
+package de.caritas.cob.videoservice.api.service;
+
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
+import de.caritas.cob.videoservice.api.service.helper.ServiceHelper;
+import de.caritas.cob.videoservice.messageservice.generated.ApiClient;
+import de.caritas.cob.videoservice.messageservice.generated.web.MessageControllerApi;
+import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO;
+import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO.EventTypeEnum;
+import org.jeasy.random.EasyRandom;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpHeaders;
+
+@RunWith(MockitoJUnitRunner.class)
+public class RejectVideoCallServiceTest {
+
+  @InjectMocks
+  private RejectVideoCallService rejectVideoCallService;
+
+  @Mock
+  private MessageControllerApi messageControllerApi;
+
+  @Mock
+  private ServiceHelper serviceHelper;
+
+  @Mock
+  private ApiClient apiClient;
+
+  @Test
+  public void rejectVideoCall_Should_useServicesCorretly() {
+    when(this.messageControllerApi.getApiClient()).thenReturn(this.apiClient);
+    when(this.serviceHelper.getKeycloakAndCsrfHttpHeaders()).thenReturn(new HttpHeaders());
+    RejectVideoCallDTO rejectVideoCallDto = new EasyRandom().nextObject(RejectVideoCallDTO.class);
+
+    this.rejectVideoCallService.rejectVideoCall(rejectVideoCallDto);
+
+    VideoCallMessageDTO expectedMessage = new VideoCallMessageDTO()
+        .eventType(EventTypeEnum.IGNORED_CALL)
+        .initiatorUserName(rejectVideoCallDto.getInitiatorUsername())
+        .rcUserId(rejectVideoCallDto.getRcUserId());
+    verify(this.serviceHelper, times(1)).getKeycloakAndCsrfHttpHeaders();
+    verify(this.messageControllerApi, times(1))
+        .createVideoHintMessage(eq(rejectVideoCallDto.getRcGroupId()), eq(expectedMessage));
+  }
+
+}

@@ -1,16 +1,24 @@
 package de.caritas.cob.videoservice.api.controller;
 
+import static de.caritas.cob.videoservice.api.testhelper.PathConstants.PATH_REJECT_VIDEO_CALL;
 import static de.caritas.cob.videoservice.api.testhelper.PathConstants.PATH_START_VIDEO_CALL;
 import static de.caritas.cob.videoservice.api.testhelper.RequestBodyConstants.VALID_START_VIDEO_CALL_BODY;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_USER;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CSRF_COOKIE;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CSRF_HEADER;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CSRF_VALUE;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ROLE_CONSULTANT;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.caritas.cob.videoservice.api.facade.StartVideoCallFacade;
+import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
+import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import javax.servlet.http.Cookie;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +44,9 @@ public class VideoControllerAuthorizationIT {
 
   @MockBean
   private StartVideoCallFacade startVideoCallFacade;
+
+  @MockBean
+  private RejectVideoCallService rejectVideoCallService;
 
   private Cookie csrfCookie;
 
@@ -73,4 +84,63 @@ public class VideoControllerAuthorizationIT {
 
     verifyNoMoreInteractions(startVideoCallFacade);
   }
+
+  @Test
+  @WithMockUser(authorities = {AUTHORITY_USER})
+  public void rejectVideoCall_Should_ReturnForbiddenAndCallNoMethods_WhenNoCsrfTokens()
+      throws Exception {
+    String content = new ObjectMapper().writeValueAsString(new RejectVideoCallDTO()
+        .rcGroupId("rcGroupId")
+        .initiatorUsername("username")
+        .rcUserId("rcUserId"));
+
+    mvc.perform(post(PATH_REJECT_VIDEO_CALL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(content)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isForbidden());
+
+    verifyNoMoreInteractions(rejectVideoCallService);
+  }
+
+  @Test
+  @WithMockUser(authorities = {"NO_AUTHORITY"})
+  public void rejectVideoCall_Should_ReturnForbiddenAndCallNoMethods_WhenNoAuthority()
+      throws Exception {
+    String content = new ObjectMapper().writeValueAsString(new RejectVideoCallDTO()
+        .rcGroupId("rcGroupId")
+        .initiatorUsername("username")
+        .rcUserId("rcUserId"));
+
+    mvc.perform(post(PATH_REJECT_VIDEO_CALL)
+        .cookie(csrfCookie)
+        .header(CSRF_HEADER, CSRF_VALUE)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(content)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isForbidden());
+
+    verifyNoMoreInteractions(rejectVideoCallService);
+  }
+
+  @Test
+  @WithMockUser(authorities = {AUTHORITY_USER})
+  public void rejectVideoCall_Should_ReturnOkAndCallService_WhenUserRole()
+      throws Exception {
+    String content = new ObjectMapper().writeValueAsString(new RejectVideoCallDTO()
+        .rcGroupId("rcGroupId")
+        .initiatorUsername("username")
+        .rcUserId("rcUserId"));
+
+    mvc.perform(post(PATH_REJECT_VIDEO_CALL)
+        .cookie(csrfCookie)
+        .header(CSRF_HEADER, CSRF_VALUE)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(content)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+
+    verify(rejectVideoCallService, times(1)).rejectVideoCall(any());
+  }
+
 }

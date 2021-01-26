@@ -1,6 +1,7 @@
 package de.caritas.cob.videoservice.config.security;
 
 import static de.caritas.cob.videoservice.api.authorization.Authority.CONSULTANT;
+import static de.caritas.cob.videoservice.api.authorization.Authority.USER;
 
 import de.caritas.cob.videoservice.api.authorization.RoleAuthorizationAuthorityMapper;
 import de.caritas.cob.videoservice.config.SpringFoxConfig;
@@ -75,6 +76,8 @@ public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .permitAll()
         .antMatchers("/videocalls/new")
         .hasAuthority(CONSULTANT.getAuthority())
+        .antMatchers("/videocalls/reject")
+        .hasAnyAuthority(USER.getAuthority(), CONSULTANT.getAuthority())
         .anyRequest().denyAll()
         .and()
         .exceptionHandling()

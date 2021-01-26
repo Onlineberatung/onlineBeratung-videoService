@@ -38,6 +38,31 @@ paths:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
       security:
         - Bearer: [ ]
+  /videocalls/reject:
+    post:
+      tags:
+        - video-controller
+      summary: 'Reject a video call [Authorization: Role: user]'
+      operationId: rejectVideoCall
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/RejectVideoCallDTO'
+        required: true
+      responses:
+        200:
+          description: OK - video call was successfully rejected
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: FORBIDDEN - no/invalid CSRF token
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+      security:
+        - Bearer: [ ]
 
 components:
   schemas:
@@ -57,6 +82,23 @@ components:
         videoCallUrl:
           type: string
           example: http;//video.call/332a573d-7c74-4080-8353-7954eca066f9
+    RejectVideoCallDTO:
+      type: object
+      required:
+        - rcGroupId
+        - rcUserId
+        - initiatorUsername
+      properties:
+        rcGroupId:
+          type: string
+          example: "tb89h3tjkerg967"
+        rcUserId:
+          type: string
+          example: "ag89h3tjkerg94t"
+        initiatorUsername:
+          type: string
+          example: "consultant23"
+
 
   securitySchemes:
     Bearer:

@@ -1,9 +1,11 @@
 package de.caritas.cob.videoservice.api.authorization;
 
 import static de.caritas.cob.videoservice.api.authorization.Authority.CONSULTANT;
+import static de.caritas.cob.videoservice.api.authorization.Authority.USER;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_CONSULTANT;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ROLE_CONSULTANT;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ROLE_UNKNOWN;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ROLE_USER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -22,6 +24,15 @@ public class AuthorityTest {
 
     assertNotNull(result);
     assertEquals(CONSULTANT, result);
+  }
+
+  @Test
+  public void fromRoleName_Should_ReturnCorrectAuthority_ForKeycloakRoleUser() {
+
+    Authority result = Authority.fromRoleName(ROLE_USER);
+
+    assertNotNull(result);
+    assertEquals(USER, result);
   }
 
   @Test
