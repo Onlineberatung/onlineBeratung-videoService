@@ -16,7 +16,6 @@ public class LiveEventNotificationService {
 
   private final @NonNull LiveControllerApi liveControllerApi;
 
-
   /**
    * Sends a live event to the LiveService to inform the video call receivers.
    *
