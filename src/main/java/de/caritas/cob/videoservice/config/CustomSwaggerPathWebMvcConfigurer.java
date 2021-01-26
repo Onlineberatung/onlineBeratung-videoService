@@ -1,4 +1,4 @@
-package de.caritas.cob.videoservice.api.config;
+package de.caritas.cob.videoservice.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

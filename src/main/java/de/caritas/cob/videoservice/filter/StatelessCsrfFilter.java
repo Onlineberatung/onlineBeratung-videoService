@@ -3,7 +3,7 @@ package de.caritas.cob.videoservice.filter;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import de.caritas.cob.videoservice.api.config.SpringFoxConfig;
+import de.caritas.cob.videoservice.config.SpringFoxConfig;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -19,8 +19,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * This custom filter checks CSRF cookie and header token for equality
- *
+ * This custom filter checks CSRF cookie and header token for equality.
  */
 public class StatelessCsrfFilter extends OncePerRequestFilter {
 
@@ -61,12 +60,18 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
   }
 
   public static final class DefaultRequiresCsrfMatcher implements RequestMatcher {
+
     private final Pattern allowedMethods = Pattern.compile("^(HEAD|TRACE|OPTIONS)$");
 
+    /**
+     * Allows specific whitelist items to disable CSRF protection for Swagger UI documentation.
+     *
+     * @param request {@link HttpServletRequest}
+     * @return true if allowed, else false
+     */
     @Override
     public boolean matches(HttpServletRequest request) {
 
-      // Allow specific whitelist items to disable CSRF protection for Swagger UI documentation
       if (Arrays.stream(SpringFoxConfig.WHITE_LIST).parallel()
           .anyMatch(request.getRequestURI().toLowerCase()::contains)) {
         return false;
