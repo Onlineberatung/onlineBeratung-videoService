@@ -5,7 +5,6 @@ import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestExceptio
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.LogService;
 import java.net.UnknownHostException;
-import javax.validation.ConstraintViolationException;
 import lombok.NoArgsConstructor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
@@ -27,21 +27,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
-
-  /**
-   * Constraint violations.
-   *
-   * @param ex      the thrown exception
-   * @param request web request
-   * @return response entity
-   */
-  @ExceptionHandler({ConstraintViolationException.class})
-  public ResponseEntity<Object> handleBadRequest(
-      final ConstraintViolationException ex, final WebRequest request) {
-    LogService.logWarning(ex);
-
-    return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-  }
 
   /**
    * Custom BadRequest exception.
@@ -120,6 +105,7 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
    *
    * @param request the invoking request
    * @param ex      the thrown exception
+   * @return response entity
    */
   @ExceptionHandler({InternalServerErrorException.class})
   public ResponseEntity<Object> handleInternal(final InternalServerErrorException ex,
@@ -127,6 +113,22 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     ex.executeLogging();
 
     return handleExceptionInternal(null, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR,
+        request);
+  }
+
+  /**
+   * Handles generic HTTP status.
+   *
+   * @param ex      {@link ResponseStatusException}
+   * @param request {@link WebRequest}
+   * @return response entity
+   */
+  @ExceptionHandler({ResponseStatusException.class})
+  public ResponseEntity<Object> handleInternal(final ResponseStatusException ex,
+      final WebRequest request) {
+    LogService.logWarning(ex);
+
+    return handleExceptionInternal(null, null, new HttpHeaders(), ex.getStatus(),
         request);
   }
 }

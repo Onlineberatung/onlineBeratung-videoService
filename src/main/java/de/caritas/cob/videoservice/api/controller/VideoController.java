@@ -22,7 +22,14 @@ public class VideoController implements VideocallsApi {
 
   private final @NonNull StartVideoCallFacade startVideoCallFacade;
 
-  @Override public ResponseEntity<CreateVideoCallResponseDTO> createVideoCall(
+  /**
+   * Starts a new video call.
+   *
+   * @param createVideoCallDto {@link CreateVideoCallDTO}
+   * @return response entity with {@link CreateVideoCallResponseDTO} body
+   */
+  @Override
+  public ResponseEntity<CreateVideoCallResponseDTO> createVideoCall(
       @Valid CreateVideoCallDTO createVideoCallDto) {
 
     CreateVideoCallResponseDTO response = new CreateVideoCallResponseDTO()

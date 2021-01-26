@@ -60,12 +60,18 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
   }
 
   public static final class DefaultRequiresCsrfMatcher implements RequestMatcher {
+
     private final Pattern allowedMethods = Pattern.compile("^(HEAD|TRACE|OPTIONS)$");
 
+    /**
+     * Allows specific whitelist items to disable CSRF protection for Swagger UI documentation.
+     *
+     * @param request {@link HttpServletRequest}
+     * @return true if allowed, else false
+     */
     @Override
     public boolean matches(HttpServletRequest request) {
 
-      // Allow specific whitelist items to disable CSRF protection for Swagger UI documentation
       if (Arrays.stream(SpringFoxConfig.WHITE_LIST).parallel()
           .anyMatch(request.getRequestURI().toLowerCase()::contains)) {
         return false;

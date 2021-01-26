@@ -35,7 +35,7 @@ public class VideoControllerIT {
   private RoleAuthorizationAuthorityMapper roleAuthorizationAuthorityMapper;
 
   @Test
-  public void getAgencies_Should_ReturnCreated_When_EverythingSucceeded() throws Exception {
+  public void createVideoCall_Should_ReturnCreated_When_EverythingSucceeded() throws Exception {
 
     when(startVideoCallFacade.startVideoCall(SESSION_ID)).thenReturn(VIDEO_CALL_URL);
 
@@ -47,9 +47,7 @@ public class VideoControllerIT {
   }
 
   @Test
-  public void getAgencies_Should_ReturnBadRequest_When_SessionIdIsMissing() throws Exception {
-
-    when(startVideoCallFacade.startVideoCall(SESSION_ID)).thenReturn(VIDEO_CALL_URL);
+  public void createVideoCall_Should_ReturnBadRequest_When_SessionIdIsMissing() throws Exception {
 
     mvc.perform(post(PATH_START_VIDEO_CALL)
         .contentType(MediaType.APPLICATION_JSON)

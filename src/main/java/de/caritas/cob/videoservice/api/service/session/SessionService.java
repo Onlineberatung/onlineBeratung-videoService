@@ -1,9 +1,9 @@
-package de.caritas.cob.videoservice.api.service;
+package de.caritas.cob.videoservice.api.service.session;
 
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
-import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
-import de.caritas.cob.videoservice.api.service.helper.ServiceHelper;
+import de.caritas.cob.videoservice.api.service.LogService;
+import de.caritas.cob.videoservice.api.service.securityheader.SecurityHeaderSupplier;
 import de.caritas.cob.videoservice.userservice.generated.web.UserControllerApi;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
 import java.util.Arrays;
@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service class to provide handle session methods of the UserService.
@@ -22,8 +23,10 @@ import org.springframework.web.client.RestClientException;
 @RequiredArgsConstructor
 public class SessionService {
 
+  private static final String GET_SESSION_ERROR_MSG = "Could not get session %s for consultant %s.";
+  
   private final @NonNull UserControllerApi userControllerApi;
-  private final @NonNull ServiceHelper serviceHelper;
+  private final @NonNull SecurityHeaderSupplier securityHeaderSupplier;
   private final @NonNull AuthenticatedUser authenticatedUser;
 
   /**
@@ -42,29 +45,29 @@ public class SessionService {
       checkIfIsClientBadRequest(sessionId, ex);
 
       throw new InternalServerErrorException(
-          String.format("Could not get session %s for consultant %s.", sessionId,
+          String.format(GET_SESSION_ERROR_MSG, sessionId,
               authenticatedUser.getUserId()), ex, LogService::logInternalServerError);
     }
   }
 
-  private void checkIfIsClientBadRequest(Long sessionId, RestClientException ex) {
-    if (isClientBadRequest(ex)) {
-      throw new BadRequestException(
-          String.format("Could not get session %s for consultant %s.", sessionId,
-              authenticatedUser.getUserId()), LogService::logWarning);
-    }
-  }
-
   private void addDefaultHeaders() {
-    HttpHeaders headers = this.serviceHelper.getKeycloakAndCsrfHttpHeaders();
+    HttpHeaders headers = this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
     headers.forEach((key, value) -> this.userControllerApi.getApiClient()
         .addDefaultHeader(key, value.iterator().next()));
   }
 
-  private boolean isClientBadRequest(RestClientException ex) {
+  private void checkIfIsClientBadRequest(Long sessionId, RestClientException ex) {
+    if (isNoInternalServerError(ex)) {
+      throw new ResponseStatusException(((HttpClientErrorException) ex).getStatusCode(),
+          String.format(GET_SESSION_ERROR_MSG, sessionId,
+              authenticatedUser.getUserId()));
+    }
+  }
+
+  private boolean isNoInternalServerError(RestClientException ex) {
     if (ex instanceof HttpClientErrorException) {
       return Arrays
-          .asList(HttpStatus.FORBIDDEN, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND)
+          .asList(HttpStatus.FORBIDDEN, HttpStatus.NOT_FOUND)
           .contains(((HttpClientErrorException) ex).getStatusCode());
     }
 

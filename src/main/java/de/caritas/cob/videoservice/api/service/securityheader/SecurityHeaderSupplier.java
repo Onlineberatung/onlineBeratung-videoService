@@ -1,4 +1,4 @@
-package de.caritas.cob.videoservice.api.service.helper;
+package de.caritas.cob.videoservice.api.service.securityheader;
 
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import java.util.UUID;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ServiceHelper {
+public class SecurityHeaderSupplier {
 
   private final @NonNull AuthenticatedUser authenticatedUser;
 

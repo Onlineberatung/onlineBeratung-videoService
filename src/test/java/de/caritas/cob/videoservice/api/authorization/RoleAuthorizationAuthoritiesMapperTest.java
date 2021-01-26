@@ -24,7 +24,7 @@ public class RoleAuthorizationAuthoritiesMapperTest {
       new RoleAuthorizationAuthorityMapper();
 
   @Test
-  public void mapAuthorities_Should_returnGrantedAgencyAdminAuthority_When_authorityIsAgencyAdmin() {
+  public void mapAuthorities_Should_returnGrantedConsultantAuthority_When_authorityIsConsultant() {
     List<GrantedAuthority> grantedAuthorities = Stream.of(ROLE_CONSULTANT)
         .map(SimpleGrantedAuthority::new)
         .collect(Collectors.toList());
@@ -37,7 +37,7 @@ public class RoleAuthorizationAuthoritiesMapperTest {
   }
 
   @Test
-  public void mapAuthorities_Should_returnGrantedAgencyAdminAuthority_When_authoritiesContainsAgencyAdmin() {
+  public void mapAuthorities_Should_returnGrantedConsultantAuthority_When_authoritiesContainConsultant() {
     List<GrantedAuthority> grantedAuthorities = Stream.of("a", "v", ROLE_CONSULTANT, "c")
         .map(SimpleGrantedAuthority::new)
         .collect(Collectors.toList());

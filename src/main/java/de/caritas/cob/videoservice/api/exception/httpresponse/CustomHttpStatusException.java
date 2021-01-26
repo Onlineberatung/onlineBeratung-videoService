@@ -2,17 +2,11 @@ package de.caritas.cob.videoservice.api.exception.httpresponse;
 
 import static java.util.Objects.nonNull;
 
-import de.caritas.cob.videoservice.api.service.LogService;
 import java.util.function.Consumer;
 
 public abstract class CustomHttpStatusException extends RuntimeException {
 
   private final Consumer<Exception> loggingMethod;
-
-  CustomHttpStatusException() {
-    super();
-    this.loggingMethod = LogService::logWarning;
-  }
 
   CustomHttpStatusException(String message, Consumer<Exception> loggingMethod) {
     super(message);

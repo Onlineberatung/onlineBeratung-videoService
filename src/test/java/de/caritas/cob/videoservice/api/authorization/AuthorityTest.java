@@ -1,7 +1,6 @@
 package de.caritas.cob.videoservice.api.authorization;
 
 import static de.caritas.cob.videoservice.api.authorization.Authority.CONSULTANT;
-import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_CONSULTANT;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ROLE_CONSULTANT;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ROLE_UNKNOWN;
 import static org.junit.Assert.assertEquals;
@@ -30,11 +29,5 @@ public class AuthorityTest {
     Authority result = Authority.fromRoleName(ROLE_UNKNOWN);
 
     assertNull(result);
-  }
-
-  @Test
-  public void getAuthority_Should_ReturnAuthorityName_ForKeycloakRoleConsultant() {
-
-    assertEquals(AUTHORITY_CONSULTANT, CONSULTANT.getAuthority());
   }
 }

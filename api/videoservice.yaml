@@ -33,7 +33,10 @@ paths:
         401:
           description: UNAUTHORIZED - no/invalid Keycloak token
         403:
-          description: FORBIDDEN - no/invalid CSRF token
+          description: 'FORBIDDEN - no/invalid role/authorization, CSRF token or consultant without
+          permission for given session'
+        404:
+          description: NOT FOUND - Session not found
         500:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
       security:

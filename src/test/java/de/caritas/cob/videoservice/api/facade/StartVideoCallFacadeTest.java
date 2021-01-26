@@ -5,19 +5,21 @@ import static de.caritas.cob.videoservice.api.testhelper.FieldConstants.FIELD_VA
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.USERNAME;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.UUID;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
-import de.caritas.cob.videoservice.api.service.SessionService;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
+import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
@@ -26,7 +28,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -43,13 +44,10 @@ public class StartVideoCallFacadeTest {
   @Mock
   private AuthenticatedUser authenticatedUser;
 
-
   @Test
-  public void startVideoCall_Should_ReturnVideoCallUrl_When_UrlWasGeneratedSuccessfully()
-      throws NoSuchFieldException {
+  public void startVideoCall_Should_ReturnVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
 
-    FieldSetter.setField(startVideoCallFacade,
-        startVideoCallFacade.getClass().getDeclaredField(FIELD_NAME_VIDEO_CALL_URL_SUFFIX),
+    setField(startVideoCallFacade, FIELD_NAME_VIDEO_CALL_URL_SUFFIX,
         FIELD_VALUE_VIDEO_CALL_URL_SUFFIX);
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
 
@@ -75,11 +73,9 @@ public class StartVideoCallFacadeTest {
   }
 
   @Test
-  public void startVideoCall_Should_CallLiveServiceAndBuildCorrectLiveEventMessageWithVideoCallRequestDto()
-      throws NoSuchFieldException {
+  public void startVideoCall_Should_CallLiveServiceAndBuildCorrectLiveEventMessageWithVideoCallRequestDto() {
 
-    FieldSetter.setField(startVideoCallFacade,
-        startVideoCallFacade.getClass().getDeclaredField(FIELD_NAME_VIDEO_CALL_URL_SUFFIX),
+    setField(startVideoCallFacade, FIELD_NAME_VIDEO_CALL_URL_SUFFIX,
         FIELD_VALUE_VIDEO_CALL_URL_SUFFIX);
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
@@ -93,7 +89,7 @@ public class StartVideoCallFacadeTest {
     verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(argument.capture(), any());
     verify(liveEventNotificationService, times(1))
         .sendVideoCallRequestLiveEvent(any(), any());
-    assertTrue(argument.getValue() instanceof LiveEventMessage);
+    assertThat(argument.getValue(), instanceOf(LiveEventMessage.class));
     assertEquals(consultantSessionDto.getGroupId(),
         ((VideoCallRequestDTO) argument.getValue().getEventContent()).getRcGroupId());
     assertEquals(consultantSessionDto.getConsultantRcId(),
