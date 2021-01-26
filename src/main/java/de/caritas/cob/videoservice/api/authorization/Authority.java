@@ -7,7 +7,8 @@ import java.util.stream.Stream;
  */
 public enum Authority {
 
-  CONSULTANT("consultant", "AUTHORIZATION_CONSULTANT_DEFAULT");
+  CONSULTANT("consultant", "AUTHORIZATION_CONSULTANT_DEFAULT"),
+  USER("user", "AUTHORIZATION_USER_DEFAULT");
 
   private final String roleName;
   private final String authorityName;

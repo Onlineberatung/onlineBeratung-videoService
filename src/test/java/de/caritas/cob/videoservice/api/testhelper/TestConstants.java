@@ -11,8 +11,10 @@ public class TestConstants {
    * Authorization
    */
   public static final String ROLE_CONSULTANT = "consultant";
+  public static final String ROLE_USER = "user";
   public static final String ROLE_UNKNOWN = "unknown";
   public static final String AUTHORITY_CONSULTANT = "AUTHORIZATION_CONSULTANT_DEFAULT";
+  public static final String AUTHORITY_USER = "AUTHORIZATION_USER_DEFAULT";
   public static final String BEARER_TOKEN = "w948hisidfgjaoidg839huishdfkjsdkfjhsdf34";
 
   /*

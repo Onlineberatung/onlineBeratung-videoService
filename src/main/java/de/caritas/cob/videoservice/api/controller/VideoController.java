@@ -3,6 +3,8 @@ package de.caritas.cob.videoservice.api.controller;
 import de.caritas.cob.videoservice.api.facade.StartVideoCallFacade;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
+import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
+import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.generated.api.controller.VideocallsApi;
 import io.swagger.annotations.Api;
 import javax.validation.Valid;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class VideoController implements VideocallsApi {
 
   private final @NonNull StartVideoCallFacade startVideoCallFacade;
+  private final @NonNull RejectVideoCallService rejectVideoCallService;
 
   /**
    * Starts a new video call.
@@ -36,5 +39,17 @@ public class VideoController implements VideocallsApi {
         .videoCallUrl(startVideoCallFacade.startVideoCall(createVideoCallDto.getSessionId()));
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  /**
+   * Rejects a video call.
+   *
+   * @param rejectVideoCallDto {@link RejectVideoCallDTO}
+   * @return response entity
+   */
+  @Override
+  public ResponseEntity<Void> rejectVideoCall(@Valid RejectVideoCallDTO rejectVideoCallDto) {
+    this.rejectVideoCallService.rejectVideoCall(rejectVideoCallDto);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }
