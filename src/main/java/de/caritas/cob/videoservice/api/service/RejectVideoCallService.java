@@ -1,7 +1,7 @@
 package de.caritas.cob.videoservice.api.service;
 
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
-import de.caritas.cob.videoservice.api.service.helper.ServiceHelper;
+import de.caritas.cob.videoservice.api.service.securityheader.SecurityHeaderSupplier;
 import de.caritas.cob.videoservice.messageservice.generated.ApiClient;
 import de.caritas.cob.videoservice.messageservice.generated.web.MessageControllerApi;
 import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class RejectVideoCallService {
 
   private final @NonNull MessageControllerApi messageControllerApi;
-  private final @NonNull ServiceHelper serviceHelper;
+  private final @NonNull SecurityHeaderSupplier securityHeaderSupplier;
 
   /**
    * Sends a system message with rejection type to the message service.
@@ -34,7 +34,7 @@ public class RejectVideoCallService {
   }
 
   private void addDefaultHeaders(ApiClient apiClient) {
-    HttpHeaders headers = this.serviceHelper.getKeycloakAndCsrfHttpHeaders();
+    HttpHeaders headers = this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
     headers.forEach((key, value) -> apiClient.addDefaultHeader(key, value.iterator().next()));
   }
 

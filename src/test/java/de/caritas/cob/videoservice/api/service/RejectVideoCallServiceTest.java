@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
-import de.caritas.cob.videoservice.api.service.helper.ServiceHelper;
+import de.caritas.cob.videoservice.api.service.securityheader.SecurityHeaderSupplier;
 import de.caritas.cob.videoservice.messageservice.generated.ApiClient;
 import de.caritas.cob.videoservice.messageservice.generated.web.MessageControllerApi;
 import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO;
@@ -29,7 +29,7 @@ public class RejectVideoCallServiceTest {
   private MessageControllerApi messageControllerApi;
 
   @Mock
-  private ServiceHelper serviceHelper;
+  private SecurityHeaderSupplier securityHeaderSupplier;
 
   @Mock
   private ApiClient apiClient;
@@ -37,7 +37,7 @@ public class RejectVideoCallServiceTest {
   @Test
   public void rejectVideoCall_Should_useServicesCorretly() {
     when(this.messageControllerApi.getApiClient()).thenReturn(this.apiClient);
-    when(this.serviceHelper.getKeycloakAndCsrfHttpHeaders()).thenReturn(new HttpHeaders());
+    when(this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders()).thenReturn(new HttpHeaders());
     RejectVideoCallDTO rejectVideoCallDto = new EasyRandom().nextObject(RejectVideoCallDTO.class);
 
     this.rejectVideoCallService.rejectVideoCall(rejectVideoCallDto);
@@ -46,7 +46,7 @@ public class RejectVideoCallServiceTest {
         .eventType(EventTypeEnum.IGNORED_CALL)
         .initiatorUserName(rejectVideoCallDto.getInitiatorUsername())
         .rcUserId(rejectVideoCallDto.getRcUserId());
-    verify(this.serviceHelper, times(1)).getKeycloakAndCsrfHttpHeaders();
+    verify(this.securityHeaderSupplier, times(1)).getKeycloakAndCsrfHttpHeaders();
     verify(this.messageControllerApi, times(1))
         .createVideoHintMessage(eq(rejectVideoCallDto.getRcGroupId()), eq(expectedMessage));
   }
