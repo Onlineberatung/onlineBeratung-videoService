@@ -6,8 +6,10 @@ import static de.caritas.cob.videoservice.api.testhelper.FieldConstants.FIELD_VA
 import static de.caritas.cob.videoservice.api.testhelper.FieldConstants.FIELD_VALUE_CSRF_TOKEN_HEADER_PROPERTY;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ERROR_MSG;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -15,14 +17,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
-import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
-import de.caritas.cob.videoservice.api.service.helper.ServiceHelper;
+import de.caritas.cob.videoservice.api.service.securityheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.userservice.generated.ApiClient;
 import de.caritas.cob.videoservice.userservice.generated.web.UserControllerApi;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
 import java.util.List;
-import org.junit.Before;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -33,6 +35,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.server.ResponseStatusException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SessionServiceTest {
@@ -42,16 +45,11 @@ public class SessionServiceTest {
   @Mock
   private UserControllerApi userControllerApi;
   @Mock
-  private ServiceHelper serviceHelper;
+  private SecurityHeaderSupplier serviceHelper;
   @Mock
   private AuthenticatedUser authenticatedUser;
-
+  @Mock
   private HttpHeaders httpHeaders;
-
-  @Before
-  public void setUp() {
-    httpHeaders = mock(HttpHeaders.class);
-  }
 
   @Test
   public void findSessionOfCurrentConsultant_Should_ReturnConsultantSessionDto_When_GetSessionIsSuccessful() {
@@ -62,7 +60,7 @@ public class SessionServiceTest {
 
     ConsultantSessionDTO result = sessionService.findSessionOfCurrentConsultant(SESSION_ID);
 
-    assertTrue(result instanceof ConsultantSessionDTO);
+    assertThat(result, instanceOf(ConsultantSessionDTO.class));
   }
 
   @Test(expected = InternalServerErrorException.class)
@@ -74,37 +72,49 @@ public class SessionServiceTest {
     sessionService.findSessionOfCurrentConsultant(SESSION_ID);
   }
 
-  @Test(expected = BadRequestException.class)
-  public void findSessionOfCurrentConsultant_Should_ThrowBadRequestException_When_GetSessionFailsBecauseOfClientForbiddenRequest() {
+  @Test
+  public void findSessionOfCurrentConsultant_Should_ThrowResponseStatusExceptionWithSameForwardedStatusCode_When_GetSessionClientRequestFails() {
     HttpClientErrorException exception = new HttpClientErrorException(HttpStatus.FORBIDDEN);
 
     when(serviceHelper.getKeycloakAndCsrfHttpHeaders()).thenReturn(httpHeaders);
     when(userControllerApi.fetchSessionForConsultant(SESSION_ID))
         .thenThrow(exception);
 
-    sessionService.findSessionOfCurrentConsultant(SESSION_ID);
+    final Throwable ex = catchThrowable(
+        () -> sessionService.findSessionOfCurrentConsultant(SESSION_ID));
+
+    Assertions.assertThat(ex).isInstanceOf(ResponseStatusException.class);
+    assertEquals(exception.getStatusCode(), ((ResponseStatusException) ex).getStatus());
   }
 
-  @Test(expected = BadRequestException.class)
-  public void findSessionOfCurrentConsultant_Should_ThrowBadRequestException_When_GetSessionFailsBecauseOfClientNotFoundRequest() {
+  @Test
+  public void findSessionOfCurrentConsultant_Should_ThrowResponseStatusExceptionWithStatusNotFound_When_GetSessionFailsBecauseOfClientNotFoundRequest() {
     HttpClientErrorException exception = new HttpClientErrorException(HttpStatus.NOT_FOUND);
 
     when(serviceHelper.getKeycloakAndCsrfHttpHeaders()).thenReturn(httpHeaders);
     when(userControllerApi.fetchSessionForConsultant(SESSION_ID))
         .thenThrow(exception);
 
-    sessionService.findSessionOfCurrentConsultant(SESSION_ID);
+    final Throwable ex = catchThrowable(
+        () -> sessionService.findSessionOfCurrentConsultant(SESSION_ID));
+
+    Assertions.assertThat(ex).isInstanceOf(ResponseStatusException.class);
+    assertEquals(HttpStatus.NOT_FOUND, ((ResponseStatusException) ex).getStatus());
   }
 
-  @Test(expected = BadRequestException.class)
-  public void findSessionOfCurrentConsultant_Should_ThrowBadRequestException_When_GetSessionFailsBecauseOfClientUnauthorizedRequest() {
-    HttpClientErrorException exception = new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
+  @Test
+  public void findSessionOfCurrentConsultant_Should_ThrowResponseStatusExceptionWithStatusForbidden_When_GetSessionFailsBecauseOfClientForbiddenRequest() {
+    HttpClientErrorException exception = new HttpClientErrorException(HttpStatus.FORBIDDEN);
 
     when(serviceHelper.getKeycloakAndCsrfHttpHeaders()).thenReturn(httpHeaders);
     when(userControllerApi.fetchSessionForConsultant(SESSION_ID))
         .thenThrow(exception);
 
-    sessionService.findSessionOfCurrentConsultant(SESSION_ID);
+    final Throwable ex = catchThrowable(
+        () -> sessionService.findSessionOfCurrentConsultant(SESSION_ID));
+
+    Assertions.assertThat(ex).isInstanceOf(ResponseStatusException.class);
+    assertEquals(HttpStatus.FORBIDDEN, ((ResponseStatusException) ex).getStatus());
   }
 
   @Test

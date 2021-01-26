@@ -2,9 +2,9 @@ package de.caritas.cob.videoservice.api.facade;
 
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
-import de.caritas.cob.videoservice.api.service.SessionService;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
+import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Facade to encapsulate starting a chat.
+ * Facade to encapsulate starting a video call.
  */
 @Service
 @RequiredArgsConstructor

@@ -10,7 +10,6 @@ import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
-import org.keycloak.adapters.springsecurity.client.KeycloakClientRequestFactory;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticatedActionsFilter;
 import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
@@ -35,24 +34,11 @@ import org.springframework.security.web.csrf.CsrfFilter;
 @KeycloakConfiguration
 public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
-  @SuppressWarnings("unused")
-  private final KeycloakClientRequestFactory keycloakClientRequestFactory;
-
   @Value("${csrf.cookie.property}")
   private String csrfCookieProperty;
 
   @Value("${csrf.header.property}")
   private String csrfHeaderProperty;
-
-  /**
-   * Processes HTTP requests and checks for a valid Spring security authentication for the
-   * (Keycloak) principal (authorization header).
-   *
-   * @param keycloakClientRequestFactory {@link KeycloakClientRequestFactory}
-   */
-  public WebSecurityConfig(KeycloakClientRequestFactory keycloakClientRequestFactory) {
-    this.keycloakClientRequestFactory = keycloakClientRequestFactory;
-  }
 
   /**
    * Configures the basic HTTP security behavior.

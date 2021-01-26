@@ -25,6 +25,12 @@ public class VideoController implements VideocallsApi {
   private final @NonNull StartVideoCallFacade startVideoCallFacade;
   private final @NonNull RejectVideoCallService rejectVideoCallService;
 
+  /**
+   * Starts a new video call.
+   *
+   * @param createVideoCallDto {@link CreateVideoCallDTO}
+   * @return response entity with {@link CreateVideoCallResponseDTO} body
+   */
   @Override
   public ResponseEntity<CreateVideoCallResponseDTO> createVideoCall(
       @Valid CreateVideoCallDTO createVideoCallDto) {
@@ -35,6 +41,12 @@ public class VideoController implements VideocallsApi {
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
+  /**
+   * Rejects a video call.
+   *
+   * @param rejectVideoCallDto {@link RejectVideoCallDTO}
+   * @return response entity
+   */
   @Override
   public ResponseEntity<Void> rejectVideoCall(@Valid RejectVideoCallDTO rejectVideoCallDto) {
     this.rejectVideoCallService.rejectVideoCall(rejectVideoCallDto);

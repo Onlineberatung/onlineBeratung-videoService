@@ -1,6 +1,5 @@
 package de.caritas.cob.videoservice.api.exception.httpresponse;
 
-import de.caritas.cob.videoservice.api.service.LogService;
 import java.util.function.Consumer;
 
 public class BadRequestException extends CustomHttpStatusException {
@@ -16,14 +15,4 @@ public class BadRequestException extends CustomHttpStatusException {
   public BadRequestException(String message, Consumer<Exception> loggingMethod) {
     super(message, loggingMethod);
   }
-
-  /**
-   * BadRequest exception.
-   *
-   * @param message an additional message
-   */
-  public BadRequestException(String message) {
-    super(message, LogService::logWarning);
-  }
-
 }

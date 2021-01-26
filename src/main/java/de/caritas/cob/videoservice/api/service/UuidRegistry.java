@@ -34,7 +34,7 @@ public class UuidRegistry {
    * Clears the {@link UUID} registry.
    */
   @Scheduled(cron = "${video.call.uuid.registry.cron}")
-  public synchronized void cleanUpEntireList() {
+  public synchronized void cleanUpUuidRegistry() {
     GENERATED_UUIDS.clear();
     LogService.logInfo("UUIDs have been reset!");
   }
