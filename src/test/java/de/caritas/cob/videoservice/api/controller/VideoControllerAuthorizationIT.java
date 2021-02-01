@@ -8,9 +8,13 @@ import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CSRF_COOKIE;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CSRF_HEADER;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CSRF_VALUE;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.RC_USER_ID_HEADER;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.RC_USER_ID_VALUE;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.VIDEO_CALL_URL;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -56,11 +60,12 @@ public class VideoControllerAuthorizationIT {
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
   public void createVideoCall_Should_ReturnCreated_When_EverythingSucceeded() throws Exception {
 
-    when(startVideoCallFacade.startVideoCall(SESSION_ID)).thenReturn(VIDEO_CALL_URL);
+    when(startVideoCallFacade.startVideoCall(eq(SESSION_ID), anyString())).thenReturn(VIDEO_CALL_URL);
 
     mvc.perform(post(PATH_START_VIDEO_CALL)
         .cookie(csrfCookie)
         .header(CSRF_HEADER, CSRF_VALUE)
+        .header(RC_USER_ID_HEADER, RC_USER_ID_VALUE)
         .contentType(MediaType.APPLICATION_JSON)
         .content(VALID_START_VIDEO_CALL_BODY)
         .accept(MediaType.APPLICATION_JSON))
@@ -71,7 +76,7 @@ public class VideoControllerAuthorizationIT {
   public void createVideoCall_Should_ReturnUnauthorized_When_AuthorizationIsMissing()
       throws Exception {
 
-    when(startVideoCallFacade.startVideoCall(SESSION_ID)).thenReturn(VIDEO_CALL_URL);
+    when(startVideoCallFacade.startVideoCall(eq(SESSION_ID), anyString())).thenReturn(VIDEO_CALL_URL);
 
     mvc.perform(post(PATH_START_VIDEO_CALL)
         .cookie(csrfCookie)
@@ -119,7 +124,7 @@ public class VideoControllerAuthorizationIT {
     String content = new ObjectMapper().writeValueAsString(new RejectVideoCallDTO()
         .rcGroupId("rcGroupId")
         .initiatorUsername("username")
-        .rcUserId("rcUserId"));
+        .initiatorRcUserId("rcUserId"));
 
     mvc.perform(post(PATH_REJECT_VIDEO_CALL)
         .contentType(MediaType.APPLICATION_JSON)
@@ -137,7 +142,7 @@ public class VideoControllerAuthorizationIT {
     String content = new ObjectMapper().writeValueAsString(new RejectVideoCallDTO()
         .rcGroupId("rcGroupId")
         .initiatorUsername("username")
-        .rcUserId("rcUserId"));
+        .initiatorRcUserId("rcUserId"));
 
     mvc.perform(post(PATH_REJECT_VIDEO_CALL)
         .cookie(csrfCookie)
@@ -157,7 +162,7 @@ public class VideoControllerAuthorizationIT {
     String content = new ObjectMapper().writeValueAsString(new RejectVideoCallDTO()
         .rcGroupId("rcGroupId")
         .initiatorUsername("username")
-        .rcUserId("rcUserId"));
+        .initiatorRcUserId("rcUserId"));
 
     mvc.perform(post(PATH_REJECT_VIDEO_CALL)
         .cookie(csrfCookie)

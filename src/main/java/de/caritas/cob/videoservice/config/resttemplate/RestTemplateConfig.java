@@ -1,8 +1,7 @@
-package de.caritas.cob.videoservice.config;
+package de.caritas.cob.videoservice.config.resttemplate;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,8 +9,7 @@ import org.springframework.web.client.RestTemplate;
  * Contains some general spring boot application configuration.
  */
 @Configuration
-@ComponentScan(basePackages = {"de.caritas.cob.videoservice"})
-public class AppConfig {
+public class RestTemplateConfig {
 
   /**
    * RestTemplate Bean.
@@ -21,6 +19,8 @@ public class AppConfig {
    */
   @Bean
   public RestTemplate restTemplate(RestTemplateBuilder builder) {
-    return builder.build();
+    return builder
+        .errorHandler(new CustomResponseErrorHandler())
+        .build();
   }
 }

@@ -37,7 +37,7 @@ public class StartVideoCallFacade {
    * @param sessionId session Id
    * @return video call URL
    */
-  public String startVideoCall(Long sessionId) {
+  public String startVideoCall(Long sessionId, String initiatorRcUserId) {
 
     ConsultantSessionDTO consultantSessionDto = this.sessionService
         .findSessionOfCurrentConsultant(sessionId);
@@ -48,7 +48,8 @@ public class StartVideoCallFacade {
 
     this.liveEventNotificationService
         .sendVideoCallRequestLiveEvent(buildLiveEventMessage(consultantSessionDto,
-            videoCallUrlPair.getUserVideoUrl()), singletonList(consultantSessionDto.getAskerId()));
+            videoCallUrlPair.getUserVideoUrl(), initiatorRcUserId),
+            singletonList(consultantSessionDto.getAskerId()));
 
     return videoCallUrlPair.getBasicVideoUrl();
   }
@@ -60,12 +61,12 @@ public class StartVideoCallFacade {
   }
 
   private LiveEventMessage buildLiveEventMessage(ConsultantSessionDTO consultantSessionDto,
-      String videoChatUrl) {
+      String videoChatUrl, String initiatorRcUserId) {
     VideoCallRequestDTO videoCallRequestDto = new VideoCallRequestDTO()
         .videoCallUrl(videoChatUrl)
         .rcGroupId(consultantSessionDto.getGroupId())
-        .rcUserId(consultantSessionDto.getConsultantRcId())
-        .username(authenticatedUser.getUsername());
+        .initiatorRcUserId(initiatorRcUserId)
+        .initiatorUsername(authenticatedUser.getUsername());
 
     return new LiveEventMessage()
         .eventType(EventType.VIDEOCALLREQUEST)

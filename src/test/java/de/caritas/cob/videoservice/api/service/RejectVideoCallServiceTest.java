@@ -45,7 +45,7 @@ public class RejectVideoCallServiceTest {
     VideoCallMessageDTO expectedMessage = new VideoCallMessageDTO()
         .eventType(EventTypeEnum.IGNORED_CALL)
         .initiatorUserName(rejectVideoCallDto.getInitiatorUsername())
-        .rcUserId(rejectVideoCallDto.getRcUserId());
+        .rcUserId(rejectVideoCallDto.getInitiatorRcUserId());
     verify(this.securityHeaderSupplier, times(1)).getKeycloakAndCsrfHttpHeaders();
     verify(this.messageControllerApi, times(1))
         .createVideoHintMessage(eq(rejectVideoCallDto.getRcGroupId()), eq(expectedMessage));

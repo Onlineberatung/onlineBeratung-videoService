@@ -56,7 +56,7 @@ public class StartVideoCallFacadeTest {
         .thenReturn(consultantSessionDto);
     when(videoCallUrlGeneratorService.generateVideoCallUrlPair(any())).thenReturn(videoCallUrlPair);
 
-    String result = startVideoCallFacade.startVideoCall(SESSION_ID);
+    String result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
 
     assertThat(result, is(videoCallUrlPair.getBasicVideoUrl()));
   }
@@ -76,7 +76,7 @@ public class StartVideoCallFacadeTest {
     when(authenticatedUser.getUsername()).thenReturn(USERNAME);
     ArgumentCaptor<LiveEventMessage> argument = ArgumentCaptor.forClass(LiveEventMessage.class);
 
-    startVideoCallFacade.startVideoCall(SESSION_ID);
+    startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
 
     verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(argument.capture(), any());
     verify(liveEventNotificationService, times(1))
@@ -84,10 +84,10 @@ public class StartVideoCallFacadeTest {
     assertThat(argument.getValue(), instanceOf(LiveEventMessage.class));
     assertEquals(consultantSessionDto.getGroupId(),
         ((VideoCallRequestDTO) argument.getValue().getEventContent()).getRcGroupId());
-    assertEquals(consultantSessionDto.getConsultantRcId(),
-        ((VideoCallRequestDTO) argument.getValue().getEventContent()).getRcUserId());
+    assertEquals("rcUserId",
+        ((VideoCallRequestDTO) argument.getValue().getEventContent()).getInitiatorRcUserId());
     assertEquals(USERNAME,
-        ((VideoCallRequestDTO) argument.getValue().getEventContent()).getUsername());
+        ((VideoCallRequestDTO) argument.getValue().getEventContent()).getInitiatorUsername());
   }
 
   @Test(expected = BadRequestException.class)
@@ -98,7 +98,7 @@ public class StartVideoCallFacadeTest {
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
 
-    startVideoCallFacade.startVideoCall(SESSION_ID);
+    startVideoCallFacade.startVideoCall(SESSION_ID, "");
   }
 
 }
