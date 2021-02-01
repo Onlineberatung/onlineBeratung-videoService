@@ -31,7 +31,7 @@ public class StartVideoCallFacade {
   private final @NonNull VideoCallUrlGeneratorService videoCallUrlGeneratorService;
 
   /**
-   * Generates an unique video call URLs and triggers a live event to inform the receiver of the
+   * Generates unique video call URLs and triggers a live event to inform the receiver of the
    * call.
    *
    * @param sessionId session Id
