@@ -3,11 +3,6 @@ package de.caritas.cob.videoservice.api.testhelper;
 public class FieldConstants {
 
   /*
-   * StartVideoCallFacade
-   */
-  public static final String FIELD_NAME_VIDEO_CALL_URL_SUFFIX = "videoCallServerUrl";
-  public static final String FIELD_VALUE_VIDEO_CALL_URL_SUFFIX = "http://video.call";
-  /*
    * ServiceHelper
    */
   public static final String FIELD_NAME_CSRF_TOKEN_HEADER_PROPERTY = "csrfHeaderProperty";

@@ -1,21 +1,22 @@
 package de.caritas.cob.videoservice.api.facade;
 
+import static de.caritas.cob.videoservice.api.service.session.SessionStatus.IN_PROGRESS;
+import static java.util.Collections.singletonList;
+
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
-import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
-import de.caritas.cob.videoservice.api.service.UuidRegistry;
+import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
+import de.caritas.cob.videoservice.api.service.LogService;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
+import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
+import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrlPair;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
-import java.net.MalformedURLException;
-import java.util.Collections;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Facade to encapsulate starting a video call.
@@ -26,14 +27,11 @@ public class StartVideoCallFacade {
 
   private final @NonNull SessionService sessionService;
   private final @NonNull LiveEventNotificationService liveEventNotificationService;
-  private final @NonNull UuidRegistry uuidRegistry;
   private final @NonNull AuthenticatedUser authenticatedUser;
-
-  @Value("${video.call.server.url}")
-  private String videoCallServerUrl;
+  private final @NonNull VideoCallUrlGeneratorService videoCallUrlGeneratorService;
 
   /**
-   * Generates an unique video call URL and triggers a live event to inform the receiver of the
+   * Generates an unique video call URLs and triggers a live event to inform the receiver of the
    * call.
    *
    * @param sessionId session Id
@@ -41,29 +39,23 @@ public class StartVideoCallFacade {
    */
   public String startVideoCall(Long sessionId) {
 
-    ConsultantSessionDTO consultantSessionDto = sessionService
+    ConsultantSessionDTO consultantSessionDto = this.sessionService
         .findSessionOfCurrentConsultant(sessionId);
-    String videoChatUrl = generateVideoCallUrl();
+    verifySessionStatus(consultantSessionDto);
 
-    liveEventNotificationService
-        .sendVideoCallRequestLiveEvent(buildLiveEventMessage(consultantSessionDto, videoChatUrl),
-            Collections.singletonList(consultantSessionDto.getAskerId()));
+    VideoCallUrlPair videoCallUrlPair = this.videoCallUrlGeneratorService
+        .generateVideoCallUrlPair(consultantSessionDto.getAskerUserName());
 
-    return videoChatUrl;
+    this.liveEventNotificationService
+        .sendVideoCallRequestLiveEvent(buildLiveEventMessage(consultantSessionDto,
+            videoCallUrlPair.getUserVideoUrl()), singletonList(consultantSessionDto.getAskerId()));
+
+    return videoCallUrlPair.getBasicVideoUrl();
   }
 
-  private String generateVideoCallUrl() {
-    try {
-      return UriComponentsBuilder
-          .fromHttpUrl(videoCallServerUrl)
-          .pathSegment(uuidRegistry.generateUniqueUuid())
-          .build()
-          .toUri()
-          .toURL()
-          .toString();
-
-    } catch (MalformedURLException | IllegalArgumentException ex) {
-      throw new InternalServerErrorException("Could not generate video call URL.");
+  private void verifySessionStatus(ConsultantSessionDTO consultantSessionDto) {
+    if (!IN_PROGRESS.getValue().equals(consultantSessionDto.getStatus())) {
+      throw new BadRequestException("Session must be in progress", LogService::logWarning);
     }
   }
 
