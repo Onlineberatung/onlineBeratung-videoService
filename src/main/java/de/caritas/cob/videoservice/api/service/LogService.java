@@ -45,6 +45,15 @@ public class LogService {
   }
 
   /**
+   * Logs a error message.
+   *
+   * @param exception  The exception
+   */
+  public static void logError(Exception exception) {
+    LOGGER.error("VideoService API: {}", getStackTrace(exception));
+  }
+
+  /**
    * Logs an internal server error.
    *
    * @param exception the exception to be logged

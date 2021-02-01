@@ -41,7 +41,7 @@ public class RejectVideoCallService {
   private VideoCallMessageDTO fromRejectVideoCallDto(RejectVideoCallDTO rejectVideoCallDto) {
     return new VideoCallMessageDTO()
         .eventType(EventTypeEnum.IGNORED_CALL)
-        .rcUserId(rejectVideoCallDto.getRcUserId())
+        .initiatorRcUserId(rejectVideoCallDto.getInitiatorRcUserId())
         .initiatorUserName(rejectVideoCallDto.getInitiatorUsername());
   }
 

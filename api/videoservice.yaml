@@ -15,6 +15,12 @@ paths:
         - video-controller
       summary: 'Create a new video call room Id [Authorization: Role: consultant]'
       operationId: createVideoCall
+      parameters:
+        - name: RCUserId
+          in: header
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           'application/json':
@@ -89,19 +95,18 @@ components:
       type: object
       required:
         - rcGroupId
-        - rcUserId
+        - initiatorRcUserId
         - initiatorUsername
       properties:
         rcGroupId:
           type: string
           example: "tb89h3tjkerg967"
-        rcUserId:
+        initiatorRcUserId:
           type: string
           example: "ag89h3tjkerg94t"
         initiatorUsername:
           type: string
           example: "consultant23"
-
 
   securitySchemes:
     Bearer:

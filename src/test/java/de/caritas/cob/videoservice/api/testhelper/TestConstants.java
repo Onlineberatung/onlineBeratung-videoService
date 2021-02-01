@@ -18,6 +18,12 @@ public class TestConstants {
   public static final String BEARER_TOKEN = "w948hisidfgjaoidg839huishdfkjsdkfjhsdf34";
 
   /*
+   * RC Header
+   */
+  public static final String RC_USER_ID_HEADER = "RCUserId";
+  public static final String RC_USER_ID_VALUE = "rcUser123";
+
+  /*
    * CSRF token
    */
   public static final String CSRF_COOKIE = "csrfCookie";

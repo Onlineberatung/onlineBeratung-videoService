@@ -15,6 +15,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -131,4 +132,21 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     return handleExceptionInternal(null, null, new HttpHeaders(), ex.getStatus(),
         request);
   }
+
+  /**
+   * Handles generic HTTP client error status for generated apis.
+   *
+   * @param ex      {@link HttpClientErrorException}
+   * @param request {@link WebRequest}
+   * @return response entity
+   */
+  @ExceptionHandler({HttpClientErrorException.class})
+  public ResponseEntity<Object> handleInternal(final HttpClientErrorException ex,
+      final WebRequest request) {
+    LogService.logError(ex);
+
+    return handleExceptionInternal(null, null, new HttpHeaders(), ex.getStatusCode(),
+        request);
+  }
+
 }
