@@ -1,0 +1,115 @@
+openapi: 3.0.1
+
+info:
+  title: will be replaced
+  description: This information will be replaced by the SpringFox config information
+  version: 0.0.1
+
+servers:
+  - url: /
+
+paths:
+  /videocalls/new:
+    post:
+      tags:
+        - video-controller
+      summary: 'Create a new video call room Id [Authorization: Role: consultant]'
+      operationId: createVideoCall
+      parameters:
+        - name: RCUserId
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateVideoCallDTO'
+        required: true
+      responses:
+        201:
+          description: CREATED - video call room Id was successfully created
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CreateVideoCallResponseDTO'
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: 'FORBIDDEN - no/invalid role/authorization, CSRF token or consultant without
+          permission for given session'
+        404:
+          description: NOT FOUND - Session not found
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+      security:
+        - Bearer: [ ]
+  /videocalls/reject:
+    post:
+      tags:
+        - video-controller
+      summary: 'Reject a video call [Authorization: Role: user]'
+      operationId: rejectVideoCall
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/RejectVideoCallDTO'
+        required: true
+      responses:
+        200:
+          description: OK - video call was successfully rejected
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: FORBIDDEN - no/invalid CSRF token
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+      security:
+        - Bearer: [ ]
+
+components:
+  schemas:
+    CreateVideoCallDTO:
+      type: object
+      required:
+        - sessionId
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+    CreateVideoCallResponseDTO:
+      type: object
+      required:
+        - videoCallUrl
+      properties:
+        videoCallUrl:
+          type: string
+          example: http;//video.call/332a573d-7c74-4080-8353-7954eca066f9
+    RejectVideoCallDTO:
+      type: object
+      required:
+        - rcGroupId
+        - initiatorRcUserId
+        - initiatorUsername
+      properties:
+        rcGroupId:
+          type: string
+          example: "tb89h3tjkerg967"
+        initiatorRcUserId:
+          type: string
+          example: "ag89h3tjkerg94t"
+        initiatorUsername:
+          type: string
+          example: "consultant23"
+
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header
