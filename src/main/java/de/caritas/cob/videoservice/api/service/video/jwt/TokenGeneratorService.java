@@ -25,6 +25,7 @@ public class TokenGeneratorService {
   private static final String ROOM_CLAIM = "room";
   private static final String CONTEXT_USER = "user";
   private static final String USER_NAME = "name";
+  private static final String MODERATOR = "moderator";
 
   @Value("${video.call.security.jwt.audience}")
   private String audience;
@@ -53,6 +54,7 @@ public class TokenGeneratorService {
 
     return VideoCallTokenPair.builder()
         .basicToken(buildBasicJwt(roomId)
+            .withClaim(MODERATOR, true)
             .sign(algorithm))
         .userToken(buildBasicJwt(roomId)
             .withClaim(CONTEXT_CLAIM, createUserContext(askerName))
