@@ -86,11 +86,15 @@ components:
     CreateVideoCallResponseDTO:
       type: object
       required:
-        - videoCallUrl
+        - guestVideoCallUrl
+        - moderatorVideoCallUrl
       properties:
-        videoCallUrl:
+        guestVideoCallUrl:
           type: string
-          example: http;//video.call/332a573d-7c74-4080-8353-7954eca066f9
+          example: http://video.call/332a573d-7c74-4080-8353-7954eca066f9?jwt={guestToken}
+        moderatorVideoCallUrl:
+          type: string
+          example: http://video.call/332a573d-7c74-4080-8353-7954eca066f9?jwt={moderatorToken}
     RejectVideoCallDTO:
       type: object
       required:

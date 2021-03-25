@@ -9,8 +9,8 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.video.jwt.TokenGeneratorService;
-import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallTokenPair;
-import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrlPair;
+import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
+import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
 import org.jeasy.random.EasyRandom;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,29 +34,31 @@ public class VideoCallUrlGeneratorServiceTest {
   private TokenGeneratorService tokenGeneratorService;
 
   @Test
-  public void generateVideoCallUrlPair_Should_generateExpectedUrlPair_When_askerNameIsGiven() {
+  public void generateVideoCallUrls_Should_generateExpectedUrlPair_When_askerNameIsGiven() {
     setField(this.videoCallUrlGeneratorService, FIELD_NAME_VIDEO_CALL_URL, VIDEO_CALL_URL);
     when(this.uuidRegistry.generateUniqueUuid()).thenReturn("uniqueId");
-    VideoCallTokenPair videoCallTokenPair = new EasyRandom().nextObject(VideoCallTokenPair.class);
-    when(this.tokenGeneratorService.generateTokenPair(any(), any()))
-        .thenReturn(videoCallTokenPair);
+    VideoCallToken videoCallToken = new EasyRandom().nextObject(VideoCallToken.class);
+    when(this.tokenGeneratorService.generateToken(any(), any()))
+        .thenReturn(videoCallToken);
 
-    VideoCallUrlPair videoCallUrlPair = this.videoCallUrlGeneratorService
-        .generateVideoCallUrlPair("asker123");
+    VideoCallUrls videoCallUrls = this.videoCallUrlGeneratorService
+        .generateVideoCallUrls("asker123");
 
-    assertThat(videoCallUrlPair.getBasicVideoUrl(),
-        is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallTokenPair.getBasicToken()));
-    assertThat(videoCallUrlPair.getUserVideoUrl(),
-        is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallTokenPair.getUserToken()));
+    assertThat(videoCallUrls.getGuestVideoUrl(),
+        is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallToken.getGuestToken()));
+    assertThat(videoCallUrls.getUserVideoUrl(),
+        is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallToken.getUserRelatedToken()));
+    assertThat(videoCallUrls.getModeratorVideoUrl(),
+        is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallToken.getModeratorToken()));
   }
 
   @Test(expected = InternalServerErrorException.class)
-  public void generateVideoCallUrlPair_Should_throwInternalServerErrorException_When_videoUrlIsInvalid() {
-    VideoCallTokenPair videoCallTokenPair = new EasyRandom().nextObject(VideoCallTokenPair.class);
-    when(this.tokenGeneratorService.generateTokenPair(any(), any()))
-        .thenReturn(videoCallTokenPair);
+  public void generateVideoCallUrls_Should_throwInternalServerErrorException_When_videoUrlIsInvalid() {
+    VideoCallToken videoCallToken = new EasyRandom().nextObject(VideoCallToken.class);
+    when(this.tokenGeneratorService.generateToken(any(), any()))
+        .thenReturn(videoCallToken);
 
-    this.videoCallUrlGeneratorService.generateVideoCallUrlPair("asker123");
+    this.videoCallUrlGeneratorService.generateVideoCallUrls("asker123");
   }
 
 }
