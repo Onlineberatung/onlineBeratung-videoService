@@ -34,7 +34,7 @@ public class VideoCallUrlGeneratorServiceTest {
   private TokenGeneratorService tokenGeneratorService;
 
   @Test
-  public void generateVideoCallUrls_Should_generateExpectedUrlPair_When_askerNameIsGiven() {
+  public void generateVideoCallUrls_Should_generateExpectedVideoCallUrls_When_askerNameIsGiven() {
     setField(this.videoCallUrlGeneratorService, FIELD_NAME_VIDEO_CALL_URL, VIDEO_CALL_URL);
     when(this.uuidRegistry.generateUniqueUuid()).thenReturn("uniqueId");
     VideoCallToken videoCallToken = new EasyRandom().nextObject(VideoCallToken.class);
