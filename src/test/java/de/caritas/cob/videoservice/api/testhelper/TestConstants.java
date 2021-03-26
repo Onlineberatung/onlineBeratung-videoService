@@ -1,11 +1,8 @@
 package de.caritas.cob.videoservice.api.testhelper;
 
-public class TestConstants {
+import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 
-  /*
-   * Common
-   */
-  public static final String ERROR_MSG = "error";
+public class TestConstants {
 
   /*
    * Authorization
@@ -38,8 +35,14 @@ public class TestConstants {
   /*
    * Video call
    */
-  public static final String VIDEO_CALL_URL = "http:://video.call/237849234-34534-345345";
-  public static final String UUID = "332a573d-7c74-4080-8353-7954eca066f9";
+  public static final String GUEST_VIDEO_CALL_URL =
+      "http://video.call/237849234-34534-345345?jwt={guestToken}";
+  public static final String MODERATOR_VIDEO_CALL_URL =
+      "http://video.call/237849234-34534-345345?jwt={moderatorToken}";
+  public static final CreateVideoCallResponseDTO CREATE_VIDEO_CALL_RESPONSE_DTO =
+      new CreateVideoCallResponseDTO()
+          .guestVideoCallUrl(GUEST_VIDEO_CALL_URL)
+          .moderatorVideoCallUrl(MODERATOR_VIDEO_CALL_URL);
 
   /*
    * User
