@@ -36,12 +36,12 @@ public class VideoCallUrlGeneratorService {
   public VideoCallUrls generateVideoCallUrls(String askerName) {
 
     String uuid = uuidRegistry.generateUniqueUuid();
-    VideoCallToken token = this.tokenGeneratorService.generateToken(uuid, askerName);
+    VideoCallToken token = this.tokenGeneratorService.generateNonModeratorToken(uuid, askerName);
 
     return VideoCallUrls.builder()
-        .guestVideoUrl(buildUrl(uuid, token.getGuestToken()))
         .userVideoUrl(buildUrl(uuid, token.getUserRelatedToken()))
-        .moderatorVideoUrl(buildUrl(uuid, token.getModeratorToken()))
+        .moderatorVideoUrl(buildUrl(uuid, this.tokenGeneratorService
+            .generateModeratorToken(uuid, buildUrl(uuid, token.getGuestToken()))))
         .build();
   }
 
