@@ -31,6 +31,7 @@ public class TokenGeneratorServiceTest {
     setField(tokenGeneratorService, "subject", SUBJECT_VALUE);
     setField(tokenGeneratorService, "secret", "password");
     setField(tokenGeneratorService, "validityHours", 10);
+    tokenGeneratorService.initAlgorithm();
   }
 
   private void verifyBasicTokenFields(String jwt, String expectedRoomId) {
