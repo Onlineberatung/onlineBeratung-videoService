@@ -53,7 +53,6 @@ public class StartVideoCallFacade {
             singletonList(consultantSessionDto.getAskerId()));
 
     return new CreateVideoCallResponseDTO()
-        .guestVideoCallUrl(videoCallUrls.getGuestVideoUrl())
         .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
   }
 

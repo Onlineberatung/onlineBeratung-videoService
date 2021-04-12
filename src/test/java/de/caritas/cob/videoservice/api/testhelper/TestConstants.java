@@ -36,12 +36,11 @@ public class TestConstants {
    * Video call
    */
   public static final String GUEST_VIDEO_CALL_URL =
-      "http://video.call/237849234-34534-345345?jwt={guestToken}";
+      "https://video.call/237849234-34534-345345?jwt={guestToken}";
   public static final String MODERATOR_VIDEO_CALL_URL =
-      "http://video.call/237849234-34534-345345?jwt={moderatorToken}";
+      "https://video.call/237849234-34534-345345?jwt={moderatorToken}";
   public static final CreateVideoCallResponseDTO CREATE_VIDEO_CALL_RESPONSE_DTO =
       new CreateVideoCallResponseDTO()
-          .guestVideoCallUrl(GUEST_VIDEO_CALL_URL)
           .moderatorVideoCallUrl(MODERATOR_VIDEO_CALL_URL);
 
   /*

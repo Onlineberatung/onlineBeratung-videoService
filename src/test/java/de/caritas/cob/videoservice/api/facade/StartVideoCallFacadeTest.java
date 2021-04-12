@@ -47,7 +47,7 @@ public class StartVideoCallFacadeTest {
   private AuthenticatedUser authenticatedUser;
 
   @Test
-  public void startVideoCall_Should_ReturnCorrectVideoCallUrls_When_UrlWasGeneratedSuccessfully() {
+  public void startVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
 
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
     when(consultantSessionDto.getStatus()).thenReturn(IN_PROGRESS.getValue());
@@ -59,7 +59,6 @@ public class StartVideoCallFacadeTest {
 
     CreateVideoCallResponseDTO result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
 
-    assertThat(result.getGuestVideoCallUrl(), is(videoCallUrls.getGuestVideoUrl()));
     assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
   }
 
