@@ -3,10 +3,10 @@ package de.caritas.cob.videoservice.api.controller;
 import static de.caritas.cob.videoservice.api.testhelper.PathConstants.PATH_REJECT_VIDEO_CALL;
 import static de.caritas.cob.videoservice.api.testhelper.PathConstants.PATH_START_VIDEO_CALL;
 import static de.caritas.cob.videoservice.api.testhelper.RequestBodyConstants.VALID_START_VIDEO_CALL_BODY;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CREATE_VIDEO_CALL_RESPONSE_DTO;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.RC_USER_ID_HEADER;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.RC_USER_ID_VALUE;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
-import static de.caritas.cob.videoservice.api.testhelper.TestConstants.VIDEO_CALL_URL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -51,7 +51,8 @@ public class VideoControllerIT {
   @Test
   public void createVideoCall_Should_ReturnCreated_When_EverythingSucceeded() throws Exception {
 
-    when(startVideoCallFacade.startVideoCall(eq(SESSION_ID), anyString())).thenReturn(VIDEO_CALL_URL);
+    when(startVideoCallFacade.startVideoCall(eq(SESSION_ID), anyString())).thenReturn(
+        CREATE_VIDEO_CALL_RESPONSE_DTO);
 
     mvc.perform(post(PATH_START_VIDEO_CALL)
         .header(RC_USER_ID_HEADER, RC_USER_ID_VALUE)

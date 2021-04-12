@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.1.0...v1.2.0) (2021-04-12)
+
+
+### Features
+
+* added new video call url with moderator role ([44d9360](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/44d936055606a3027b122b9b8607b2581592db20))
+* switched java version for docker build, github actions and maven build ([f096071](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/f096071e7ae1ef346515210b739cab981705472e))
+
 ## 1.1.0 (2021-02-08)
 
 

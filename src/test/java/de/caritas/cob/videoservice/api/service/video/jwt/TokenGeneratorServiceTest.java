@@ -10,7 +10,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.impl.NullClaim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallTokenPair;
+import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,17 +32,21 @@ public class TokenGeneratorServiceTest {
   }
 
   @Test
-  public void generateTokenPair_Should_returnExpectedTokens_When_roomIdAndAskerAreEmpty() {
-    VideoCallTokenPair tokenPair = this.tokenGeneratorService.generateTokenPair("", "");
+  public void generateToken_Should_returnExpectedTokens_When_roomIdAndAskerAreEmpty() {
+    VideoCallToken token = this.tokenGeneratorService.generateToken("", "");
 
-    String basicToken = tokenPair.getBasicToken();
-    String userToken = tokenPair.getUserToken();
+    String guestToken = token.getGuestToken();
+    String userToken = token.getUserRelatedToken();
+    String moderatorToken = token.getModeratorToken();
 
-    verifyBasicTokenFields(basicToken, "");
+    verifyBasicTokenFields(guestToken, "");
     verifyBasicTokenFields(userToken, "");
-    assertThat(JWT.decode(basicToken).getClaim("context"), instanceOf(NullClaim.class));
+    verifyBasicTokenFields(moderatorToken, "");
+    assertThat(JWT.decode(guestToken).getClaim("context"), instanceOf(NullClaim.class));
     assertThat(JWT.decode(userToken).getClaim("context").asMap().get("user").toString(),
         is("{name=}"));
+    assertThat(JWT.decode(moderatorToken).getClaim("moderator").asBoolean(),
+        is(true));
   }
 
   private void verifyBasicTokenFields(String jwt, String expectedRoomId) {
@@ -56,21 +60,25 @@ public class TokenGeneratorServiceTest {
   }
 
   @Test
-  public void generateTokenPair_Should_returnExpectedTokens_When_roomIdIsGiven() {
-    VideoCallTokenPair tokenPair = this.tokenGeneratorService.generateTokenPair("validRoomId", "");
+  public void generateToken_Should_returnExpectedTokens_When_roomIdIsGiven() {
+    VideoCallToken token = this.tokenGeneratorService.generateToken("validRoomId", "");
 
-    String basicToken = tokenPair.getBasicToken();
-    String userToken = tokenPair.getUserToken();
+    String guestToken = token.getGuestToken();
+    String userToken = token.getUserRelatedToken();
+    String moderatorToken = token.getModeratorToken();
 
-    verifyBasicTokenFields(basicToken, "validRoomId");
+    verifyBasicTokenFields(guestToken, "validRoomId");
     verifyBasicTokenFields(userToken, "validRoomId");
+    verifyBasicTokenFields(moderatorToken, "validRoomId");
+    assertThat(JWT.decode(moderatorToken).getClaim("moderator").asBoolean(),
+        is(true));
   }
 
   @Test
-  public void generateTokenPair_Should_returnExpectedContextInUserToken_When_askerUsernameIsGiven() {
-    VideoCallTokenPair tokenPair = this.tokenGeneratorService.generateTokenPair("", "asker123");
+  public void generateToken_Should_returnExpectedContextInUserToken_When_askerUsernameIsGiven() {
+    VideoCallToken token = this.tokenGeneratorService.generateToken("", "asker123");
 
-    String userToken = tokenPair.getUserToken();
+    String userToken = token.getUserRelatedToken();
 
     assertThat(JWT.decode(userToken).getClaim("context").asMap().get("user").toString(),
         is("{name=asker123}"));
