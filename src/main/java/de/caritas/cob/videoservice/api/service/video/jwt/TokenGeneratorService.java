@@ -15,6 +15,7 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -28,12 +29,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenGeneratorService {
 
-  private final AuthenticatedUser authenticatedUser;
+  private final @NonNull AuthenticatedUser authenticatedUser;
 
   private static final String CONTEXT_CLAIM = "context";
   private static final String ROOM_CLAIM = "room";
   private static final String MODERATOR_CLAIM = "moderator";
-  private static final String MODERATOR_NAME_CLAIM = "moderatorName";
   private static final String GUEST_URL_CLAIM = "guestVideoCallUrl";
   private static final String CONTEXT_USER = "user";
   private static final String USER_NAME = "name";
@@ -131,7 +131,7 @@ public class TokenGeneratorService {
   private String buildModeratorJwt(String roomId, String guestVideoCallUrl) {
     return buildBasicJwt(roomId)
         .withClaim(MODERATOR_CLAIM, true)
-        .withClaim(MODERATOR_NAME_CLAIM, authenticatedUser.getUsername())
+        .withClaim(CONTEXT_CLAIM, createUserContext(authenticatedUser.getUsername()))
         .withClaim(GUEST_URL_CLAIM, guestVideoCallUrl)
         .sign(algorithm);
   }

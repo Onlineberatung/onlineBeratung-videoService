@@ -117,8 +117,8 @@ public class TokenGeneratorServiceTest {
     verifyBasicTokenFields(moderatorToken, "validRoomId");
     assertThat(JWT.decode(moderatorToken).getClaim("moderator").asBoolean(),
         is(true));
-    assertThat(JWT.decode(moderatorToken).getClaim("moderatorName").asString(),
-        is(USERNAME));
+    assertThat(JWT.decode(moderatorToken).getClaim("context").asMap().get("user").toString(),
+        is("{name=" + USERNAME + "}"));
     assertThat(JWT.decode(moderatorToken).getClaim("guestVideoCallUrl").asString(),
         is(GUEST_VIDEO_CALL_URL));
   }
