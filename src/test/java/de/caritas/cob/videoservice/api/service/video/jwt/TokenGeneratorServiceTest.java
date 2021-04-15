@@ -1,28 +1,41 @@
 package de.caritas.cob.videoservice.api.service.video.jwt;
 
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.GUEST_VIDEO_CALL_URL;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.USERNAME;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.impl.NullClaim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TokenGeneratorServiceTest {
 
   private static final String AUDIENCE_VALUE = "server";
   private static final String ISSUER_VALUE = "client";
   private static final String SUBJECT_VALUE = "meet";
 
-  private final TokenGeneratorService tokenGeneratorService = new TokenGeneratorService();
+  @InjectMocks
+  private TokenGeneratorService tokenGeneratorService;
+
+  @Mock
+  private AuthenticatedUser authenticatedUser;
 
   @Before
   public void setup() {
@@ -83,21 +96,29 @@ public class TokenGeneratorServiceTest {
   public void generateModeratorToken_Should_ThrowInternalServerErrorException_When_roomIdIsEmpty() {
     this.tokenGeneratorService
         .generateModeratorToken("", GUEST_VIDEO_CALL_URL);
+
+    verifyNoMoreInteractions(authenticatedUser);
   }
 
   @Test(expected = InternalServerErrorException.class)
   public void generateModeratorToken_Should_ThrowInternalServerErrorException_When_guestVideoCallUrlIsEmpty() {
     this.tokenGeneratorService.generateModeratorToken("validRoomId", "");
+
+    verifyNoMoreInteractions(authenticatedUser);
   }
 
   @Test
   public void generateModeratorToken_Should_returnExpectedToken_When_ParamsAreGiven() {
+    when(authenticatedUser.getUsername()).thenReturn(USERNAME);
+
     String moderatorToken = this.tokenGeneratorService
         .generateModeratorToken("validRoomId", GUEST_VIDEO_CALL_URL);
 
     verifyBasicTokenFields(moderatorToken, "validRoomId");
     assertThat(JWT.decode(moderatorToken).getClaim("moderator").asBoolean(),
         is(true));
+    assertThat(JWT.decode(moderatorToken).getClaim("moderatorName").asString(),
+        is(USERNAME));
     assertThat(JWT.decode(moderatorToken).getClaim("guestVideoCallUrl").asString(),
         is(GUEST_VIDEO_CALL_URL));
   }
