@@ -22,7 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class VideoCallUrlGeneratorServiceTest {
 
   private static final String FIELD_NAME_VIDEO_CALL_URL = "videoCallServerUrl";
-  private static final String VIDEO_CALL_URL = "http://video.call";
+  private static final String VIDEO_CALL_URL = "https://video.call";
 
   @InjectMocks
   private VideoCallUrlGeneratorService videoCallUrlGeneratorService;
@@ -38,24 +38,25 @@ public class VideoCallUrlGeneratorServiceTest {
     setField(this.videoCallUrlGeneratorService, FIELD_NAME_VIDEO_CALL_URL, VIDEO_CALL_URL);
     when(this.uuidRegistry.generateUniqueUuid()).thenReturn("uniqueId");
     VideoCallToken videoCallToken = new EasyRandom().nextObject(VideoCallToken.class);
-    when(this.tokenGeneratorService.generateToken(any(), any()))
+    String moderatorToken = "moderatorToken";
+    when(this.tokenGeneratorService.generateNonModeratorToken(any(), any()))
         .thenReturn(videoCallToken);
+    when(this.tokenGeneratorService.generateModeratorToken(any(), any()))
+        .thenReturn(moderatorToken);
 
     VideoCallUrls videoCallUrls = this.videoCallUrlGeneratorService
         .generateVideoCallUrls("asker123");
 
-    assertThat(videoCallUrls.getGuestVideoUrl(),
-        is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallToken.getGuestToken()));
     assertThat(videoCallUrls.getUserVideoUrl(),
         is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallToken.getUserRelatedToken()));
     assertThat(videoCallUrls.getModeratorVideoUrl(),
-        is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallToken.getModeratorToken()));
+        is(VIDEO_CALL_URL + "/uniqueId?jwt=" + moderatorToken));
   }
 
   @Test(expected = InternalServerErrorException.class)
   public void generateVideoCallUrls_Should_throwInternalServerErrorException_When_videoUrlIsInvalid() {
     VideoCallToken videoCallToken = new EasyRandom().nextObject(VideoCallToken.class);
-    when(this.tokenGeneratorService.generateToken(any(), any()))
+    when(this.tokenGeneratorService.generateNonModeratorToken(any(), any()))
         .thenReturn(videoCallToken);
 
     this.videoCallUrlGeneratorService.generateVideoCallUrls("asker123");

@@ -7,7 +7,6 @@ import lombok.Getter;
 @Builder
 public class VideoCallUrls {
 
-  private final String guestVideoUrl;
   private final String userVideoUrl;
   private final String moderatorVideoUrl;
 }
