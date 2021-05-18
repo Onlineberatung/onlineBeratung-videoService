@@ -5,11 +5,12 @@ import static java.util.Collections.singletonList;
 
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
+import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.LogService;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
-import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrlPair;
+import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
@@ -31,27 +32,28 @@ public class StartVideoCallFacade {
   private final @NonNull VideoCallUrlGeneratorService videoCallUrlGeneratorService;
 
   /**
-   * Generates unique video call URLs and triggers a live event to inform the receiver of the
-   * call.
+   * Generates unique video call URLs and triggers a live event to inform the receiver of the call.
    *
-   * @param sessionId session Id
-   * @return video call URL
+   * @param sessionId         session ID
+   * @param initiatorRcUserId initiator Rocket.Chat user ID
+   * @return {@link CreateVideoCallResponseDTO}
    */
-  public String startVideoCall(Long sessionId, String initiatorRcUserId) {
+  public CreateVideoCallResponseDTO startVideoCall(Long sessionId, String initiatorRcUserId) {
 
     ConsultantSessionDTO consultantSessionDto = this.sessionService
         .findSessionOfCurrentConsultant(sessionId);
     verifySessionStatus(consultantSessionDto);
 
-    VideoCallUrlPair videoCallUrlPair = this.videoCallUrlGeneratorService
-        .generateVideoCallUrlPair(consultantSessionDto.getAskerUserName());
+    VideoCallUrls videoCallUrls = this.videoCallUrlGeneratorService
+        .generateVideoCallUrls(consultantSessionDto.getAskerUserName());
 
     this.liveEventNotificationService
         .sendVideoCallRequestLiveEvent(buildLiveEventMessage(consultantSessionDto,
-            videoCallUrlPair.getUserVideoUrl(), initiatorRcUserId),
+            videoCallUrls.getUserVideoUrl(), initiatorRcUserId),
             singletonList(consultantSessionDto.getAskerId()));
 
-    return videoCallUrlPair.getBasicVideoUrl();
+    return new CreateVideoCallResponseDTO()
+        .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
   }
 
   private void verifySessionStatus(ConsultantSessionDTO consultantSessionDto) {

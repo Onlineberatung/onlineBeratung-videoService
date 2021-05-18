@@ -16,10 +16,11 @@ import static org.mockito.Mockito.when;
 
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
+import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
-import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrlPair;
+import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
@@ -46,19 +47,19 @@ public class StartVideoCallFacadeTest {
   private AuthenticatedUser authenticatedUser;
 
   @Test
-  public void startVideoCall_Should_ReturnVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
+  public void startVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
 
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
     when(consultantSessionDto.getStatus()).thenReturn(IN_PROGRESS.getValue());
-    VideoCallUrlPair videoCallUrlPair = new EasyRandom().nextObject(VideoCallUrlPair.class);
+    VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
-    when(videoCallUrlGeneratorService.generateVideoCallUrlPair(any())).thenReturn(videoCallUrlPair);
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
-    String result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
+    CreateVideoCallResponseDTO result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
 
-    assertThat(result, is(videoCallUrlPair.getBasicVideoUrl()));
+    assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
   }
 
   @Test
@@ -67,12 +68,12 @@ public class StartVideoCallFacadeTest {
     ConsultantSessionDTO consultantSessionDto =
         new EasyRandom().nextObject(ConsultantSessionDTO.class);
     consultantSessionDto.setStatus(IN_PROGRESS.getValue());
-    VideoCallUrlPair videoCallUrlPair = new EasyRandom().nextObject(VideoCallUrlPair.class);
+    VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
-    when(videoCallUrlGeneratorService.generateVideoCallUrlPair(any()))
-        .thenReturn(videoCallUrlPair);
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any()))
+        .thenReturn(videoCallUrls);
     when(authenticatedUser.getUsername()).thenReturn(USERNAME);
     ArgumentCaptor<LiveEventMessage> argument = ArgumentCaptor.forClass(LiveEventMessage.class);
 

@@ -3,8 +3,8 @@ package de.caritas.cob.videoservice.api.service.video;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.video.jwt.TokenGeneratorService;
-import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallTokenPair;
-import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrlPair;
+import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
+import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
 import java.net.MalformedURLException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +28,20 @@ public class VideoCallUrlGeneratorService {
   private String videoCallServerUrl;
 
   /**
-   * Generates the {@link VideoCallUrlPair} for asker and consultant.
+   * Generates the {@link VideoCallUrls} for guest, asker and consultant.
    *
    * @param askerName the username of the asker
-   * @return the generated {@link VideoCallUrlPair}
+   * @return the generated {@link VideoCallUrls}
    */
-  public VideoCallUrlPair generateVideoCallUrlPair(String askerName) {
+  public VideoCallUrls generateVideoCallUrls(String askerName) {
 
     String uuid = uuidRegistry.generateUniqueUuid();
-    VideoCallTokenPair tokenPair = this.tokenGeneratorService.generateTokenPair(uuid, askerName);
+    VideoCallToken token = this.tokenGeneratorService.generateNonModeratorToken(uuid, askerName);
 
-    return VideoCallUrlPair.builder()
-        .basicVideoUrl(buildUrl(uuid, tokenPair.getBasicToken()))
-        .userVideoUrl(buildUrl(uuid, tokenPair.getUserToken()))
+    return VideoCallUrls.builder()
+        .userVideoUrl(buildUrl(uuid, token.getUserRelatedToken()))
+        .moderatorVideoUrl(buildUrl(uuid, this.tokenGeneratorService
+            .generateModeratorToken(uuid, buildUrl(uuid, token.getGuestToken()))))
         .build();
   }
 
