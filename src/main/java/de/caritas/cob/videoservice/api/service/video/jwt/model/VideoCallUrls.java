@@ -5,9 +5,8 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class VideoCallTokenPair {
+public class VideoCallUrls {
 
-  private final String basicToken;
-  private final String userToken;
-
+  private final String userVideoUrl;
+  private final String moderatorVideoUrl;
 }

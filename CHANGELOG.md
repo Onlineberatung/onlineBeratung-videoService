@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.3.0...v1.3.1) (2021-05-03)
+
+## [1.3.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.2.0...v1.3.0) (2021-05-03)
+
+
+### Features
+
+* added guest video call url to moderator token ([ae9b878](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/ae9b8780746ca00da344f791a3f590ab50ff8a4d))
+* added moderator name to token ([7177ebd](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/7177ebd7fa61ad5aa4f9e56a0893ed3f0a76936c))
+* provide timeout before send live event ([37c54b8](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/37c54b8719a2a6f5f3ca1762276f37ae77114d05))
+
+## [1.2.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.1.0...v1.2.0) (2021-04-12)
+
+
+### Features
+
+* added new video call url with moderator role ([44d9360](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/44d936055606a3027b122b9b8607b2581592db20))
+* switched java version for docker build, github actions and maven build ([f096071](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/f096071e7ae1ef346515210b739cab981705472e))
+
 ## 1.1.0 (2021-02-08)
 
 
