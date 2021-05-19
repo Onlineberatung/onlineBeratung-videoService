@@ -15,14 +15,6 @@ paths:
         - live-controller
       summary: Send events via the live service
       operationId: sendLiveEvent
-      parameters:
-        - name: userIds
-          in: query
-          required: true
-          schema:
-            type: array
-            items:
-              type: string
       requestBody:
         content:
           'application/json':
@@ -42,16 +34,23 @@ components:
       type: object
       required:
         - eventType
+        - userIds
       properties:
         eventType:
           $ref: '#/components/schemas/EventType'
+        userIds:
+          type: array
+          items:
+            type: string
         eventContent:
           $ref: '#/components/schemas/EventContent'
 
     EventType:
       type: string
       enum:
+        - "anonymousEnquiryAccepted"
         - "directMessage"
+        - "newAnonymousEnquiry"
         - "videoCallRequest"
         - "videoCallDeny"
 

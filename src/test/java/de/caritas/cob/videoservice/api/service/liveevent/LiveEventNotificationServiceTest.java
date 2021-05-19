@@ -41,6 +41,6 @@ public class LiveEventNotificationServiceTest {
     liveEventNotificationService.sendVideoCallRequestLiveEvent(liveEventMessage, userIds);
 
     verify(liveControllerApi, times(1))
-        .sendLiveEvent(userIds, liveEventMessage);
+        .sendLiveEvent(liveEventMessage.userIds(userIds));
   }
 }
