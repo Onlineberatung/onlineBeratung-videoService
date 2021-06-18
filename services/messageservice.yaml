@@ -5,9 +5,6 @@ info:
   description: This information will be replaced by the SpringFox config information
   version: 0.0.1
 
-servers:
-  - url: /
-
 paths:
   /messages/key:
     post:
@@ -41,21 +38,21 @@ paths:
     post:
       tags:
         - message-controller
-      summary: 'Add new Rocket.Chat message [Authorization: Role: user, consultant,
+      summary: 'Add new Rocket.Chat message [Authorization: Role: user, anonymous, consultant,
         technical]'
       operationId: createMessage
       parameters:
-        - name: RCToken
+        - name: rcToken
           in: header
           required: true
           schema:
             type: string
-        - name: RCUserId
+        - name: rcUserId
           in: header
           required: true
           schema:
             type: string
-        - name: RCGroupId
+        - name: rcGroupId
           in: header
           required: true
           schema:
@@ -89,17 +86,17 @@ paths:
         for feedback chat]'
       operationId: createFeedbackMessage
       parameters:
-        - name: RCToken
+        - name: rcToken
           in: header
           required: true
           schema:
             type: string
-        - name: RCUserId
+        - name: rcUserId
           in: header
           required: true
           schema:
             type: string
-        - name: RCFeedbackGroupId
+        - name: rcFeedbackGroupId
           in: header
           required: true
           schema:
@@ -130,10 +127,10 @@ paths:
       tags:
         - message-controller
       summary: 'Add new Rocket.Chat system video call event message [Authorization: Role: user,
-      consultant]'
+      anonymous, consultant]'
       operationId: createVideoHintMessage
       parameters:
-        - name: RCGroupId
+        - name: rcGroupId
           in: header
           required: true
           schema:
@@ -161,15 +158,15 @@ paths:
     get:
       tags:
         - message-controller
-      summary: 'Get Rocket.Chat message stream [Authorization: Role: user, consultant]'
+      summary: 'Get Rocket.Chat message stream [Authorization: Role: user, anonymous, consultant]'
       operationId: getMessageStream
       parameters:
-        - name: RCToken
+        - name: rcToken
           in: header
           required: true
           schema:
             type: string
-        - name: RCUserId
+        - name: rcUserId
           in: header
           required: true
           schema:
@@ -180,18 +177,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: offset
-          in: query
-          description: Number of items where to start in the query (0 = first item)
-          required: true
-          schema:
-            type: integer
-        - name: count
-          in: query
-          description: Number of item which are being returned (0 = all)
-          required: true
-          schema:
-            type: integer
       responses:
         200:
           description: OK - successfull operation
@@ -220,17 +205,17 @@ paths:
         u25-consultant]'
       operationId: forwardMessage
       parameters:
-        - name: RCToken
+        - name: rcToken
           in: header
           required: true
           schema:
             type: string
-        - name: RCUserId
+        - name: rcUserId
           in: header
           required: true
           schema:
             type: string
-        - name: RCGroupId
+        - name: rcGroupId
           in: header
           required: true
           schema:
@@ -260,10 +245,10 @@ paths:
     post:
       tags:
         - message-controller
-      summary: 'Save a draft message [Authorization: Role: user, consultant]'
+      summary: 'Save a draft message [Authorization: Role: user, anonymous, consultant]'
       operationId: saveDraftMessage
       parameters:
-        - name: RCGroupId
+        - name: rcGroupId
           in: header
           required: true
           schema:
@@ -296,7 +281,7 @@ paths:
       summary: 'Get a draft message by user and rocket chat group id [Authorization: Role: user, consultant]'
       operationId: findDraftMessage
       parameters:
-        - name: RCGroupId
+        - name: rcGroupId
           in: header
           required: true
           schema:
@@ -321,6 +306,39 @@ paths:
       security:
         - Bearer: []
 
+  /messages/aliasonly/new:
+    post:
+      tags:
+        - message-controller
+      summary: 'Saves a new empty system message containing the provided message type in the alias.
+      [Authorization: Role: user, consultant, technical]'
+      operationId: saveAliasOnlyMessage
+      parameters:
+        - name: rcGroupId
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AliasOnlyMessageDTO'
+      responses:
+        201:
+          description: CREATED - message was successfully created
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: FORBIDDEN - no/invalid role/authorization
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+      security:
+        - Bearer: [ ]
+
 components:
   schemas:
     MessageDTO:
@@ -339,31 +357,11 @@ components:
       type: object
       required:
         - messages
-        - count
-        - offset
-        - total
-        - success
-        - cleaned
       properties:
         messages:
           type: array
           items:
             $ref: '#/components/schemas/MessagesDTO'
-        count:
-          type: string
-          example: "2"
-        offset:
-          type: string
-          example: "0"
-        total:
-          type: string
-          example: "2"
-        success:
-          type: string
-          example: "true"
-        cleaned:
-          type: string
-          example: "true"
 
     MessagesDTO:
       type: object
@@ -423,6 +421,8 @@ components:
           $ref: '#/components/schemas/ForwardMessageDTO'
         videoCallMessageDTO:
           $ref: '#/components/schemas/VideoCallMessageDTO'
+        messageType:
+          $ref: '#/components/schemas/MessageType'
 
     ForwardMessageDTO:
       type: object
@@ -463,6 +463,23 @@ components:
         initiatorRcUserId:
           type: string
           example: "ag89h3tjkerg94t"
+
+    AliasOnlyMessageDTO:
+      type: object
+      required:
+        - messageType
+      properties:
+        messageType:
+          $ref: '#/components/schemas/MessageType'
+
+    MessageType:
+      type: string
+      enum:
+        - "FINISHED_CONVERSATION"
+        - "FORWARD"
+        - "FURTHER_STEPS"
+        - "UPDATE_SESSION_DATA"
+        - "VIDEOCALL"
 
     UserDTO:
       type: object

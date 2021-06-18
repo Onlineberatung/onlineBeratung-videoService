@@ -29,7 +29,7 @@ public class LiveEventNotificationService {
   public void sendVideoCallRequestLiveEvent(LiveEventMessage liveEventMessage,
       List<String> userIds) {
     await();
-    liveControllerApi.sendLiveEvent(userIds, liveEventMessage);
+    liveControllerApi.sendLiveEvent(liveEventMessage.userIds(userIds));
   }
 
   @SneakyThrows
