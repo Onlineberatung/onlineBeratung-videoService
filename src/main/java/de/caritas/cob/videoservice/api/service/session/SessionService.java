@@ -5,7 +5,6 @@ import de.caritas.cob.videoservice.userservice.generated.web.UserControllerApi;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,7 +30,7 @@ public class SessionService {
   }
 
   private void addDefaultHeaders() {
-    HttpHeaders headers = this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
+    var headers = this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
     headers.forEach((key, value) -> this.userControllerApi.getApiClient()
         .addDefaultHeader(key, value.iterator().next()));
   }

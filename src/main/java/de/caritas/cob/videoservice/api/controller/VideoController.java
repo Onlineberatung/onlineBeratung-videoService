@@ -35,8 +35,7 @@ public class VideoController implements VideocallsApi {
   @Override
   public ResponseEntity<CreateVideoCallResponseDTO> createVideoCall(@RequestHeader String rcUserId,
       @Valid CreateVideoCallDTO createVideoCallDto) {
-    CreateVideoCallResponseDTO response = startVideoCallFacade
-        .startVideoCall(createVideoCallDto.getSessionId(), rcUserId);
+    var response = startVideoCallFacade.startVideoCall(createVideoCallDto.getSessionId(), rcUserId);
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
