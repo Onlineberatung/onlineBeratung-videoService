@@ -1,6 +1,7 @@
 # Caritas Online-Beratung VideoService
 
-With the help of the VideoService it is possible for consultants to stop and initiate (Jitsi) videocalls (via the VideoBackend). It handles the creation of JSON web tokens to authorize askers and consultants (with moderator privilege). These token also define the duration validity and as well provide guest links for anonymous users to join the call.
+The VideoService handles the creation of JSON web tokens to authorize users for a (Jitsi) videocall via the VideoBackend. These tokens contain the username for registered users and moderators, the URL to join the call, the validity period of the token as well as a guest link URL for moderators with which anonymous users can join the call.
+Furthermore it handles the notifications of an incoming call and provides an action to reject incoming calls.
 
 ## Help and Documentation
 In the project [documentation](https://caritasdeutschland.github.io/documentation/docs/setup/setup-backend) you'll find information for setting up and running the project.
