@@ -6,6 +6,7 @@ import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErro
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import lombok.NonNull;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
@@ -23,11 +24,11 @@ public class CustomResponseErrorHandler extends DefaultResponseErrorHandler {
       HttpStatus.BAD_REQUEST);
 
   @Override
-  public void handleError(URI url, HttpMethod method, ClientHttpResponse response)
+  public void handleError(@NonNull URI url, @NonNull HttpMethod method, ClientHttpResponse response)
       throws IOException {
     if (isLoopThroughStatusCode(response.getStatusCode())) {
       throw new ResponseStatusException(response.getStatusCode(),
-          method.name() + " " + url.toString());
+          method.name() + " " + url);
     }
     throw new InternalServerErrorException(response.getStatusText());
   }

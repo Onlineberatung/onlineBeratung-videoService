@@ -3,7 +3,6 @@ package de.caritas.cob.videoservice.api.service.video;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.video.jwt.TokenGeneratorService;
-import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
 import java.net.MalformedURLException;
 import lombok.NonNull;
@@ -35,8 +34,8 @@ public class VideoCallUrlGeneratorService {
    */
   public VideoCallUrls generateVideoCallUrls(String askerName) {
 
-    String uuid = uuidRegistry.generateUniqueUuid();
-    VideoCallToken token = this.tokenGeneratorService.generateNonModeratorToken(uuid, askerName);
+    var uuid = uuidRegistry.generateUniqueUuid();
+    var token = this.tokenGeneratorService.generateNonModeratorToken(uuid, askerName);
 
     return VideoCallUrls.builder()
         .userVideoUrl(buildUrl(uuid, token.getUserRelatedToken()))

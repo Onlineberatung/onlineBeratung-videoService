@@ -6,6 +6,7 @@ import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErro
 import de.caritas.cob.videoservice.api.service.LogService;
 import java.net.UnknownHostException;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+
+  private static final Exception EMPTY_EXCEPTION = new Exception();
 
   /**
    * Custom BadRequest exception.
@@ -53,11 +56,12 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
    * @return response entity
    */
   @Override
+  @NonNull
   protected ResponseEntity<Object> handleHttpMessageNotReadable(
-      final HttpMessageNotReadableException ex,
-      final HttpHeaders headers,
-      final HttpStatus status,
-      final WebRequest request) {
+      final @NonNull HttpMessageNotReadableException ex,
+      final @NonNull HttpHeaders headers,
+      final @NonNull HttpStatus status,
+      final @NonNull WebRequest request) {
     LogService.logWarning(status, ex);
 
     return handleExceptionInternal(ex, null, headers, status, request);
@@ -73,11 +77,12 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
    * @return response entity
    */
   @Override
+  @NonNull
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
-      final MethodArgumentNotValidException ex,
-      final HttpHeaders headers,
-      final HttpStatus status,
-      final WebRequest request) {
+      final @NonNull MethodArgumentNotValidException ex,
+      final @NonNull HttpHeaders headers,
+      final @NonNull HttpStatus status,
+      final @NonNull WebRequest request) {
     LogService.logWarning(status, ex);
 
     return handleExceptionInternal(ex, null, headers, status, request);
@@ -98,7 +103,7 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     LogService.logInternalServerError(ex);
 
     return handleExceptionInternal(
-        null, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        EMPTY_EXCEPTION, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
   }
 
   /**
@@ -113,8 +118,8 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
       final WebRequest request) {
     ex.executeLogging();
 
-    return handleExceptionInternal(null, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR,
-        request);
+    return handleExceptionInternal(EMPTY_EXCEPTION, null, new HttpHeaders(),
+        HttpStatus.INTERNAL_SERVER_ERROR, request);
   }
 
   /**
@@ -129,7 +134,7 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
       final WebRequest request) {
     LogService.logWarning(ex);
 
-    return handleExceptionInternal(null, null, new HttpHeaders(), ex.getStatus(),
+    return handleExceptionInternal(EMPTY_EXCEPTION, null, new HttpHeaders(), ex.getStatus(),
         request);
   }
 
@@ -145,7 +150,7 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
       final WebRequest request) {
     LogService.logError(ex);
 
-    return handleExceptionInternal(null, null, new HttpHeaders(), ex.getStatusCode(),
+    return handleExceptionInternal(EMPTY_EXCEPTION, null, new HttpHeaders(), ex.getStatusCode(),
         request);
   }
 

@@ -34,12 +34,11 @@ public class AuthenticatedUserConfig {
   @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
   public AuthenticatedUser getAuthenticatedUser() {
 
-    KeycloakSecurityContext keycloakSecContext =
-        ((KeycloakAuthenticationToken) getRequest().getUserPrincipal()).getAccount()
-            .getKeycloakSecurityContext();
+    var keycloakSecContext = ((KeycloakAuthenticationToken) getRequest().getUserPrincipal())
+        .getAccount().getKeycloakSecurityContext();
     Map<String, Object> claimMap = keycloakSecContext.getToken().getOtherClaims();
 
-    AuthenticatedUser authenticatedUser = new AuthenticatedUser();
+    var authenticatedUser = new AuthenticatedUser();
     authenticatedUser.setAccessToken(getUserAccessToken(keycloakSecContext));
     authenticatedUser.setUserId(getUserAttribute(claimMap, CLAIM_NAME_USER_ID));
     authenticatedUser.setUsername(getUserAttribute(claimMap, CLAIM_NAME_USERNAME));
