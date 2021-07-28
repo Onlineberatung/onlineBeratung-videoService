@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
@@ -34,8 +35,9 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(@NonNull HttpServletRequest request,
+      @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
+      throws ServletException, IOException {
 
     if (requireCsrfProtectionMatcher.matches(request)) {
       final String csrfTokenValue = request.getHeader(csrfHeaderProperty);

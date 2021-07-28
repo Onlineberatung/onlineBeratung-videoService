@@ -10,7 +10,6 @@ import de.caritas.cob.videoservice.api.service.LogService;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
-import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
@@ -40,11 +39,10 @@ public class StartVideoCallFacade {
    */
   public CreateVideoCallResponseDTO startVideoCall(Long sessionId, String initiatorRcUserId) {
 
-    ConsultantSessionDTO consultantSessionDto = this.sessionService
-        .findSessionOfCurrentConsultant(sessionId);
+    var consultantSessionDto = this.sessionService.findSessionOfCurrentConsultant(sessionId);
     verifySessionStatus(consultantSessionDto);
 
-    VideoCallUrls videoCallUrls = this.videoCallUrlGeneratorService
+    var videoCallUrls = this.videoCallUrlGeneratorService
         .generateVideoCallUrls(consultantSessionDto.getAskerUserName());
 
     this.liveEventNotificationService
@@ -64,7 +62,7 @@ public class StartVideoCallFacade {
 
   private LiveEventMessage buildLiveEventMessage(ConsultantSessionDTO consultantSessionDto,
       String videoChatUrl, String initiatorRcUserId) {
-    VideoCallRequestDTO videoCallRequestDto = new VideoCallRequestDTO()
+    var videoCallRequestDto = new VideoCallRequestDTO()
         .videoCallUrl(videoChatUrl)
         .rcGroupId(consultantSessionDto.getGroupId())
         .initiatorRcUserId(initiatorRcUserId)

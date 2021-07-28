@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.3.1...v1.4.0) (2021-06-18)
+
+
+### Features
+
+* adapt new keycloak version ([942a125](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/942a125ea66f16128d20112f2e85dab3780ef2d6))
+
 ### [1.3.1](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.3.0...v1.3.1) (2021-05-03)
 
 ## [1.3.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.2.0...v1.3.0) (2021-05-03)

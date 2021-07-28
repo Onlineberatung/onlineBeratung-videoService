@@ -8,7 +8,6 @@ import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallM
 import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO.EventTypeEnum;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,7 +33,7 @@ public class RejectVideoCallService {
   }
 
   private void addDefaultHeaders(ApiClient apiClient) {
-    HttpHeaders headers = this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
+    var headers = this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
     headers.forEach((key, value) -> apiClient.addDefaultHeader(key, value.iterator().next()));
   }
 
