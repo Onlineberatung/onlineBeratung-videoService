@@ -28,15 +28,11 @@ public class VideoCallUrlGeneratorServiceTest {
   private VideoCallUrlGeneratorService videoCallUrlGeneratorService;
 
   @Mock
-  private UuidRegistry uuidRegistry;
-
-  @Mock
   private TokenGeneratorService tokenGeneratorService;
 
   @Test
   public void generateVideoCallUrls_Should_generateExpectedVideoCallUrls_When_askerNameIsGiven() {
     setField(this.videoCallUrlGeneratorService, FIELD_NAME_VIDEO_CALL_URL, VIDEO_CALL_URL);
-    when(this.uuidRegistry.generateUniqueUuid()).thenReturn("uniqueId");
     VideoCallToken videoCallToken = new EasyRandom().nextObject(VideoCallToken.class);
     String moderatorToken = "moderatorToken";
     when(this.tokenGeneratorService.generateNonModeratorToken(any(), any()))
@@ -45,7 +41,7 @@ public class VideoCallUrlGeneratorServiceTest {
         .thenReturn(moderatorToken);
 
     VideoCallUrls videoCallUrls = this.videoCallUrlGeneratorService
-        .generateVideoCallUrls("asker123");
+        .generateVideoCallUrls("asker123", "uniqueId");
 
     assertThat(videoCallUrls.getUserVideoUrl(),
         is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallToken.getUserRelatedToken()));
@@ -59,7 +55,7 @@ public class VideoCallUrlGeneratorServiceTest {
     when(this.tokenGeneratorService.generateNonModeratorToken(any(), any()))
         .thenReturn(videoCallToken);
 
-    this.videoCallUrlGeneratorService.generateVideoCallUrls("asker123");
+    this.videoCallUrlGeneratorService.generateVideoCallUrls("asker123", "uniqueId");
   }
 
 }
