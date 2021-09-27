@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.caritas.cob.videoservice.api.service.LogService;
 import de.caritas.cob.videoservice.offsetdatetime.CustomOffsetDateTime;
 import de.caritas.cob.videoservice.statisticsservice.generated.web.model.EventType;
-import de.caritas.cob.videoservice.statisticsservice.generated.web.model.StartVideoCallSatisticsEventMessage;
+import de.caritas.cob.videoservice.statisticsservice.generated.web.model.StartVideoCallStatisticsEventMessage;
 import de.caritas.cob.videoservice.statisticsservice.generated.web.model.UserRole;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,8 +29,8 @@ public class JsonHelperTest {
     OffsetDateTime offsetDateTime = CustomOffsetDateTime.nowInUtc();
     UUID uuid = UUID.randomUUID();
 
-    StartVideoCallSatisticsEventMessage startVideoCallSatisticsEventMessage =
-        new StartVideoCallSatisticsEventMessage()
+    StartVideoCallStatisticsEventMessage startVideoCallStatisticsEventMessage =
+        new StartVideoCallStatisticsEventMessage()
             .eventType(EventType.START_VIDEO_CALL)
             .sessionId(SESSION_ID)
             .userId(CONSULTANT_ID)
@@ -39,7 +39,7 @@ public class JsonHelperTest {
             .timestamp(offsetDateTime);
 
     Optional<String> result =
-        JsonHelper.serializeWithOffsetDateTimeAsString(startVideoCallSatisticsEventMessage,
+        JsonHelper.serializeWithOffsetDateTimeAsString(startVideoCallStatisticsEventMessage,
             LogService::logInternalServerError);
 
     assertThat(result.isPresent(), is(true));

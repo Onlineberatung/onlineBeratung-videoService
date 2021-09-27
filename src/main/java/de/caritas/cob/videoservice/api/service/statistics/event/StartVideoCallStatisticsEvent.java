@@ -4,7 +4,7 @@ import de.caritas.cob.videoservice.api.helper.JsonHelper;
 import de.caritas.cob.videoservice.api.service.LogService;
 import de.caritas.cob.videoservice.offsetdatetime.CustomOffsetDateTime;
 import de.caritas.cob.videoservice.statisticsservice.generated.web.model.EventType;
-import de.caritas.cob.videoservice.statisticsservice.generated.web.model.StartVideoCallSatisticsEventMessage;
+import de.caritas.cob.videoservice.statisticsservice.generated.web.model.StartVideoCallStatisticsEventMessage;
 import de.caritas.cob.videoservice.statisticsservice.generated.web.model.UserRole;
 import java.util.Optional;
 import lombok.NonNull;
@@ -26,7 +26,7 @@ public class StartVideoCallStatisticsEvent implements StatisticsEvent {
   @Override
   public Optional<String> getPayload() {
     return JsonHelper.serializeWithOffsetDateTimeAsString(
-        createStartVideoCallSatisticsEventMessage(), LogService::logStatisticsEventError);
+        createStartVideoCallStatisticsEventMessage(), LogService::logStatisticsEventError);
   }
 
   /**
@@ -37,8 +37,8 @@ public class StartVideoCallStatisticsEvent implements StatisticsEvent {
     return EVENT_TYPE;
   }
 
-  private StartVideoCallSatisticsEventMessage createStartVideoCallSatisticsEventMessage() {
-    return new StartVideoCallSatisticsEventMessage()
+  private StartVideoCallStatisticsEventMessage createStartVideoCallStatisticsEventMessage() {
+    return new StartVideoCallStatisticsEventMessage()
         .eventType(EVENT_TYPE)
         .userId(userId)
         .userRole(userRole)
