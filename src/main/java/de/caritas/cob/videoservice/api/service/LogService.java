@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 public class LogService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LogService.class);
+  public static final String STATISTICS_EVENT_PROCESSING_ERROR = "StatisticsEventProcessing error: ";
+  public static final String STATISTICS_EVENT_PROCESSING_WARNING = "StatisticsEventProcessing warning: ";
 
   private LogService() {
   }
@@ -60,5 +62,23 @@ public class LogService {
    */
   public static void logInternalServerError(Exception exception) {
     LOGGER.error("VideoService API: 500 Internal Server Error: {}", getStackTrace(exception));
+  }
+
+  /**
+   * Error while processing statistics event.
+   *
+   * @param exception Exception
+   */
+  public static void logStatisticsEventError(Exception exception) {
+    LOGGER.error("{}{}", STATISTICS_EVENT_PROCESSING_ERROR, getStackTrace(exception));
+  }
+
+  /**
+   * Warning while processing statistics event.
+   *
+   * @param message error message
+   */
+  public static void logStatisticsEventWarning(String message) {
+    LOGGER.warn("{}{}", STATISTICS_EVENT_PROCESSING_WARNING, message);
   }
 }

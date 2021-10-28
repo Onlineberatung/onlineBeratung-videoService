@@ -2,8 +2,10 @@ package de.caritas.cob.videoservice.api.facade;
 
 import static de.caritas.cob.videoservice.api.service.session.SessionStatus.IN_PROGRESS;
 import static de.caritas.cob.videoservice.api.service.session.SessionStatus.NEW;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CONSULTANT_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.USERNAME;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.VIDEO_CALL_UUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -17,13 +19,18 @@ import static org.mockito.Mockito.when;
 import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
+import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
+import de.caritas.cob.videoservice.api.service.statistics.StatisticsService;
+import de.caritas.cob.videoservice.api.service.statistics.event.StartVideoCallStatisticsEvent;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
+import de.caritas.cob.videoservice.statisticsservice.generated.web.model.UserRole;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
+import java.util.Objects;
 import org.jeasy.random.EasyRandom;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +38,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(SpringRunner.class)
 public class StartVideoCallFacadeTest {
@@ -45,17 +53,23 @@ public class StartVideoCallFacadeTest {
   private VideoCallUrlGeneratorService videoCallUrlGeneratorService;
   @Mock
   private AuthenticatedUser authenticatedUser;
+  @Mock
+  private UuidRegistry uuidRegistry;
+  @Mock
+  private StatisticsService statisticsService;
 
   @Test
   public void startVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
 
+    when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
+    when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
     when(consultantSessionDto.getStatus()).thenReturn(IN_PROGRESS.getValue());
     VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
-    when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any(), any())).thenReturn(videoCallUrls);
 
     CreateVideoCallResponseDTO result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
 
@@ -65,6 +79,8 @@ public class StartVideoCallFacadeTest {
   @Test
   public void startVideoCall_Should_CallLiveServiceAndBuildCorrectLiveEventMessageWithVideoCallRequestDto() {
 
+    when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
+    when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
     ConsultantSessionDTO consultantSessionDto =
         new EasyRandom().nextObject(ConsultantSessionDTO.class);
     consultantSessionDto.setStatus(IN_PROGRESS.getValue());
@@ -72,7 +88,7 @@ public class StartVideoCallFacadeTest {
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
-    when(videoCallUrlGeneratorService.generateVideoCallUrls(any()))
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any(), any()))
         .thenReturn(videoCallUrls);
     when(authenticatedUser.getUsername()).thenReturn(USERNAME);
     ArgumentCaptor<LiveEventMessage> argument = ArgumentCaptor.forClass(LiveEventMessage.class);
@@ -94,12 +110,47 @@ public class StartVideoCallFacadeTest {
   @Test(expected = BadRequestException.class)
   public void startVideoCall_Should_throwBadRequestException_When_sessionIsNotInProgress() {
 
+    when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
+    when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
     when(consultantSessionDto.getStatus()).thenReturn(NEW.getValue());
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
 
     startVideoCallFacade.startVideoCall(SESSION_ID, "");
+  }
+
+  @Test
+  public void startVideoCall_Should_FireAssignSessionStatisticsEvent() {
+
+    when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
+    when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
+    ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
+    when(consultantSessionDto.getStatus()).thenReturn(IN_PROGRESS.getValue());
+    VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
+
+    when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
+        .thenReturn(consultantSessionDto);
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any(), any())).thenReturn(videoCallUrls);
+
+    CreateVideoCallResponseDTO result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
+
+    ArgumentCaptor<StartVideoCallStatisticsEvent> captor = ArgumentCaptor.forClass(
+        StartVideoCallStatisticsEvent.class);
+    verify(statisticsService, times(1)).fireEvent(captor.capture());
+    String userId = Objects.requireNonNull(
+        ReflectionTestUtils.getField(captor.getValue(), "userId")).toString();
+    assertThat(userId, is(CONSULTANT_ID));
+    String userRole = Objects.requireNonNull(
+        ReflectionTestUtils.getField(captor.getValue(), "userRole")).toString();
+    assertThat(userRole, is(
+        UserRole.CONSULTANT.toString()));
+    Long sessionId = Long.valueOf(Objects.requireNonNull(
+        ReflectionTestUtils.getField(captor.getValue(), "sessionId")).toString());
+    assertThat(sessionId, is(SESSION_ID));
+    String videoCallUuid = Objects.requireNonNull(
+        ReflectionTestUtils.getField(captor.getValue(), "videoCallUuid")).toString();
+    assertThat(videoCallUuid, is(VIDEO_CALL_UUID));
   }
 
 }
