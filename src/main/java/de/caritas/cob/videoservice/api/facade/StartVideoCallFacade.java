@@ -7,12 +7,16 @@ import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.LogService;
+import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
+import de.caritas.cob.videoservice.api.service.statistics.StatisticsService;
+import de.caritas.cob.videoservice.api.service.statistics.event.StartVideoCallStatisticsEvent;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
+import de.caritas.cob.videoservice.statisticsservice.generated.web.model.UserRole;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +33,8 @@ public class StartVideoCallFacade {
   private final @NonNull LiveEventNotificationService liveEventNotificationService;
   private final @NonNull AuthenticatedUser authenticatedUser;
   private final @NonNull VideoCallUrlGeneratorService videoCallUrlGeneratorService;
+  private final @NonNull UuidRegistry uuidRegistry;
+  private final @NonNull StatisticsService statisticsService;
 
   /**
    * Generates unique video call URLs and triggers a live event to inform the receiver of the call.
@@ -42,16 +48,26 @@ public class StartVideoCallFacade {
     var consultantSessionDto = this.sessionService.findSessionOfCurrentConsultant(sessionId);
     verifySessionStatus(consultantSessionDto);
 
+    var videoCallUuid = uuidRegistry.generateUniqueUuid();
     var videoCallUrls = this.videoCallUrlGeneratorService
-        .generateVideoCallUrls(consultantSessionDto.getAskerUserName());
+        .generateVideoCallUrls(consultantSessionDto.getAskerUserName(), videoCallUuid);
 
     this.liveEventNotificationService
         .sendVideoCallRequestLiveEvent(buildLiveEventMessage(consultantSessionDto,
-            videoCallUrls.getUserVideoUrl(), initiatorRcUserId),
+                videoCallUrls.getUserVideoUrl(), initiatorRcUserId),
             singletonList(consultantSessionDto.getAskerId()));
 
-    return new CreateVideoCallResponseDTO()
+    var createVideoCallResponseDto = new CreateVideoCallResponseDTO()
         .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
+
+    statisticsService.fireEvent(
+        new StartVideoCallStatisticsEvent(
+            authenticatedUser.getUserId(),
+            UserRole.CONSULTANT,
+            sessionId,
+            videoCallUuid));
+
+    return createVideoCallResponseDto;
   }
 
   private void verifySessionStatus(ConsultantSessionDTO consultantSessionDto) {
