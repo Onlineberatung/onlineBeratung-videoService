@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.1](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.5.0...v1.5.1) (2021-12-14)
+
+## [1.5.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.4.0...v1.5.0) (2021-12-14)
+
+
+### Features
+
+* adapt documentation and fix sonar issues ([ed04cd1](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/ed04cd1bb06bda640389214967f6c0a583dc9d77))
+* implementation and tests ([fa4cfa3](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/fa4cfa348b9d7f87152905ee37124189c646868c))
+* new api format ([5fb930f](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/5fb930fd4f0cece49019b38f8f076c8984ed8d24))
+* updated dockerImage.yml ([a1e241f](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/a1e241f49aef9d4fa24fffbfa024e704df0d757c))
+* updated service api descriptions ([dfc6c03](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/dfc6c0347313b8336cba3b29f2730fb2fe74b24c))
+
 ## [1.4.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.3.1...v1.4.0) (2021-06-18)
 
 
