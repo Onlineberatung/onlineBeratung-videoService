@@ -1,6 +1,7 @@
 package de.caritas.cob.videoservice.api.testhelper;
 
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
+import java.util.UUID;
 
 public class TestConstants {
 
@@ -42,9 +43,16 @@ public class TestConstants {
   public static final CreateVideoCallResponseDTO CREATE_VIDEO_CALL_RESPONSE_DTO =
       new CreateVideoCallResponseDTO()
           .moderatorVideoCallUrl(MODERATOR_VIDEO_CALL_URL);
+  public static final String VIDEO_CALL_UUID = UUID.randomUUID().toString();
 
   /*
    * User
    */
   public static final String USERNAME = "username";
+  public static final String CONSULTANT_ID = "fb3cbee2-c5f3-4582-a5e4-d853572e9860";
+
+  /*
+  * Common
+   */
+  public static final String ERROR_MESSAGE = "Error message";
 }
