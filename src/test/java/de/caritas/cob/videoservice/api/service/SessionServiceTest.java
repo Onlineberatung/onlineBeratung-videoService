@@ -34,7 +34,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @RunWith(MockitoJUnitRunner.class)
-@Ignore
 public class SessionServiceTest {
 
   @InjectMocks
@@ -54,6 +53,9 @@ public class SessionServiceTest {
   private HttpServletRequest httpServletRequest;
 
   @Mock
+  private TenantHeaderSupplier tenantHeaderSupplier;
+
+  @Mock
   private Enumeration<String> headers;
 
   @Test
@@ -71,7 +73,6 @@ public class SessionServiceTest {
   @Test
   public void findSessionOfCurrentConsultant_Should_AddKeycloakAndCsrfHttpHeaders() {
     HttpHeaders headers = new HttpHeaders();
-    givenRequestContextIsSet();
     headers.add(FIELD_NAME_CSRF_TOKEN_HEADER_PROPERTY, FIELD_VALUE_CSRF_TOKEN_HEADER_PROPERTY);
     headers.add(FIELD_NAME_CSRF_TOKEN_COOKIE_PROPERTY, FIELD_VALUE_CSRF_TOKEN_COOKIE_PROPERTY);
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
@@ -90,12 +91,6 @@ public class SessionServiceTest {
     assertEquals(FIELD_VALUE_CSRF_TOKEN_HEADER_PROPERTY, headerValues.get(0));
     assertEquals(FIELD_VALUE_CSRF_TOKEN_COOKIE_PROPERTY, headerValues.get(1));
     resetRequestAttributes();
-  }
-
-  private void givenRequestContextIsSet() {
-    when(requestAttributes.getRequest()).thenReturn(httpServletRequest);
-    when(httpServletRequest.getHeaderNames()).thenReturn(headers);
-    RequestContextHolder.setRequestAttributes(requestAttributes);
   }
 
   private void resetRequestAttributes() {
