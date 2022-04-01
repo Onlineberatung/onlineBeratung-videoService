@@ -4,9 +4,11 @@ import de.caritas.cob.videoservice.api.facade.StartVideoCallFacade;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
+import de.caritas.cob.videoservice.api.model.VideoCallInfoDTO;
 import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.generated.api.controller.VideocallsApi;
 import io.swagger.annotations.Api;
+import java.util.Optional;
 import javax.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +52,10 @@ public class VideoController implements VideocallsApi {
   public ResponseEntity<Void> rejectVideoCall(@Valid RejectVideoCallDTO rejectVideoCallDto) {
     this.rejectVideoCallService.rejectVideoCall(rejectVideoCallDto);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<VideoCallInfoDTO> getWebToken(String rcUserId, String groupId) {
+    return ResponseEntity.of(Optional.empty());
   }
 }

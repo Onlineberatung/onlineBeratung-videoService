@@ -69,6 +69,41 @@ paths:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
       security:
         - Bearer: [ ]
+  /videocalls/{roomId}/jwt:
+    get:
+      tags:
+        - video-controller
+      summary: 'Gets the moderatorToken (for consultants) or the invitationToken (for others) 
+        [Authorization: Role: consultant, anonymous]'
+      operationId: getWebToken
+      parameters:
+        - name: RCUserId
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK - web token returned
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/VideoCallInfoDTO'
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: FORBIDDEN - no/invalid CSRF token
+        404:
+          description: NOT FOUND - rcGroupId unknown
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
 
 components:
   schemas:
@@ -105,6 +140,16 @@ components:
         initiatorUsername:
           type: string
           example: "consultant23"
+    VideoCallInfoDTO:
+      type: object
+      required:
+        - domain
+        - jwt
+      properties:
+        domain:
+          type: string
+        jwt:
+          type: string
 
   securitySchemes:
     Bearer:
