@@ -61,6 +61,18 @@ public class TokenGeneratorService {
   }
 
   /**
+   * Generate token.
+   *
+   * @param roomId room id
+   * @return token
+   */
+  public String generateToken(String roomId) {
+    return authenticatedUser.isConsultant()
+        ? generateModeratorToken(roomId)
+        : generateNonModeratorToken(roomId);
+  }
+
+  /**
    * Generates the {@link VideoCallToken} for anonymous user and asker (containing user name).
    *
    * @param roomId    the generated unique roomId
@@ -69,12 +81,12 @@ public class TokenGeneratorService {
    */
   public VideoCallToken generateNonModeratorToken(String roomId, String askerName) {
     return VideoCallToken.builder()
-        .guestToken(buildGuestJwt(roomId))
+        .guestToken(generateNonModeratorToken(roomId))
         .userRelatedToken(buildUserRelatedJwt(roomId, askerName))
         .build();
   }
 
-  private String buildGuestJwt(String roomId) {
+  public String generateNonModeratorToken(String roomId) {
     return buildBasicJwt(roomId)
         .sign(algorithm);
   }
@@ -126,6 +138,21 @@ public class TokenGeneratorService {
     }
 
     return buildModeratorJwt(roomId, guestVideoCallUrl);
+  }
+
+  /**
+   * Generate moderator token.
+   *
+   * @param roomId room id
+   * @return token
+   */
+  public String generateModeratorToken(String roomId) {
+    var userContext = createUserContext(authenticatedUser.getUsername());
+
+    return buildBasicJwt(roomId)
+        .withClaim(MODERATOR_CLAIM, true)
+        .withClaim(CONTEXT_CLAIM, userContext)
+        .sign(algorithm);
   }
 
   private String buildModeratorJwt(String roomId, String guestVideoCallUrl) {

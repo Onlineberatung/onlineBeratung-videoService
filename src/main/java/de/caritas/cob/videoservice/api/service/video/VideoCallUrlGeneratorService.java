@@ -1,6 +1,7 @@
 package de.caritas.cob.videoservice.api.service.video;
 
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
+import de.caritas.cob.videoservice.api.model.VideoCallInfoDTO;
 import de.caritas.cob.videoservice.api.service.video.jwt.TokenGeneratorService;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
 import java.net.MalformedURLException;
@@ -57,4 +58,17 @@ public class VideoCallUrlGeneratorService {
     }
   }
 
+  /**
+   * Generate JWT.
+   *
+   * @param roomId room id
+   * @return VideoCallInfoDTO
+   */
+  public VideoCallInfoDTO generateJwt(String roomId) {
+    var videoCallInfo = new VideoCallInfoDTO();
+    videoCallInfo.setJwt(tokenGeneratorService.generateToken(roomId));
+    videoCallInfo.setDomain(videoCallServerUrl);
+
+    return videoCallInfo;
+  }
 }

@@ -43,6 +43,9 @@ public class AuthenticatedUserConfig {
     authenticatedUser.setUserId(getUserAttribute(claimMap, CLAIM_NAME_USER_ID));
     authenticatedUser.setUsername(getUserAttribute(claimMap, CLAIM_NAME_USERNAME));
 
+    var roles = keycloakSecContext.getToken().getRealmAccess().getRoles();
+    authenticatedUser.setRoles(roles);
+
     return authenticatedUser;
   }
 
