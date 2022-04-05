@@ -14,7 +14,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.impl.NullClaim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
+import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class TokenGeneratorServiceTest {
   private TokenGeneratorService tokenGeneratorService;
 
   @Mock
-  private AuthenticatedUser authenticatedUser;
+  private VideoUser authenticatedUser;
 
   @Before
   public void setup() {
@@ -121,5 +121,29 @@ public class TokenGeneratorServiceTest {
         is("{name=" + USERNAME + "}"));
     assertThat(JWT.decode(moderatorToken).getClaim("guestVideoCallUrl").asString(),
         is(GUEST_VIDEO_CALL_URL));
+  }
+
+  @Test
+  public void generateToken_should_generate_moderator_token_if_user_is_consultant() {
+    when(authenticatedUser.getUsername()).thenReturn(USERNAME);
+    when(authenticatedUser.isConsultant()).thenReturn(true);
+
+    var moderatorToken = tokenGeneratorService.generateToken("privateRoom4711");
+
+    verifyBasicTokenFields(moderatorToken, "privateRoom4711");
+    assertThat(JWT.decode(moderatorToken).getClaim("moderator").asBoolean(), is(true));
+    assertThat(JWT.decode(moderatorToken).getClaim("context").asMap().get("user").toString(),
+        is("{name=" + USERNAME + "}"));
+  }
+
+  @Test
+  public void generateToken_should_generate_non_moderator_token_if_user_is_no_consultant() {
+    when(authenticatedUser.isConsultant()).thenReturn(false);
+
+    var moderatorToken = tokenGeneratorService.generateToken("privateRoom4711");
+
+    assertThat(JWT.decode(moderatorToken).getClaim("moderator").isNull(), is(true));
+    assertThat(JWT.decode(moderatorToken).getClaim("context").isNull(), is(true));
+    verifyBasicTokenFields(moderatorToken, "privateRoom4711");
   }
 }

@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
+import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class SecurityHeaderSupplierTest {
   @InjectMocks
   private SecurityHeaderSupplier securityHeaderSupplier;
   @Mock
-  private AuthenticatedUser authenticatedUser;
+  private VideoUser videoUser;
 
   @Before
   public void setup() {
@@ -65,7 +65,7 @@ public class SecurityHeaderSupplierTest {
 
   @Test
   public void getRocketChatAndCsrfHttpHeaders_Should_ReturnHeaderWithKeycloakAuthToken() {
-    when(authenticatedUser.getAccessToken()).thenReturn(BEARER_TOKEN);
+    when(videoUser.getAccessToken()).thenReturn(BEARER_TOKEN);
 
     HttpHeaders result = securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
 

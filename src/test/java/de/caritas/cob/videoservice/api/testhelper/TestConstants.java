@@ -16,10 +16,11 @@ public class TestConstants {
   public static final String BEARER_TOKEN = "w948hisidfgjaoidg839huishdfkjsdkfjhsdf34";
 
   /*
-   * RC Header
+   * RC
    */
   public static final String RC_USER_ID_HEADER = "RCUserId";
   public static final String RC_USER_ID_VALUE = "rcUser123";
+  public static final String RC_CHAT_ROOM_ID = "R_ID_76543210";
 
   /*
    * CSRF token
@@ -52,7 +53,7 @@ public class TestConstants {
   public static final String CONSULTANT_ID = "fb3cbee2-c5f3-4582-a5e4-d853572e9860";
 
   /*
-  * Common
+   * Common
    */
   public static final String ERROR_MESSAGE = "Error message";
 }

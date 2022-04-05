@@ -4,7 +4,9 @@ import de.caritas.cob.videoservice.api.facade.StartVideoCallFacade;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
+import de.caritas.cob.videoservice.api.model.VideoCallInfoDTO;
 import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
+import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.generated.api.controller.VideocallsApi;
 import io.swagger.annotations.Api;
 import javax.validation.Valid;
@@ -25,6 +27,7 @@ public class VideoController implements VideocallsApi {
 
   private final @NonNull StartVideoCallFacade startVideoCallFacade;
   private final @NonNull RejectVideoCallService rejectVideoCallService;
+  private final @NonNull VideoCallUrlGeneratorService videoCallUrlGeneratorService;
 
   /**
    * Starts a new video call.
@@ -50,5 +53,12 @@ public class VideoController implements VideocallsApi {
   public ResponseEntity<Void> rejectVideoCall(@Valid RejectVideoCallDTO rejectVideoCallDto) {
     this.rejectVideoCallService.rejectVideoCall(rejectVideoCallDto);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<VideoCallInfoDTO> getWebToken(String rcUserId, String roomId) {
+    var videoCallInfo = videoCallUrlGeneratorService.generateJwt(roomId);
+
+    return ResponseEntity.ok(videoCallInfo);
   }
 }

@@ -3,7 +3,7 @@ package de.caritas.cob.videoservice.api.facade;
 import static de.caritas.cob.videoservice.api.service.session.SessionStatus.IN_PROGRESS;
 import static java.util.Collections.singletonList;
 
-import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
+import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.LogService;
@@ -31,7 +31,7 @@ public class StartVideoCallFacade {
 
   private final @NonNull SessionService sessionService;
   private final @NonNull LiveEventNotificationService liveEventNotificationService;
-  private final @NonNull AuthenticatedUser authenticatedUser;
+  private final @NonNull VideoUser authenticatedUser;
   private final @NonNull VideoCallUrlGeneratorService videoCallUrlGeneratorService;
   private final @NonNull UuidRegistry uuidRegistry;
   private final @NonNull StatisticsService statisticsService;
