@@ -7,7 +7,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.algorithms.Algorithm;
-import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
+import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.decoder.UsernameDecoder;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -25,11 +26,16 @@ import org.springframework.stereotype.Service;
 /**
  * JWT token generator service.
  */
-@RequiredArgsConstructor
 @Service
 public class TokenGeneratorService {
 
-  private final @NonNull AuthenticatedUser authenticatedUser;
+  @Autowired
+  public TokenGeneratorService(
+      @NonNull @Qualifier("AuthenticatedOrAnonymousUser") VideoUser authenticatedUser) {
+    this.videoUser = authenticatedUser;
+  }
+
+  private final @NonNull VideoUser videoUser;
 
   private static final String CONTEXT_CLAIM = "context";
   private static final String ROOM_CLAIM = "room";
@@ -67,7 +73,7 @@ public class TokenGeneratorService {
    * @return token
    */
   public String generateToken(String roomId) {
-    return authenticatedUser.isConsultant()
+    return videoUser.isConsultant()
         ? generateModeratorToken(roomId)
         : generateNonModeratorToken(roomId);
   }
@@ -147,7 +153,7 @@ public class TokenGeneratorService {
    * @return token
    */
   public String generateModeratorToken(String roomId) {
-    var userContext = createUserContext(authenticatedUser.getUsername());
+    var userContext = createUserContext(videoUser.getUsername());
 
     return buildBasicJwt(roomId)
         .withClaim(MODERATOR_CLAIM, true)
@@ -158,7 +164,7 @@ public class TokenGeneratorService {
   private String buildModeratorJwt(String roomId, String guestVideoCallUrl) {
     return buildBasicJwt(roomId)
         .withClaim(MODERATOR_CLAIM, true)
-        .withClaim(CONTEXT_CLAIM, createUserContext(authenticatedUser.getUsername()))
+        .withClaim(CONTEXT_CLAIM, createUserContext(videoUser.getUsername()))
         .withClaim(GUEST_URL_CLAIM, guestVideoCallUrl)
         .sign(algorithm);
   }

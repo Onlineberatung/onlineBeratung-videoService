@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AuthenticatedUser {
+public class VideoUser {
 
   @NonNull
   private String userId;
@@ -32,6 +32,6 @@ public class AuthenticatedUser {
 
   @JsonIgnore
   public boolean isConsultant() {
-    return nonNull(roles) && roles.contains(Authority.CONSULTANT.name());
+    return nonNull(roles) && roles.contains(UserRole.CONSULTANT.getValue());
   }
 }
