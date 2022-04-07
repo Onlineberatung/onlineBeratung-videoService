@@ -77,11 +77,6 @@ paths:
         [Authorization: Role: consultant, anonymous]'
       operationId: getWebToken
       parameters:
-        - name: RCUserId
-          in: header
-          required: true
-          schema:
-            type: string
         - name: roomId
           in: path
           required: true
