@@ -21,6 +21,7 @@ import de.caritas.cob.videoservice.api.authorization.RoleAuthorizationAuthorityM
 import de.caritas.cob.videoservice.api.facade.StartVideoCallFacade;
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
 import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
+import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class VideoControllerIT {
 
   @MockBean
   private RoleAuthorizationAuthorityMapper roleAuthorizationAuthorityMapper;
+
+  @MockBean
+  private VideoCallUrlGeneratorService videoCallUrlGeneratorService;
 
   @Test
   public void createVideoCall_Should_ReturnCreated_When_EverythingSucceeded() throws Exception {

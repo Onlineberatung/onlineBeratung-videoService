@@ -1,5 +1,9 @@
 package de.caritas.cob.videoservice.api.authorization;
 
+import static java.util.Objects.nonNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AuthenticatedUser {
+public class VideoUser {
 
   @NonNull
   private String userId;
@@ -23,4 +27,11 @@ public class AuthenticatedUser {
 
   @NonNull
   private String accessToken;
+
+  private Set<String> roles;
+
+  @JsonIgnore
+  public boolean isConsultant() {
+    return nonNull(roles) && roles.contains(UserRole.CONSULTANT.getValue());
+  }
 }
