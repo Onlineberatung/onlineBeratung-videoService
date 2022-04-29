@@ -1,7 +1,6 @@
 package de.caritas.cob.videoservice.api.service;
 
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +31,9 @@ public class RejectVideoCallServiceTest {
   private SecurityHeaderSupplier securityHeaderSupplier;
 
   @Mock
+  private TenantHeaderSupplier tenantHeaderSupplier;
+
+  @Mock
   private ApiClient apiClient;
 
   @Test
@@ -46,9 +48,10 @@ public class RejectVideoCallServiceTest {
         .eventType(EventTypeEnum.IGNORED_CALL)
         .initiatorUserName(rejectVideoCallDto.getInitiatorUsername())
         .initiatorRcUserId(rejectVideoCallDto.getInitiatorRcUserId());
-    verify(this.securityHeaderSupplier, times(1)).getKeycloakAndCsrfHttpHeaders();
-    verify(this.messageControllerApi, times(1))
-        .createVideoHintMessage(eq(rejectVideoCallDto.getRcGroupId()), eq(expectedMessage));
+    verify(this.securityHeaderSupplier).getKeycloakAndCsrfHttpHeaders();
+    verify(this.tenantHeaderSupplier).addTenantHeader(any());
+    verify(this.messageControllerApi)
+        .createVideoHintMessage(rejectVideoCallDto.getRcGroupId(), expectedMessage);
   }
 
 }
