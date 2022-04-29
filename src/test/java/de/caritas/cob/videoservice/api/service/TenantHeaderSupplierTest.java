@@ -15,7 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-class TenantHeaderSupplierSupplierTest {
+class TenantHeaderSupplierTest {
 
   private final TenantHeaderSupplier tenantHeaderSupplier = new TenantHeaderSupplier();
 

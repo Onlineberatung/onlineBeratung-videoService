@@ -38,9 +38,10 @@ public class RejectVideoCallServiceTest {
 
   @Test
   public void rejectVideoCall_Should_useServicesCorrectly() {
+    var securityHeaders = new HttpHeaders();
     when(this.messageControllerApi.getApiClient()).thenReturn(this.apiClient);
-    when(this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders()).thenReturn(new HttpHeaders());
-    RejectVideoCallDTO rejectVideoCallDto = new EasyRandom().nextObject(RejectVideoCallDTO.class);
+    when(this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders()).thenReturn(securityHeaders);
+    var rejectVideoCallDto = new EasyRandom().nextObject(RejectVideoCallDTO.class);
 
     this.rejectVideoCallService.rejectVideoCall(rejectVideoCallDto);
 
@@ -49,7 +50,7 @@ public class RejectVideoCallServiceTest {
         .initiatorUserName(rejectVideoCallDto.getInitiatorUsername())
         .initiatorRcUserId(rejectVideoCallDto.getInitiatorRcUserId());
     verify(this.securityHeaderSupplier).getKeycloakAndCsrfHttpHeaders();
-    verify(this.tenantHeaderSupplier).addTenantHeader(any());
+    verify(this.tenantHeaderSupplier).addTenantHeader(securityHeaders);
     verify(this.messageControllerApi)
         .createVideoHintMessage(rejectVideoCallDto.getRcGroupId(), expectedMessage);
   }
