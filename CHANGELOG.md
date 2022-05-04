@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.5.1...v1.6.0) (2022-05-04)
+
+
+### Features
+
+* design jwt endpoint ([e53d4e4](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/e53d4e4cd2297e98daadb7d32d647fe425b06a51))
+* enable web token creation for anonymous users ([cb2eca3](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/cb2eca3a26a063fd58e2bd0a02b873d46ee113b4))
+* implement web token creation ([359048b](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/359048b34f39d4abc463aa9292f55031daaf65b5))
+* upgrade keycloak to the latest version ([7d591dc](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/7d591dc1ac1e451fe1076625911ba511e734e749))
+
+
+### Bug Fixes
+
+* force safe log4j version ([d8d4201](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/d8d420143511bfa601d4e2bb6669c5bb48d86e38))
+* remove RCUserId as required request header value for getWebToken ([9fa899e](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/9fa899eb56f84f779ce3eec6d6ff9ec346eaf34c))
+* update log4j ([0cb8d69](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/commit/0cb8d69cce3a4994f7bd9436cc40967146b01fd6))
+
 ### [1.5.1](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.5.0...v1.5.1) (2021-12-14)
 
 ## [1.5.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-videoService/compare/v1.4.0...v1.5.0) (2021-12-14)
