@@ -16,7 +16,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import de.caritas.cob.videoservice.api.authorization.AuthenticatedUser;
+import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
@@ -52,7 +52,7 @@ public class StartVideoCallFacadeTest {
   @Mock
   private VideoCallUrlGeneratorService videoCallUrlGeneratorService;
   @Mock
-  private AuthenticatedUser authenticatedUser;
+  private VideoUser authenticatedUser;
   @Mock
   private UuidRegistry uuidRegistry;
   @Mock
