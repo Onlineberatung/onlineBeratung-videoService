@@ -63,7 +63,7 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
 
   public static final class DefaultRequiresCsrfMatcher implements RequestMatcher {
 
-    private final Pattern allowedMethods = Pattern.compile("^(HEAD|TRACE|OPTIONS)$");
+    private final Pattern allowedMethods = Pattern.compile("^(HEAD|TRACE|OPTIONS|GET)$");
 
     /**
      * Allows specific whitelist items to disable CSRF protection for Swagger UI documentation.
