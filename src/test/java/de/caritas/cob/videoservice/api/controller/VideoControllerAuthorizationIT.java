@@ -200,16 +200,6 @@ public class VideoControllerAuthorizationIT {
   }
 
   @Test
-  @WithAnonymousUser
-  public void getWebToken_should_return_forbidden_for_request_without_csrf() throws Exception {
-    mvc.perform(get(PATH_GET_WEB_TOKEN)
-            .header(RC_USER_ID_HEADER, RC_USER_ID_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isForbidden());
-  }
-
-  @Test
   @WithMockUser(authorities = {AUTHORITY_USER})
   public void getWebToken_should_generate_token_for_user() throws Exception {
     mvc.perform(get(PATH_GET_WEB_TOKEN)
