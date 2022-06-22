@@ -56,7 +56,7 @@ public class VideoController implements VideocallsApi {
   }
 
   @Override
-  public ResponseEntity<VideoCallInfoDTO> getWebToken(String rcUserId, String roomId) {
+  public ResponseEntity<VideoCallInfoDTO> getWebToken(String roomId) {
     var videoCallInfo = videoCallUrlGeneratorService.generateJwt(roomId);
 
     return ResponseEntity.ok(videoCallInfo);

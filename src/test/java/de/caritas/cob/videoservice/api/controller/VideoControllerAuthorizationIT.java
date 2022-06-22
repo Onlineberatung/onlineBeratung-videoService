@@ -190,7 +190,6 @@ public class VideoControllerAuthorizationIT {
   @WithAnonymousUser
   public void getWebToken_should_generate_token_for_anonymous_user() throws Exception {
     mvc.perform(get(PATH_GET_WEB_TOKEN)
-            .header(RC_USER_ID_HEADER, RC_USER_ID_VALUE)
             .cookie(csrfCookie)
             .header(CSRF_HEADER, CSRF_VALUE)
             .contentType(MediaType.APPLICATION_JSON)
@@ -211,22 +210,9 @@ public class VideoControllerAuthorizationIT {
   }
 
   @Test
-  @WithAnonymousUser
-  public void getWebToken_should_return_bad_request_for_request_without_rocket_chat_user_id()
-      throws Exception {
-    mvc.perform(get(PATH_GET_WEB_TOKEN)
-            .cookie(csrfCookie)
-            .header(CSRF_HEADER, CSRF_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest());
-  }
-
-  @Test
   @WithMockUser(authorities = {AUTHORITY_USER})
   public void getWebToken_should_generate_token_for_user() throws Exception {
     mvc.perform(get(PATH_GET_WEB_TOKEN)
-            .header(RC_USER_ID_HEADER, RC_USER_ID_VALUE)
             .cookie(csrfCookie)
             .header(CSRF_HEADER, CSRF_VALUE)
             .contentType(MediaType.APPLICATION_JSON)
@@ -240,7 +226,6 @@ public class VideoControllerAuthorizationIT {
   @WithMockUser(authorities = {AUTHORITY_CONSULTANT})
   public void getWebToken_should_generate_token_for_consultant() throws Exception {
     mvc.perform(get(PATH_GET_WEB_TOKEN)
-            .header(RC_USER_ID_HEADER, RC_USER_ID_VALUE)
             .cookie(csrfCookie)
             .header(CSRF_HEADER, CSRF_VALUE)
             .contentType(MediaType.APPLICATION_JSON)
