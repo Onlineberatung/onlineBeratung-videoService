@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
-import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.video.jwt.TokenGeneratorService;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallToken;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
@@ -35,13 +34,13 @@ public class VideoCallUrlGeneratorServiceTest {
     setField(this.videoCallUrlGeneratorService, FIELD_NAME_VIDEO_CALL_URL, VIDEO_CALL_URL);
     VideoCallToken videoCallToken = new EasyRandom().nextObject(VideoCallToken.class);
     String moderatorToken = "moderatorToken";
-    when(this.tokenGeneratorService.generateNonModeratorToken(any(), any()))
+    when(this.tokenGeneratorService.generateNonModeratorVideoCallToken(any()))
         .thenReturn(videoCallToken);
     when(this.tokenGeneratorService.generateModeratorToken(any(), any()))
         .thenReturn(moderatorToken);
 
     VideoCallUrls videoCallUrls = this.videoCallUrlGeneratorService
-        .generateVideoCallUrls("asker123", "uniqueId");
+        .generateVideoCallUrls("uniqueId");
 
     assertThat(videoCallUrls.getUserVideoUrl(),
         is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallToken.getUserRelatedToken()));
@@ -52,10 +51,10 @@ public class VideoCallUrlGeneratorServiceTest {
   @Test(expected = InternalServerErrorException.class)
   public void generateVideoCallUrls_Should_throwInternalServerErrorException_When_videoUrlIsInvalid() {
     VideoCallToken videoCallToken = new EasyRandom().nextObject(VideoCallToken.class);
-    when(this.tokenGeneratorService.generateNonModeratorToken(any(), any()))
+    when(this.tokenGeneratorService.generateNonModeratorVideoCallToken(any()))
         .thenReturn(videoCallToken);
 
-    this.videoCallUrlGeneratorService.generateVideoCallUrls("asker123", "uniqueId");
+    this.videoCallUrlGeneratorService.generateVideoCallUrls("uniqueId");
   }
 
 }
