@@ -41,15 +41,15 @@ public class StartVideoCallFacade {
   /**
    * Generates unique video call URLs and triggers a live event to inform the receiver of the call.
    *
-   * @param createVideoCallDTO The requested DTO containing session id and optional initiators
+   * @param createVideoCallRequest The requested DTO containing session id and optional initiators
    *                           username
    * @param initiatorRcUserId  initiator Rocket.Chat user ID
    * @return {@link CreateVideoCallResponseDTO}
    */
-  public CreateVideoCallResponseDTO startVideoCall(CreateVideoCallDTO createVideoCallDTO,
+  public CreateVideoCallResponseDTO startVideoCall(CreateVideoCallDTO createVideoCallRequest,
       String initiatorRcUserId) {
 
-    var sessionId = createVideoCallDTO.getSessionId();
+    var sessionId = createVideoCallRequest.getSessionId();
     var consultantSessionDto = this.sessionService
         .findSessionOfCurrentConsultant(sessionId);
     verifySessionStatus(consultantSessionDto);
@@ -61,7 +61,7 @@ public class StartVideoCallFacade {
     this.liveEventNotificationService
         .sendVideoCallRequestLiveEvent(buildLiveEventMessage(consultantSessionDto,
             videoCallUrls.getUserVideoUrl(), initiatorRcUserId,
-            createVideoCallDTO.getInitiatorDisplayName()),
+            createVideoCallRequest.getInitiatorDisplayName()),
             singletonList(consultantSessionDto.getAskerId()));
 
     var createVideoCallResponseDto = new CreateVideoCallResponseDTO()
