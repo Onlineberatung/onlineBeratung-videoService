@@ -110,6 +110,8 @@ components:
         sessionId:
           type: integer
           format: int64
+        initiatorDisplayName:
+          type: string
     CreateVideoCallResponseDTO:
       type: object
       required:
