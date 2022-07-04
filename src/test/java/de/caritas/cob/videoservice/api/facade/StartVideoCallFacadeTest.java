@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
+import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
@@ -71,7 +72,8 @@ public class StartVideoCallFacadeTest {
         .thenReturn(consultantSessionDto);
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
-    CreateVideoCallResponseDTO result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
+    CreateVideoCallResponseDTO result = startVideoCallFacade
+        .startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
 
     assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
   }
@@ -93,7 +95,7 @@ public class StartVideoCallFacadeTest {
     when(authenticatedUser.getUsername()).thenReturn(USERNAME);
     ArgumentCaptor<LiveEventMessage> argument = ArgumentCaptor.forClass(LiveEventMessage.class);
 
-    startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
+    startVideoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
 
     verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(argument.capture(), any());
     verify(liveEventNotificationService, times(1))
@@ -117,7 +119,7 @@ public class StartVideoCallFacadeTest {
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
 
-    startVideoCallFacade.startVideoCall(SESSION_ID, "");
+    startVideoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "");
   }
 
   @Test
@@ -133,7 +135,8 @@ public class StartVideoCallFacadeTest {
         .thenReturn(consultantSessionDto);
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
-    CreateVideoCallResponseDTO result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
+    CreateVideoCallResponseDTO result = startVideoCallFacade
+        .startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
 
     ArgumentCaptor<StartVideoCallStatisticsEvent> captor = ArgumentCaptor.forClass(
         StartVideoCallStatisticsEvent.class);
@@ -151,6 +154,31 @@ public class StartVideoCallFacadeTest {
     String videoCallUuid = Objects.requireNonNull(
         ReflectionTestUtils.getField(captor.getValue(), "videoCallUuid")).toString();
     assertThat(videoCallUuid, is(VIDEO_CALL_UUID));
+  }
+
+  @Test
+  public void startVideoCall_Should_FireAssignSessionStatisticsEventWithDisplayName_When_initiatorDisplayNameIsSet() {
+
+    when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
+    when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
+    ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
+    when(consultantSessionDto.getStatus()).thenReturn(IN_PROGRESS.getValue());
+    VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
+
+    when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
+        .thenReturn(consultantSessionDto);
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
+
+    startVideoCallFacade
+        .startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID)
+            .initiatorDisplayName("initiator display name"), "rcUserId");
+
+    var argument = ArgumentCaptor.forClass(LiveEventMessage.class);
+    verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(argument.capture(), any());
+    verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(any(), any());
+    assertThat(argument.getValue(), instanceOf(LiveEventMessage.class));
+    assertThat(((VideoCallRequestDTO) argument.getValue().getEventContent()).getInitiatorUsername(),
+        is("initiator display name"));
   }
 
 }
