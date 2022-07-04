@@ -59,7 +59,7 @@ public class TokenGeneratorServiceTest {
 
   @Test
   public void generateNonModeratorToken_Should_returnExpectedTokens_When_roomIdIsGiven() {
-    VideoCallToken token = this.tokenGeneratorService.generateNonModeratorToken("validRoomId", "");
+    VideoCallToken token = this.tokenGeneratorService.generateNonModeratorVideoCallToken("validRoomId");
 
     String guestToken = token.getGuestToken();
     String userToken = token.getUserRelatedToken();
@@ -70,7 +70,7 @@ public class TokenGeneratorServiceTest {
 
   @Test
   public void generateNonModeratorToken_Should_returnExpectedTokens_When_roomIdAndAskerAreEmpty() {
-    VideoCallToken token = this.tokenGeneratorService.generateNonModeratorToken("", "");
+    VideoCallToken token = this.tokenGeneratorService.generateNonModeratorVideoCallToken("");
 
     String guestToken = token.getGuestToken();
     String userToken = token.getUserRelatedToken();
@@ -78,18 +78,6 @@ public class TokenGeneratorServiceTest {
     verifyBasicTokenFields(guestToken, "");
     verifyBasicTokenFields(userToken, "");
     assertThat(JWT.decode(guestToken).getClaim("context"), instanceOf(NullClaim.class));
-    assertThat(JWT.decode(userToken).getClaim("context").asMap().get("user").toString(),
-        is("{name=}"));
-  }
-
-  @Test
-  public void generateNonModeratorToken_Should_returnExpectedContextInUserToken_When_askerUsernameIsGiven() {
-    VideoCallToken token = this.tokenGeneratorService.generateNonModeratorToken("", "asker123");
-
-    String userToken = token.getUserRelatedToken();
-
-    assertThat(JWT.decode(userToken).getClaim("context").asMap().get("user").toString(),
-        is("{name=asker123}"));
   }
 
   @Test(expected = InternalServerErrorException.class)
@@ -109,31 +97,24 @@ public class TokenGeneratorServiceTest {
 
   @Test
   public void generateModeratorToken_Should_returnExpectedToken_When_ParamsAreGiven() {
-    when(authenticatedUser.getUsername()).thenReturn(USERNAME);
-
     String moderatorToken = this.tokenGeneratorService
         .generateModeratorToken("validRoomId", GUEST_VIDEO_CALL_URL);
 
     verifyBasicTokenFields(moderatorToken, "validRoomId");
     assertThat(JWT.decode(moderatorToken).getClaim("moderator").asBoolean(),
         is(true));
-    assertThat(JWT.decode(moderatorToken).getClaim("context").asMap().get("user").toString(),
-        is("{name=" + USERNAME + "}"));
     assertThat(JWT.decode(moderatorToken).getClaim("guestVideoCallUrl").asString(),
         is(GUEST_VIDEO_CALL_URL));
   }
 
   @Test
   public void generateToken_should_generate_moderator_token_if_user_is_consultant() {
-    when(authenticatedUser.getUsername()).thenReturn(USERNAME);
     when(authenticatedUser.isConsultant()).thenReturn(true);
 
     var moderatorToken = tokenGeneratorService.generateToken("privateRoom4711");
 
     verifyBasicTokenFields(moderatorToken, "privateRoom4711");
     assertThat(JWT.decode(moderatorToken).getClaim("moderator").asBoolean(), is(true));
-    assertThat(JWT.decode(moderatorToken).getClaim("context").asMap().get("user").toString(),
-        is("{name=" + USERNAME + "}"));
   }
 
   @Test
@@ -143,7 +124,6 @@ public class TokenGeneratorServiceTest {
     var moderatorToken = tokenGeneratorService.generateToken("privateRoom4711");
 
     assertThat(JWT.decode(moderatorToken).getClaim("moderator").isNull(), is(true));
-    assertThat(JWT.decode(moderatorToken).getClaim("context").isNull(), is(true));
     verifyBasicTokenFields(moderatorToken, "privateRoom4711");
   }
 }

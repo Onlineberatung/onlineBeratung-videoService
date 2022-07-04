@@ -50,7 +50,7 @@ public class StartVideoCallFacade {
 
     var videoCallUuid = uuidRegistry.generateUniqueUuid();
     var videoCallUrls = this.videoCallUrlGeneratorService
-        .generateVideoCallUrls(consultantSessionDto.getAskerUserName(), videoCallUuid);
+        .generateVideoCallUrls(videoCallUuid);
 
     this.liveEventNotificationService
         .sendVideoCallRequestLiveEvent(buildLiveEventMessage(consultantSessionDto,

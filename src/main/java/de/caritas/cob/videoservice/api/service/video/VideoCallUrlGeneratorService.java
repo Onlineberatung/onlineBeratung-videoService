@@ -28,13 +28,12 @@ public class VideoCallUrlGeneratorService {
   /**
    * Generates the {@link VideoCallUrls} for guest, asker and consultant.
    *
-   * @param askerName the username of the asker
    * @param uuid the uuid of the video call
    * @return the generated {@link VideoCallUrls}
    */
-  public VideoCallUrls generateVideoCallUrls(String askerName, String uuid) {
+  public VideoCallUrls generateVideoCallUrls(String uuid) {
 
-    var token = this.tokenGeneratorService.generateNonModeratorToken(uuid, askerName);
+    var token = this.tokenGeneratorService.generateNonModeratorVideoCallToken(uuid);
 
     return VideoCallUrls.builder()
         .userVideoUrl(buildUrl(uuid, token.getUserRelatedToken()))

@@ -69,7 +69,7 @@ public class StartVideoCallFacadeTest {
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
-    when(videoCallUrlGeneratorService.generateVideoCallUrls(any(), any())).thenReturn(videoCallUrls);
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
     CreateVideoCallResponseDTO result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
 
@@ -88,7 +88,7 @@ public class StartVideoCallFacadeTest {
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
-    when(videoCallUrlGeneratorService.generateVideoCallUrls(any(), any()))
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any()))
         .thenReturn(videoCallUrls);
     when(authenticatedUser.getUsername()).thenReturn(USERNAME);
     ArgumentCaptor<LiveEventMessage> argument = ArgumentCaptor.forClass(LiveEventMessage.class);
@@ -131,7 +131,7 @@ public class StartVideoCallFacadeTest {
 
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
-    when(videoCallUrlGeneratorService.generateVideoCallUrls(any(), any())).thenReturn(videoCallUrls);
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
     CreateVideoCallResponseDTO result = startVideoCallFacade.startVideoCall(SESSION_ID, "rcUserId");
 

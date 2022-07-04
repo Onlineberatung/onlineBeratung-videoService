@@ -19,6 +19,7 @@ public class RejectVideoCallService {
 
   private final @NonNull MessageControllerApi messageControllerApi;
   private final @NonNull SecurityHeaderSupplier securityHeaderSupplier;
+  private final @NonNull TenantHeaderSupplier tenantHeaderSupplier;
 
   /**
    * Sends a system message with rejection type to the message service.
@@ -34,6 +35,7 @@ public class RejectVideoCallService {
 
   private void addDefaultHeaders(ApiClient apiClient) {
     var headers = this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
+    tenantHeaderSupplier.addTenantHeader(headers);
     headers.forEach((key, value) -> apiClient.addDefaultHeader(key, value.iterator().next()));
   }
 

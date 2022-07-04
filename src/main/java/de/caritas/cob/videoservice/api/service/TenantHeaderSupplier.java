@@ -2,7 +2,6 @@ package de.caritas.cob.videoservice.api.service;
 
 import de.caritas.cob.videoservice.api.tenant.TenantContext;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,12 +32,11 @@ public class TenantHeaderSupplier {
   /**
    * Resolve tenantID from current request.
    *
-   * @return
+   * @return the id of the tenant
    */
   public Optional<Long> getTenantFromHeader() {
-    HttpServletRequest request =
-        ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-            .getRequest();
+    var request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+        .getRequest();
     try {
       return Optional.of(Long.parseLong(request.getHeader("tenantId")));
     } catch (NumberFormatException exception) {
@@ -46,4 +44,5 @@ public class TenantHeaderSupplier {
       return Optional.empty();
     }
   }
+
 }
