@@ -55,7 +55,7 @@ public class VideoControllerIT {
   @Test
   public void createVideoCall_Should_ReturnCreated_When_EverythingSucceeded() throws Exception {
 
-    when(startVideoCallFacade.startVideoCall(eq(SESSION_ID), anyString())).thenReturn(
+    when(startVideoCallFacade.startVideoCall(any(), anyString())).thenReturn(
         CREATE_VIDEO_CALL_RESPONSE_DTO);
 
     mvc.perform(post(PATH_START_VIDEO_CALL)
