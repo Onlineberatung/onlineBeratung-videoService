@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +27,7 @@ public class LiveEventNotificationService {
    * @param liveEventMessage {@link LiveEventMessage}
    * @param userIds          list of receiver user Ids
    */
+  @Async
   public void sendVideoCallRequestLiveEvent(LiveEventMessage liveEventMessage,
       List<String> userIds) {
     await();
