@@ -29,6 +29,12 @@
 		<springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
 		<jackson-databind-nullable.version>0.2.3</jackson-databind-nullable.version>
 		<spring-swagger-ui.version>2.10.0</spring-swagger-ui.version>
+		<spring-security-core.version>5.7.3</spring-security-core.version>
+		<ehcache.version>2.10.6</ehcache.version>
+		<javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
+		<java-jwt.version>3.12.1</java-jwt.version>
+		<commons-lang3.version>3.11</commons-lang3.version>
+		<commons-collections4.version>4.4</commons-collections4.version>
 	</properties>
 
 	<dependencies>
@@ -49,10 +55,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
+		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring-security-core.version}</version>
+		</dependency>
+
+		<!-- caching dependencies -->
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>2.10.6</version>
+			<version>${ehcache.version}</version>
 		</dependency>
 
 		<!-- OpenApi/Swagger dependencies -->
@@ -92,14 +106,14 @@
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
-			<version>2.1.1</version>
+			<version>${javax.ws.rs-api.version}</version>
 		</dependency>
 
 		<!-- JWT builder dependency -->
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
-			<version>3.12.1</version>
+			<version>${java-jwt.version}</version>
 		</dependency>
 
 		<!-- Lombok dependencies -->
@@ -113,12 +127,12 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.11</version>
+			<version>${commons-lang3.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
-			<version>4.4</version>
+			<version>${commons-collections4.version}</version>
 		</dependency>
 
 		<!-- Test dependencies -->
