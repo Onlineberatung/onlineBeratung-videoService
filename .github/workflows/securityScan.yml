@@ -2,7 +2,8 @@ name: Run trivy security scan
 on:
   push:
     branches:
-      - 'develop'
+      - '*'
+      - '*'
   pull_request:
 jobs:
   build:
