@@ -28,8 +28,7 @@
 		<openapi-generator-maven-plugin.version>6.2.0</openapi-generator-maven-plugin.version>
 		<springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
 		<jackson-databind-nullable.version>0.2.3</jackson-databind-nullable.version>
-		<spring-swagger-ui.version>2.10.0</spring-swagger-ui.version>
-		<spring-security-core.version>5.7.3</spring-security-core.version>
+		<spring-security-core.version>5.7.5</spring-security-core.version>
 		<ehcache.version>2.10.6</ehcache.version>
 		<javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
 		<java-jwt.version>3.12.1</java-jwt.version>
@@ -86,11 +85,6 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-boot-starter</artifactId>
 			<version>${springfox-boot-starter.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${spring-swagger-ui.version}</version>
 		</dependency>
 		<!-- Keycloak dependencies -->
 		<dependency>
