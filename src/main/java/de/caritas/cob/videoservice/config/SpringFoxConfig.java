@@ -20,7 +20,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * Provides the SpringFox (API documentation generation) configuration.
  */
 @Configuration
-@EnableSwagger2
 @Import(BeanValidatorPluginsConfiguration.class)
 public class SpringFoxConfig {
 
@@ -55,7 +54,8 @@ public class SpringFoxConfig {
           "/configuration/ui",
           "/swagger-resources/**",
           "/configuration/security",
-          "/swagger-ui.html",
+          "/swagger-ui",
+          "/swagger-ui/**",
           "/webjars/**"
       };
 
