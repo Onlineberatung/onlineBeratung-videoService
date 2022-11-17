@@ -25,11 +25,12 @@
 		<keycloak.version>17.0.0</keycloak.version>
 		<!-- force at least version 2.16 due to https://logging.apache.org/log4j/2.x/security.html -->
 		<log4j.version>2.19.0</log4j.version>
-		<openapi-generator-maven-plugin.version>6.2.0</openapi-generator-maven-plugin.version>
+		<openapi-generator-maven-plugin.version>6.2.1</openapi-generator-maven-plugin.version>
 		<springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
 		<jackson-databind-nullable.version>0.2.3</jackson-databind-nullable.version>
+		<spring-swagger-ui.version>2.10.0</spring-swagger-ui.version>
 		<spring-security-core.version>5.7.5</spring-security-core.version>
-		<ehcache.version>2.10.6</ehcache.version>
+		<ehcache.version>2.10.9.2</ehcache.version>
 		<javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
 		<java-jwt.version>3.12.1</java-jwt.version>
 		<commons-lang3.version>3.11</commons-lang3.version>
@@ -66,6 +67,22 @@
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 			<version>${ehcache.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.jknack</groupId>
+			<artifactId>handlebars</artifactId>
+			<version>4.3.1</version>
 		</dependency>
 
 		<!-- OpenApi/Swagger dependencies -->
