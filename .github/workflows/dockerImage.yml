@@ -6,6 +6,7 @@ on:
       - 'release'
       - 'staging'
       - 'develop'
+      - 'tsys-release'
     tags:
       - "dockerImage.v.*"
       - "v*"
