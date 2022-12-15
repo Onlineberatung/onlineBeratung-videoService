@@ -1,9 +1,10 @@
 name: Release action
 
+release:
 on:
   push:
     branches:
-      - release**
+      - 'release'
 
 jobs:
   build:
