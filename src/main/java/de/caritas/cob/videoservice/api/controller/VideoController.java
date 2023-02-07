@@ -9,7 +9,6 @@ import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.generated.api.controller.VideocallsApi;
 import io.swagger.annotations.Api;
-import java.util.UUID;
 import javax.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +44,10 @@ public class VideoController implements VideocallsApi {
   }
 
   @Override
-  public ResponseEntity<Void> stopVideoCall(UUID sessionId) {
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<Void> stopVideoCall(Long sessionId) {
+    return videoCallFacade.stopVideoCall(sessionId)
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.notFound().build();
   }
 
   /**

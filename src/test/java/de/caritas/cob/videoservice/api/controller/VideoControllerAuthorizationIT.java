@@ -28,8 +28,8 @@ import de.caritas.cob.videoservice.api.facade.VideoCallFacade;
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
 import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.api.service.video.jwt.TokenGeneratorService;
-import java.util.UUID;
 import javax.servlet.http.Cookie;
+import org.jeasy.random.EasyRandom;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +48,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class VideoControllerAuthorizationIT {
+
+  private static final EasyRandom easyRandom = new EasyRandom();
 
   @Autowired
   private MockMvc mvc;
@@ -129,7 +131,7 @@ public class VideoControllerAuthorizationIT {
 
   @Test
   public void stopVideoCallShouldReturnUnauthorizedWhenAuthorizationIsMissing() throws Exception {
-    var path = "/videocalls/stop/" + UUID.randomUUID();
+    var path = "/videocalls/stop/" + easyRandom.nextInt(100);
 
     mvc.perform(post(path)
             .cookie(csrfCookie)
@@ -142,7 +144,7 @@ public class VideoControllerAuthorizationIT {
   @WithMockUser()
   public void stopVideoCallShouldReturnForbiddenAndCallNoMethodsWhenNoConsultantDefaultAuthority()
       throws Exception {
-    var path = "/videocalls/stop/" + UUID.randomUUID();
+    var path = "/videocalls/stop/" + easyRandom.nextInt(100);
 
     mvc.perform(post(path)
             .cookie(csrfCookie)
@@ -157,7 +159,7 @@ public class VideoControllerAuthorizationIT {
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
   public void stopVideoCallShouldReturnForbiddenAndCallNoMethodsWhenNoCsrfTokens()
       throws Exception {
-    var path = "/videocalls/stop/" + UUID.randomUUID();
+    var path = "/videocalls/stop/" + easyRandom.nextInt(100);
 
     mvc.perform(post(path)
             .contentType(MediaType.APPLICATION_JSON)

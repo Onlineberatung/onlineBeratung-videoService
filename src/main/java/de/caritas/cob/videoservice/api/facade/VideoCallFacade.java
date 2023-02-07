@@ -2,6 +2,7 @@ package de.caritas.cob.videoservice.api.facade;
 
 import static de.caritas.cob.videoservice.api.service.session.SessionStatus.IN_PROGRESS;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
@@ -23,6 +24,7 @@ import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSes
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 /**
  * Facade for video call starts and stops.
@@ -75,6 +77,25 @@ public class VideoCallFacade {
             videoCallUuid));
 
     return createVideoCallResponseDto;
+  }
+
+  /**
+   *
+   * @param sessionId session ID
+   * @return if session to stop has been found
+   */
+  public boolean stopVideoCall(Long sessionId) {
+    ConsultantSessionDTO consultantSessionDto;
+    try {
+      consultantSessionDto = sessionService.findSessionOfCurrentConsultant(sessionId);
+      if (isNull(consultantSessionDto)) {
+        return false;
+      }
+    } catch (RestClientException exception) {
+      return false;
+    }
+
+    return true;
   }
 
   private void verifySessionStatus(ConsultantSessionDTO consultantSessionDto) {

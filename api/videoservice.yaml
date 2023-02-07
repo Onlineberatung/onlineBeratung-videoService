@@ -45,7 +45,7 @@ paths:
       security:
         - Bearer: [ ]
 
-  /videocalls/stop/{roomId}:
+  /videocalls/stop/{sessionId}:
     post:
       tags:
         - video-controller
@@ -53,12 +53,12 @@ paths:
       description: 'This is basically for stats.'
       operationId: stopVideoCall
       parameters:
-        - name: roomId
+        - name: sessionId
           in: path
           required: true
           schema:
-            type: string
-            format: uuid
+            type: integer
+            format: int64
       responses:
         204:
           description: NO CONTENT
