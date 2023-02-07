@@ -58,6 +58,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         204:
           description: NO CONTENT
