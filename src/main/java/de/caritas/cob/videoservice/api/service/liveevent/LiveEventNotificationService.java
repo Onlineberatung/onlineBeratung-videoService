@@ -36,6 +36,10 @@ public class LiveEventNotificationService {
 
   @SneakyThrows
   private void await() {
-    TimeUnit.SECONDS.sleep(TIMEOUT);
+    try {
+      TimeUnit.SECONDS.sleep(TIMEOUT);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 }
