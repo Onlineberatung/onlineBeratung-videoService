@@ -1,6 +1,6 @@
 package de.caritas.cob.videoservice.api.controller;
 
-import de.caritas.cob.videoservice.api.facade.StartVideoCallFacade;
+import de.caritas.cob.videoservice.api.facade.VideoCallFacade;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "video-controller")
 public class VideoController implements VideocallsApi {
 
-  private final @NonNull StartVideoCallFacade startVideoCallFacade;
+  private final @NonNull VideoCallFacade videoCallFacade;
   private final @NonNull RejectVideoCallService rejectVideoCallService;
   private final @NonNull VideoCallUrlGeneratorService videoCallUrlGeneratorService;
 
@@ -38,9 +38,14 @@ public class VideoController implements VideocallsApi {
   @Override
   public ResponseEntity<CreateVideoCallResponseDTO> createVideoCall(@RequestHeader String rcUserId,
       @Valid CreateVideoCallDTO createVideoCallDto) {
-    var response = startVideoCallFacade.startVideoCall(createVideoCallDto, rcUserId);
+    var response = videoCallFacade.startVideoCall(createVideoCallDto, rcUserId);
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  @Override
+  public ResponseEntity<Void> stopVideoCall(String roomId) {
+    return ResponseEntity.noContent().build();
   }
 
   /**

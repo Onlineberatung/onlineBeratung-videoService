@@ -25,11 +25,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * Facade to encapsulate starting a video call.
+ * Facade for video call starts and stops.
  */
 @Service
 @RequiredArgsConstructor
-public class StartVideoCallFacade {
+public class VideoCallFacade {
 
   private final @NonNull SessionService sessionService;
   private final @NonNull LiveEventNotificationService liveEventNotificationService;
