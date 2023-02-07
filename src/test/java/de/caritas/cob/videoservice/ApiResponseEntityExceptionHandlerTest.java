@@ -51,7 +51,7 @@ public class ApiResponseEntityExceptionHandlerTest {
   @Test
   public void handleMethodArgumentNotValid_Should_executeLogging() {
     this.exceptionHandler.handleMethodArgumentNotValid(mock(MethodArgumentNotValidException.class),
-        mock(HttpHeaders.class), NOT_FOUND, mock(WebRequest.class));
+        new HttpHeaders(), NOT_FOUND, mock(WebRequest.class));
 
     verify(logger, times(1)).warn(eq("VideoService API: {}: {}"), eq("Not Found"), anyString());
   }
