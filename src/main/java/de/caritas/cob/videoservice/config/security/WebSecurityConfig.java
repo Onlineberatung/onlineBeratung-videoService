@@ -34,6 +34,9 @@ import org.springframework.security.web.csrf.CsrfFilter;
 @KeycloakConfiguration
 public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
+  private static final String UUID_PATTERN =
+      "\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b";
+
   @Value("${csrf.cookie.property}")
   private String csrfCookieProperty;
 
@@ -62,7 +65,7 @@ public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .permitAll()
         .antMatchers("/videocalls/new")
         .hasAuthority(CONSULTANT.getAuthority())
-        .antMatchers("/videocalls/stop/{sessionId:[0-9]+}")
+        .antMatchers("/videocalls/stop/{sessionId:" + UUID_PATTERN + "}")
         .hasAuthority(CONSULTANT.getAuthority())
         .antMatchers("/videocalls/reject")
         .hasAnyAuthority(USER.getAuthority())

@@ -2,7 +2,6 @@ package de.caritas.cob.videoservice.api.facade;
 
 import static de.caritas.cob.videoservice.api.service.session.SessionStatus.IN_PROGRESS;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
@@ -15,6 +14,7 @@ import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationSe
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.api.service.statistics.StatisticsService;
 import de.caritas.cob.videoservice.api.service.statistics.event.StartVideoCallStatisticsEvent;
+import de.caritas.cob.videoservice.api.service.statistics.event.StopVideoCallStatisticsEvent;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
@@ -24,7 +24,6 @@ import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSes
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 
 /**
  * Facade for video call starts and stops.
@@ -81,21 +80,13 @@ public class VideoCallFacade {
 
   /**
    *
-   * @param sessionId session ID
-   * @return if session to stop has been found
+   * @param roomId room ID
    */
-  public boolean stopVideoCall(Long sessionId) {
-    ConsultantSessionDTO consultantSessionDto;
-    try {
-      consultantSessionDto = sessionService.findSessionOfCurrentConsultant(sessionId);
-      if (isNull(consultantSessionDto)) {
-        return false;
-      }
-    } catch (RestClientException exception) {
-      return false;
-    }
-
-    return true;
+  public void stopVideoCall(String roomId) {
+    var event = new StopVideoCallStatisticsEvent(
+        authenticatedUser.getUserId(), UserRole.CONSULTANT, roomId
+    );
+    statisticsService.fireEvent(event);
   }
 
   private void verifySessionStatus(ConsultantSessionDTO consultantSessionDto) {

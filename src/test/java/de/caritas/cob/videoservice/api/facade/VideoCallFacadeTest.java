@@ -135,6 +135,8 @@ public class VideoCallFacadeTest {
         .thenReturn(consultantSessionDto);
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
+    videoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
+
     ArgumentCaptor<StartVideoCallStatisticsEvent> captor = ArgumentCaptor.forClass(
         StartVideoCallStatisticsEvent.class);
     verify(statisticsService, times(1)).fireEvent(captor.capture());
