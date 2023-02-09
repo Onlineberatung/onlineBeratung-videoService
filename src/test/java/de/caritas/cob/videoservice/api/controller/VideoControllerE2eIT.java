@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("testing")
-public class VideoControllerE2eIT {
+class VideoControllerE2eIT {
 
   private static final String CSRF_HEADER = "csrfHeader";
   private static final String CSRF_VALUE = "test";
@@ -45,7 +45,7 @@ public class VideoControllerE2eIT {
 
   @Test
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
-  public void stopVideoCallShouldReturnNoContent() throws Exception {
+  void stopVideoCallShouldReturnNoContent() throws Exception {
     givenARoomId();
     givenAValidAuthUser();
 
@@ -60,7 +60,7 @@ public class VideoControllerE2eIT {
 
   @Test
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
-  public void stopVideoCallShouldReturnClientErrorOnNonUuidRoomId() throws Exception {
+  void stopVideoCallShouldReturnClientErrorOnNonUuidRoomId() throws Exception {
     givenAnInvalidRoomId();
     givenAValidAuthUser();
 
