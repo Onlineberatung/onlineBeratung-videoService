@@ -44,6 +44,35 @@ paths:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
       security:
         - Bearer: [ ]
+
+  /videocalls/stop/{roomId}:
+    post:
+      tags:
+        - video-controller
+      summary: 'Stops a video call [Auth: consultant]'
+      description: 'This is basically for stats.'
+      operationId: stopVideoCall
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        204:
+          description: NO CONTENT
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: FORBIDDEN - no/invalid CSRF token
+        404:
+          description: NOT FOUND - room ID unknown
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+
   /videocalls/reject:
     post:
       tags:
@@ -69,6 +98,7 @@ paths:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
       security:
         - Bearer: [ ]
+
   /videocalls/{roomId}/jwt:
     get:
       tags:
