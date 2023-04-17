@@ -14,6 +14,7 @@ import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationSe
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.api.service.statistics.StatisticsService;
 import de.caritas.cob.videoservice.api.service.statistics.event.StartVideoCallStatisticsEvent;
+import de.caritas.cob.videoservice.api.service.statistics.event.StopVideoCallStatisticsEvent;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
@@ -25,11 +26,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * Facade to encapsulate starting a video call.
+ * Facade for video call starts and stops.
  */
 @Service
 @RequiredArgsConstructor
-public class StartVideoCallFacade {
+public class VideoCallFacade {
 
   private final @NonNull SessionService sessionService;
   private final @NonNull LiveEventNotificationService liveEventNotificationService;
@@ -75,6 +76,17 @@ public class StartVideoCallFacade {
             videoCallUuid));
 
     return createVideoCallResponseDto;
+  }
+
+  /**
+   *
+   * @param roomId room ID
+   */
+  public void stopVideoCall(String roomId) {
+    var event = new StopVideoCallStatisticsEvent(
+        authenticatedUser.getUserId(), UserRole.CONSULTANT, roomId
+    );
+    statisticsService.fireEvent(event);
   }
 
   private void verifySessionStatus(ConsultantSessionDTO consultantSessionDto) {

@@ -6,10 +6,8 @@ import static de.caritas.cob.videoservice.api.testhelper.RequestBodyConstants.VA
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CREATE_VIDEO_CALL_RESPONSE_DTO;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.RC_USER_ID_HEADER;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.RC_USER_ID_VALUE;
-import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,10 +16,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.caritas.cob.videoservice.api.authorization.RoleAuthorizationAuthorityMapper;
-import de.caritas.cob.videoservice.api.facade.StartVideoCallFacade;
+import de.caritas.cob.videoservice.api.facade.VideoCallFacade;
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
 import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
+import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,21 +40,34 @@ public class VideoControllerIT {
   private MockMvc mvc;
 
   @MockBean
-  private StartVideoCallFacade startVideoCallFacade;
+  private VideoCallFacade videoCallFacade;
 
   @MockBean
   private RejectVideoCallService rejectVideoCallService;
 
   @MockBean
+  @SuppressWarnings("unused")
   private RoleAuthorizationAuthorityMapper roleAuthorizationAuthorityMapper;
 
   @MockBean
+  @SuppressWarnings("unused")
   private VideoCallUrlGeneratorService videoCallUrlGeneratorService;
+
+  @Test
+  public void stopVideoCallShouldReturnNoContentWhenEverythingSucceeded() throws Exception {
+    var path = "/videocalls/stop/" + UUID.randomUUID();
+
+    mvc.perform(
+        post(path)
+            .header(RC_USER_ID_HEADER, RC_USER_ID_VALUE)
+        )
+        .andExpect(status().isNoContent());
+  }
 
   @Test
   public void createVideoCall_Should_ReturnCreated_When_EverythingSucceeded() throws Exception {
 
-    when(startVideoCallFacade.startVideoCall(any(), anyString())).thenReturn(
+    when(videoCallFacade.startVideoCall(any(), anyString())).thenReturn(
         CREATE_VIDEO_CALL_RESPONSE_DTO);
 
     mvc.perform(post(PATH_START_VIDEO_CALL)

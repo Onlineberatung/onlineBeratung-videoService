@@ -13,10 +13,8 @@ import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CSRF_VALU
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.RC_CHAT_ROOM_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.RC_USER_ID_HEADER;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.RC_USER_ID_VALUE;
-import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -26,11 +24,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.caritas.cob.videoservice.api.facade.StartVideoCallFacade;
+import de.caritas.cob.videoservice.api.facade.VideoCallFacade;
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
 import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.api.service.video.jwt.TokenGeneratorService;
 import javax.servlet.http.Cookie;
+import org.jeasy.random.EasyRandom;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +49,13 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public class VideoControllerAuthorizationIT {
 
+  private static final EasyRandom easyRandom = new EasyRandom();
+
   @Autowired
   private MockMvc mvc;
 
   @MockBean
-  private StartVideoCallFacade startVideoCallFacade;
+  private VideoCallFacade videoCallFacade;
 
   @MockBean
   private RejectVideoCallService rejectVideoCallService;
@@ -69,7 +70,7 @@ public class VideoControllerAuthorizationIT {
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
   public void createVideoCall_Should_ReturnCreated_When_EverythingSucceeded() throws Exception {
 
-    when(startVideoCallFacade.startVideoCall(any(), anyString())).thenReturn(
+    when(videoCallFacade.startVideoCall(any(), anyString())).thenReturn(
         CREATE_VIDEO_CALL_RESPONSE_DTO);
 
     mvc.perform(post(PATH_START_VIDEO_CALL)
@@ -86,7 +87,7 @@ public class VideoControllerAuthorizationIT {
   public void createVideoCall_Should_ReturnUnauthorized_When_AuthorizationIsMissing()
       throws Exception {
 
-    when(startVideoCallFacade.startVideoCall(any(), anyString())).thenReturn(
+    when(videoCallFacade.startVideoCall(any(), anyString())).thenReturn(
         CREATE_VIDEO_CALL_RESPONSE_DTO);
 
     mvc.perform(post(PATH_START_VIDEO_CALL)
@@ -111,7 +112,7 @@ public class VideoControllerAuthorizationIT {
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isForbidden());
 
-    verifyNoMoreInteractions(startVideoCallFacade);
+    verifyNoMoreInteractions(videoCallFacade);
   }
 
   @Test
@@ -125,7 +126,48 @@ public class VideoControllerAuthorizationIT {
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isForbidden());
 
-    verifyNoMoreInteractions(startVideoCallFacade);
+    verifyNoMoreInteractions(videoCallFacade);
+  }
+
+  @Test
+  public void stopVideoCallShouldReturnUnauthorizedWhenAuthorizationIsMissing() throws Exception {
+    var path = "/videocalls/stop/" + easyRandom.nextInt(100);
+
+    mvc.perform(post(path)
+            .cookie(csrfCookie)
+            .header(CSRF_HEADER, CSRF_VALUE)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @WithMockUser()
+  public void stopVideoCallShouldReturnForbiddenAndCallNoMethodsWhenNoConsultantDefaultAuthority()
+      throws Exception {
+    var path = "/videocalls/stop/" + easyRandom.nextInt(100);
+
+    mvc.perform(post(path)
+            .cookie(csrfCookie)
+            .header(CSRF_HEADER, CSRF_VALUE)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isForbidden());
+
+    verifyNoMoreInteractions(videoCallFacade);
+  }
+
+  @Test
+  @WithMockUser(authorities = AUTHORITY_CONSULTANT)
+  public void stopVideoCallShouldReturnForbiddenAndCallNoMethodsWhenNoCsrfTokens()
+      throws Exception {
+    var path = "/videocalls/stop/" + easyRandom.nextInt(100);
+
+    mvc.perform(post(path)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(VALID_START_VIDEO_CALL_BODY)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isForbidden());
+
+    verifyNoMoreInteractions(videoCallFacade);
   }
 
   @Test

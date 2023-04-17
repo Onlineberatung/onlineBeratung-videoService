@@ -10,6 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -42,10 +43,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(SpringRunner.class)
-public class StartVideoCallFacadeTest {
+public class VideoCallFacadeTest {
 
   @InjectMocks
-  private StartVideoCallFacade startVideoCallFacade;
+  private VideoCallFacade videoCallFacade;
   @Mock
   private SessionService sessionService;
   @Mock
@@ -72,7 +73,7 @@ public class StartVideoCallFacadeTest {
         .thenReturn(consultantSessionDto);
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
-    CreateVideoCallResponseDTO result = startVideoCallFacade
+    CreateVideoCallResponseDTO result = videoCallFacade
         .startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
 
     assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
@@ -95,18 +96,17 @@ public class StartVideoCallFacadeTest {
     when(authenticatedUser.getUsername()).thenReturn(USERNAME);
     ArgumentCaptor<LiveEventMessage> argument = ArgumentCaptor.forClass(LiveEventMessage.class);
 
-    startVideoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
+    videoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
 
     verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(argument.capture(), any());
     verify(liveEventNotificationService, times(1))
         .sendVideoCallRequestLiveEvent(any(), any());
     assertThat(argument.getValue(), instanceOf(LiveEventMessage.class));
-    assertEquals(consultantSessionDto.getGroupId(),
-        ((VideoCallRequestDTO) argument.getValue().getEventContent()).getRcGroupId());
-    assertEquals("rcUserId",
-        ((VideoCallRequestDTO) argument.getValue().getEventContent()).getInitiatorRcUserId());
-    assertEquals(USERNAME,
-        ((VideoCallRequestDTO) argument.getValue().getEventContent()).getInitiatorUsername());
+    var eventContent = (VideoCallRequestDTO) argument.getValue().getEventContent();
+    assertNotNull(eventContent);
+    assertEquals(consultantSessionDto.getGroupId(), eventContent.getRcGroupId());
+    assertEquals("rcUserId", eventContent.getInitiatorRcUserId());
+    assertEquals(USERNAME, eventContent.getInitiatorUsername());
   }
 
   @Test(expected = BadRequestException.class)
@@ -119,7 +119,7 @@ public class StartVideoCallFacadeTest {
     when(sessionService.findSessionOfCurrentConsultant(SESSION_ID))
         .thenReturn(consultantSessionDto);
 
-    startVideoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "");
+    videoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "");
   }
 
   @Test
@@ -135,8 +135,7 @@ public class StartVideoCallFacadeTest {
         .thenReturn(consultantSessionDto);
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
-    CreateVideoCallResponseDTO result = startVideoCallFacade
-        .startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
+    videoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
 
     ArgumentCaptor<StartVideoCallStatisticsEvent> captor = ArgumentCaptor.forClass(
         StartVideoCallStatisticsEvent.class);
@@ -169,7 +168,7 @@ public class StartVideoCallFacadeTest {
         .thenReturn(consultantSessionDto);
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
-    startVideoCallFacade
+    videoCallFacade
         .startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID)
             .initiatorDisplayName("initiator display name"), "rcUserId");
 
@@ -177,8 +176,9 @@ public class StartVideoCallFacadeTest {
     verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(argument.capture(), any());
     verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(any(), any());
     assertThat(argument.getValue(), instanceOf(LiveEventMessage.class));
-    assertThat(((VideoCallRequestDTO) argument.getValue().getEventContent()).getInitiatorUsername(),
-        is("initiator display name"));
+    var eventContent = (VideoCallRequestDTO) argument.getValue().getEventContent();
+    assertNotNull(eventContent);
+    assertThat(eventContent.getInitiatorUsername(), is("initiator display name"));
   }
 
 }
