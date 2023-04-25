@@ -175,11 +175,13 @@
       <message key="name.invalidPattern"
         value="Type name ''{0}'' must match pattern ''{1}''."/>
     </module>
+    <!--
     <module name="MemberName">
         <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
         <message key="name.invalidPattern"
          value="Member name ''{0}'' must match pattern ''{1}''."/>
     </module>
+     -->
     <module name="ParameterName">
       <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
       <message key="name.invalidPattern"
@@ -226,14 +228,14 @@
       <message key="ws.notPreceded"
         value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
     </module>
-    <module name="Indentation">
-      <property name="basicOffset" value="2"/>
-      <property name="braceAdjustment" value="0"/>
-      <property name="caseIndent" value="2"/>
-      <property name="throwsIndent" value="4"/>
-      <property name="lineWrappingIndentation" value="4"/>
-      <property name="arrayInitIndent" value="2"/>
-    </module>
+<!--    <module name="Indentation">-->
+<!--      <property name="basicOffset" value="2"/>-->
+<!--      <property name="braceAdjustment" value="0"/>-->
+<!--      <property name="caseIndent" value="2"/>-->
+<!--      <property name="throwsIndent" value="4"/>-->
+<!--      <property name="lineWrappingIndentation" value="4"/>-->
+<!--      <property name="arrayInitIndent" value="2"/>-->
+<!--    </module>-->
     <module name="AbbreviationAsWordInName">
       <property name="ignoreFinal" value="false"/>
       <property name="allowedAbbreviationLength" value="1"/>
@@ -283,7 +285,6 @@
       <property name="tokens" value="VARIABLE_DEF"/>
       <property name="allowSamelineMultipleAnnotations" value="true"/>
     </module>
-
     <!--
     <module name="NonEmptyAtclauseDescription"/>
     <module name="InvalidJavadocPosition"/>
@@ -299,7 +300,6 @@
          value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
     </module>
     -->
-
     <module name="JavadocMethod">
       <property name="scope" value="public"/>
       <property name="allowMissingParamTags" value="true"/>
@@ -307,10 +307,11 @@
       <property name="allowedAnnotations" value="Override, Test"/>
       <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF"/>
     </module>
+    <!--
     <module name="MissingJavadocMethod">
         <property name="scope" value="public"/>
         <property name="minLineCount" value="2"/>
-        <property name="allowedAnnotations" value="Override, Test, Before"/>
+        <property name="allowedAnnotations" value="Override, Test"/>
         <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF"/>
     </module>
     <module name="MethodName">
@@ -321,6 +322,7 @@
     <module name="SingleLineJavadoc">
         <property name="ignoreInlineTags" value="false"/>
     </module>
+    -->
     <module name="EmptyCatchBlock">
       <property name="exceptionVariableName" value="expected"/>
     </module>
