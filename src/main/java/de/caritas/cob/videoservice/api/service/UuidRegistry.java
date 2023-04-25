@@ -6,9 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/**
- * Registry to hold and handle all current video call {@link UUID}s.
- */
+/** Registry to hold and handle all current video call {@link UUID}s. */
 @Component
 public class UuidRegistry {
 
@@ -30,9 +28,7 @@ public class UuidRegistry {
     return uuid.toString();
   }
 
-  /**
-   * Clears the {@link UUID} registry.
-   */
+  /** Clears the {@link UUID} registry. */
   @Scheduled(cron = "${video.call.uuid.registry.cron}")
   public synchronized void cleanUpUuidRegistry() {
     GENERATED_UUIDS.clear();

@@ -22,7 +22,6 @@ import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSes
 import java.util.Enumeration;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -36,30 +35,23 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @RunWith(MockitoJUnitRunner.class)
 public class SessionServiceTest {
 
-  @InjectMocks
-  private SessionService sessionService;
-  @Mock
-  private UserControllerApi userControllerApi;
-  @Mock
-  private SecurityHeaderSupplier serviceHelper;
+  @InjectMocks private SessionService sessionService;
+  @Mock private UserControllerApi userControllerApi;
+  @Mock private SecurityHeaderSupplier serviceHelper;
 
-  @Mock
-  private HttpHeaders httpHeaders;
+  @Mock private HttpHeaders httpHeaders;
 
-  @Mock
-  private ServletRequestAttributes requestAttributes;
+  @Mock private ServletRequestAttributes requestAttributes;
 
-  @Mock
-  private HttpServletRequest httpServletRequest;
+  @Mock private HttpServletRequest httpServletRequest;
 
-  @Mock
-  private TenantHeaderSupplier tenantHeaderSupplier;
+  @Mock private TenantHeaderSupplier tenantHeaderSupplier;
 
-  @Mock
-  private Enumeration<String> headers;
+  @Mock private Enumeration<String> headers;
 
   @Test
-  public void findSessionOfCurrentConsultant_Should_ReturnConsultantSessionDto_When_GetSessionIsSuccessful() {
+  public void
+      findSessionOfCurrentConsultant_Should_ReturnConsultantSessionDto_When_GetSessionIsSuccessful() {
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
 
     when(serviceHelper.getKeycloakAndCsrfHttpHeaders()).thenReturn(httpHeaders);
@@ -96,5 +88,4 @@ public class SessionServiceTest {
   private void resetRequestAttributes() {
     RequestContextHolder.setRequestAttributes(null);
   }
-
 }

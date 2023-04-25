@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
 
-
 @AllArgsConstructor
 @Component
 public class SubdomainTenantResolver implements TenantResolver {

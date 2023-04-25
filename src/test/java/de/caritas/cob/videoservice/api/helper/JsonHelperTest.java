@@ -39,8 +39,8 @@ public class JsonHelperTest {
             .timestamp(offsetDateTime);
 
     Optional<String> result =
-        JsonHelper.serializeWithOffsetDateTimeAsString(startVideoCallStatisticsEventMessage,
-            LogService::logInternalServerError);
+        JsonHelper.serializeWithOffsetDateTimeAsString(
+            startVideoCallStatisticsEventMessage, LogService::logInternalServerError);
 
     assertThat(result.isPresent(), is(true));
 
@@ -67,7 +67,6 @@ public class JsonHelperTest {
             + "}";
 
     assertThat(result.get(), jsonEquals(expectedJson));
-
   }
 
   @Test
@@ -75,15 +74,12 @@ public class JsonHelperTest {
       throws JsonProcessingException {
 
     ObjectMapper om = Mockito.spy(new ObjectMapper());
-    when(om.writeValueAsString(Object.class))
-        .thenThrow(new JsonProcessingException("") {
-        });
+    when(om.writeValueAsString(Object.class)).thenThrow(new JsonProcessingException("") {});
 
     Optional<String> result =
-        JsonHelper.serializeWithOffsetDateTimeAsString(new Object(),
-            LogService::logInternalServerError);
+        JsonHelper.serializeWithOffsetDateTimeAsString(
+            new Object(), LogService::logInternalServerError);
 
     assertThat(result.isPresent(), is(false));
   }
-
 }

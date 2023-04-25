@@ -2,9 +2,7 @@ package de.caritas.cob.videoservice.api.tenant;
 
 public class TenantContext {
 
-  private TenantContext() {
-
-  }
+  private TenantContext() {}
 
   private static ThreadLocal<Long> currentTenant = new ThreadLocal<>();
 

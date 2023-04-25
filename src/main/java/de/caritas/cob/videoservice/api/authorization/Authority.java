@@ -2,11 +2,8 @@ package de.caritas.cob.videoservice.api.authorization;
 
 import java.util.stream.Stream;
 
-/**
- * Definition of all authorities and of the role-authority-mapping.
- */
+/** Definition of all authorities and of the role-authority-mapping. */
 public enum Authority {
-
   CONSULTANT(UserRole.CONSULTANT, "AUTHORIZATION_CONSULTANT_DEFAULT"),
   USER(UserRole.USER, "AUTHORIZATION_USER_DEFAULT");
 
@@ -35,7 +32,7 @@ public enum Authority {
    * Returns the authority name for the given {@link Authority}.
    *
    * @return authority name for the given {@link Authority}
-   **/
+   */
   public String getAuthority() {
     return this.authorityName;
   }

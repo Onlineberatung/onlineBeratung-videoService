@@ -20,17 +20,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TenantResolverService {
 
-  @NonNull
-  CustomHeaderTenantResolver customHeaderTenantResolver;
+  @NonNull CustomHeaderTenantResolver customHeaderTenantResolver;
 
-  @NonNull
-  SubdomainTenantResolver subdomainTenantResolver;
+  @NonNull SubdomainTenantResolver subdomainTenantResolver;
 
-  @NonNull
-  TechnicalUserTenantResolver technicalUserTenantResolver;
+  @NonNull TechnicalUserTenantResolver technicalUserTenantResolver;
 
-  @NonNull
-  AccessTokenTenantResolver accessTokenTenantResolver;
+  @NonNull AccessTokenTenantResolver accessTokenTenantResolver;
 
   @Value("${feature.multitenancy.with.single.domain.enabled}")
   private boolean multitenancyWithSingleDomain;
@@ -49,6 +45,7 @@ public class TenantResolverService {
 
   /**
    * Resolves tenantId for the current request
+   *
    * @param request
    * @return tenantId
    */
@@ -66,8 +63,8 @@ public class TenantResolverService {
       return tenantId.orElseThrow();
     } else {
       if (shouldValidateResolvedTenant(tenantId)) {
-        Optional<Long> tenantIdFromCustomHeaderOrSubdomain = getFirstResolvedTenant(request,
-            tenantIdCrossValidationResolvers());
+        Optional<Long> tenantIdFromCustomHeaderOrSubdomain =
+            getFirstResolvedTenant(request, tenantIdCrossValidationResolvers());
         validateResolvedTenantMatch(tenantId, tenantIdFromCustomHeaderOrSubdomain);
       }
       return tenantId.orElseThrow();
@@ -90,8 +87,8 @@ public class TenantResolverService {
     return tenantId.get();
   }
 
-  private void validateResolvedTenantMatch(Optional<Long> tenantId,
-      Optional<Long> tenantIdFromHeaderOrSubdomain) {
+  private void validateResolvedTenantMatch(
+      Optional<Long> tenantId, Optional<Long> tenantIdFromHeaderOrSubdomain) {
     if (tenantId.isPresent() && tenantIdFromHeaderOrSubdomain.isPresent()) {
       if (!tenantId.get().equals(tenantIdFromHeaderOrSubdomain.get())) {
         throw new AccessDeniedException("Tenant id from claim and subdomain not same.");
@@ -101,8 +98,8 @@ public class TenantResolverService {
     }
   }
 
-  private Optional<Long> getFirstResolvedTenant(HttpServletRequest request,
-      List<TenantResolver> tenantResolvers) {
+  private Optional<Long> getFirstResolvedTenant(
+      HttpServletRequest request, List<TenantResolver> tenantResolvers) {
     for (TenantResolver tenantResolver : tenantResolvers) {
       if (tenantResolver.canResolve(request)) {
         return tenantResolver.resolve(request);

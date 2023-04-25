@@ -1,6 +1,5 @@
 package de.caritas.cob.videoservice.api.service;
 
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -65,5 +64,4 @@ class TenantHeaderSupplierTest {
     var requestAttributes = new ServletRequestAttributes(mockedServletRequest);
     RequestContextHolder.setRequestAttributes(requestAttributes);
   }
-
 }

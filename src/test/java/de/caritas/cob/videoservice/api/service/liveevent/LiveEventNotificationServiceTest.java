@@ -19,10 +19,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class LiveEventNotificationServiceTest {
 
-  @InjectMocks
-  private LiveEventNotificationService liveEventNotificationService;
-  @Mock
-  private LiveControllerApi liveControllerApi;
+  @InjectMocks private LiveEventNotificationService liveEventNotificationService;
+  @Mock private LiveControllerApi liveControllerApi;
 
   private EasyRandom easyRandom;
 
@@ -34,13 +32,10 @@ public class LiveEventNotificationServiceTest {
   @Test
   public void sendVideoCallRequestLiveEvent_Should_SendLiveEvent() {
     LiveEventMessage liveEventMessage = mock(LiveEventMessage.class);
-    List<String> userIds = easyRandom
-        .objects(String.class, 20)
-        .collect(Collectors.toList());
+    List<String> userIds = easyRandom.objects(String.class, 20).collect(Collectors.toList());
 
     liveEventNotificationService.sendVideoCallRequestLiveEvent(liveEventMessage, userIds);
 
-    verify(liveControllerApi, times(1))
-        .sendLiveEvent(liveEventMessage.userIds(userIds));
+    verify(liveControllerApi, times(1)).sendLiveEvent(liveEventMessage.userIds(userIds));
   }
 }

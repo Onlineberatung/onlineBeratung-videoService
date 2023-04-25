@@ -19,18 +19,14 @@ public class StopVideoCallStatisticsEvent implements StatisticsEvent {
   private @NonNull UserRole userRole;
   private @NonNull String videoCallUuid;
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Optional<String> getPayload() {
     return JsonHelper.serializeWithOffsetDateTimeAsString(
         createStopVideoCallStatisticsEventMessage(), LogService::logStatisticsEventError);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EventType getEventType() {
     return EVENT_TYPE;
@@ -44,5 +40,4 @@ public class StopVideoCallStatisticsEvent implements StatisticsEvent {
         .videoCallUuid(videoCallUuid)
         .timestamp(CustomOffsetDateTime.nowInUtc());
   }
-
 }

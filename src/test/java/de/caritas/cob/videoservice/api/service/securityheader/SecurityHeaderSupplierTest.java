@@ -1,6 +1,5 @@
 package de.caritas.cob.videoservice.api.service.securityheader;
 
-
 import static de.caritas.cob.videoservice.api.testhelper.FieldConstants.FIELD_NAME_CSRF_TOKEN_COOKIE_PROPERTY;
 import static de.caritas.cob.videoservice.api.testhelper.FieldConstants.FIELD_NAME_CSRF_TOKEN_HEADER_PROPERTY;
 import static de.caritas.cob.videoservice.api.testhelper.FieldConstants.FIELD_VALUE_CSRF_TOKEN_COOKIE_PROPERTY;
@@ -24,16 +23,18 @@ import org.springframework.http.MediaType;
 @RunWith(MockitoJUnitRunner.class)
 public class SecurityHeaderSupplierTest {
 
-  @InjectMocks
-  private SecurityHeaderSupplier securityHeaderSupplier;
-  @Mock
-  private VideoUser videoUser;
+  @InjectMocks private SecurityHeaderSupplier securityHeaderSupplier;
+  @Mock private VideoUser videoUser;
 
   @Before
   public void setup() {
-    setField(securityHeaderSupplier, FIELD_NAME_CSRF_TOKEN_HEADER_PROPERTY,
+    setField(
+        securityHeaderSupplier,
+        FIELD_NAME_CSRF_TOKEN_HEADER_PROPERTY,
         FIELD_VALUE_CSRF_TOKEN_HEADER_PROPERTY);
-    setField(securityHeaderSupplier, FIELD_NAME_CSRF_TOKEN_COOKIE_PROPERTY,
+    setField(
+        securityHeaderSupplier,
+        FIELD_NAME_CSRF_TOKEN_COOKIE_PROPERTY,
         FIELD_VALUE_CSRF_TOKEN_COOKIE_PROPERTY);
   }
 
@@ -49,18 +50,23 @@ public class SecurityHeaderSupplierTest {
     HttpHeaders result = securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
 
     assertTrue(
-        result.get("Cookie").toString().startsWith("[" + FIELD_VALUE_CSRF_TOKEN_COOKIE_PROPERTY
-            + "="));
+        result
+            .get("Cookie")
+            .toString()
+            .startsWith("[" + FIELD_VALUE_CSRF_TOKEN_COOKIE_PROPERTY + "="));
   }
 
   @Test
   public void getKeycloakAndCsrfHttpHeaders_Should_Return_CorrectHeaderAndCookieValues() {
     HttpHeaders result = securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
-    String cookieValue = "[" + result.get("Cookie").toString()
-        .substring(result.get("Cookie").toString().lastIndexOf("=") + 1);
+    String cookieValue =
+        "["
+            + result
+                .get("Cookie")
+                .toString()
+                .substring(result.get("Cookie").toString().lastIndexOf("=") + 1);
 
-    assertEquals(cookieValue,
-        result.get(FIELD_VALUE_CSRF_TOKEN_HEADER_PROPERTY).toString());
+    assertEquals(cookieValue, result.get(FIELD_VALUE_CSRF_TOKEN_HEADER_PROPERTY).toString());
   }
 
   @Test

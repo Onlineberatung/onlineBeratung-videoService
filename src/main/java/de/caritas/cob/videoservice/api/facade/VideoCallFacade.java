@@ -25,9 +25,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/**
- * Facade for video call starts and stops.
- */
+/** Facade for video call starts and stops. */
 @Service
 @RequiredArgsConstructor
 public class VideoCallFacade {
@@ -43,49 +41,46 @@ public class VideoCallFacade {
    * Generates unique video call URLs and triggers a live event to inform the receiver of the call.
    *
    * @param createVideoCallRequest The requested DTO containing session id and optional initiators
-   *                           username
-   * @param initiatorRcUserId  initiator Rocket.Chat user ID
+   *     username
+   * @param initiatorRcUserId initiator Rocket.Chat user ID
    * @return {@link CreateVideoCallResponseDTO}
    */
-  public CreateVideoCallResponseDTO startVideoCall(CreateVideoCallDTO createVideoCallRequest,
-      String initiatorRcUserId) {
+  public CreateVideoCallResponseDTO startVideoCall(
+      CreateVideoCallDTO createVideoCallRequest, String initiatorRcUserId) {
 
     var sessionId = createVideoCallRequest.getSessionId();
-    var consultantSessionDto = this.sessionService
-        .findSessionOfCurrentConsultant(sessionId);
+    var consultantSessionDto = this.sessionService.findSessionOfCurrentConsultant(sessionId);
     verifySessionStatus(consultantSessionDto);
 
     var videoCallUuid = uuidRegistry.generateUniqueUuid();
-    var videoCallUrls = this.videoCallUrlGeneratorService
-        .generateVideoCallUrls(videoCallUuid);
+    var videoCallUrls = this.videoCallUrlGeneratorService.generateVideoCallUrls(videoCallUuid);
 
-    this.liveEventNotificationService
-        .sendVideoCallRequestLiveEvent(buildLiveEventMessage(consultantSessionDto,
-            videoCallUrls.getUserVideoUrl(), initiatorRcUserId,
+    this.liveEventNotificationService.sendVideoCallRequestLiveEvent(
+        buildLiveEventMessage(
+            consultantSessionDto,
+            videoCallUrls.getUserVideoUrl(),
+            initiatorRcUserId,
             createVideoCallRequest.getInitiatorDisplayName()),
-            singletonList(consultantSessionDto.getAskerId()));
+        singletonList(consultantSessionDto.getAskerId()));
 
-    var createVideoCallResponseDto = new CreateVideoCallResponseDTO()
-        .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
+    var createVideoCallResponseDto =
+        new CreateVideoCallResponseDTO()
+            .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
 
     statisticsService.fireEvent(
         new StartVideoCallStatisticsEvent(
-            authenticatedUser.getUserId(),
-            UserRole.CONSULTANT,
-            sessionId,
-            videoCallUuid));
+            authenticatedUser.getUserId(), UserRole.CONSULTANT, sessionId, videoCallUuid));
 
     return createVideoCallResponseDto;
   }
 
   /**
-   *
    * @param roomId room ID
    */
   public void stopVideoCall(String roomId) {
-    var event = new StopVideoCallStatisticsEvent(
-        authenticatedUser.getUserId(), UserRole.CONSULTANT, roomId
-    );
+    var event =
+        new StopVideoCallStatisticsEvent(
+            authenticatedUser.getUserId(), UserRole.CONSULTANT, roomId);
     statisticsService.fireEvent(event);
   }
 
@@ -95,16 +90,20 @@ public class VideoCallFacade {
     }
   }
 
-  private LiveEventMessage buildLiveEventMessage(ConsultantSessionDTO consultantSessionDto,
-      String videoChatUrl, String initiatorRcUserId, String initiatorDisplayName) {
+  private LiveEventMessage buildLiveEventMessage(
+      ConsultantSessionDTO consultantSessionDto,
+      String videoChatUrl,
+      String initiatorRcUserId,
+      String initiatorDisplayName) {
     var username =
         isNotBlank(initiatorDisplayName) ? initiatorDisplayName : authenticatedUser.getUsername();
 
-    var videoCallRequestDto = new VideoCallRequestDTO()
-        .videoCallUrl(videoChatUrl)
-        .rcGroupId(consultantSessionDto.getGroupId())
-        .initiatorRcUserId(initiatorRcUserId)
-        .initiatorUsername(username);
+    var videoCallRequestDto =
+        new VideoCallRequestDTO()
+            .videoCallUrl(videoChatUrl)
+            .rcGroupId(consultantSessionDto.getGroupId())
+            .initiatorRcUserId(initiatorRcUserId)
+            .initiatorUsername(username);
 
     return new LiveEventMessage()
         .eventType(EventType.VIDEOCALLREQUEST)

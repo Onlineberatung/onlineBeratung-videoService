@@ -27,11 +27,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RunWith(MockitoJUnitRunner.class)
 public class ApiResponseEntityExceptionHandlerTest {
 
-  @InjectMocks
-  private ApiResponseEntityExceptionHandler exceptionHandler;
+  @InjectMocks private ApiResponseEntityExceptionHandler exceptionHandler;
 
-  @Mock
-  private Logger logger;
+  @Mock private Logger logger;
 
   @Before
   public void setup() {
@@ -40,8 +38,8 @@ public class ApiResponseEntityExceptionHandlerTest {
 
   @Test
   public void handleCustomBadRequest_Should_executeLogging_When_badRequestIsGiven() {
-    BadRequestException badRequestException = new BadRequestException("test",
-        LogService::logWarning);
+    BadRequestException badRequestException =
+        new BadRequestException("test", LogService::logWarning);
 
     this.exceptionHandler.handleCustomBadRequest(badRequestException, mock(WebRequest.class));
 
@@ -50,8 +48,11 @@ public class ApiResponseEntityExceptionHandlerTest {
 
   @Test
   public void handleMethodArgumentNotValid_Should_executeLogging() {
-    this.exceptionHandler.handleMethodArgumentNotValid(mock(MethodArgumentNotValidException.class),
-        new HttpHeaders(), NOT_FOUND, mock(WebRequest.class));
+    this.exceptionHandler.handleMethodArgumentNotValid(
+        mock(MethodArgumentNotValidException.class),
+        new HttpHeaders(),
+        NOT_FOUND,
+        mock(WebRequest.class));
 
     verify(logger, times(1)).warn(eq("VideoService API: {}: {}"), eq("Not Found"), anyString());
   }
@@ -62,7 +63,8 @@ public class ApiResponseEntityExceptionHandlerTest {
 
     this.exceptionHandler.handleInternal(runtimeException, mock(WebRequest.class));
 
-    verify(logger, times(1)).error(eq("VideoService API: 500 Internal Server Error: {}"), anyString());
+    verify(logger, times(1))
+        .error(eq("VideoService API: 500 Internal Server Error: {}"), anyString());
   }
 
   @Test
@@ -71,7 +73,8 @@ public class ApiResponseEntityExceptionHandlerTest {
 
     this.exceptionHandler.handleInternal(exception, mock(WebRequest.class));
 
-    verify(logger, times(1)).error(eq("VideoService API: 500 Internal Server Error: {}"), anyString());
+    verify(logger, times(1))
+        .error(eq("VideoService API: 500 Internal Server Error: {}"), anyString());
   }
 
   @Test
@@ -91,5 +94,4 @@ public class ApiResponseEntityExceptionHandlerTest {
 
     verify(logger, times(1)).error(eq("VideoService API: {}"), anyString());
   }
-
 }

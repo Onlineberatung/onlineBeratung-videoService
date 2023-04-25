@@ -18,9 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Controller for video call requests.
- */
+/** Controller for video call requests. */
 @RestController
 @RequiredArgsConstructor
 @Api(tags = "video-controller")
@@ -37,8 +35,8 @@ public class VideoController implements VideocallsApi {
    * @return response entity with {@link CreateVideoCallResponseDTO} body
    */
   @Override
-  public ResponseEntity<CreateVideoCallResponseDTO> createVideoCall(@RequestHeader String rcUserId,
-      @Valid CreateVideoCallDTO createVideoCallDto) {
+  public ResponseEntity<CreateVideoCallResponseDTO> createVideoCall(
+      @RequestHeader String rcUserId, @Valid CreateVideoCallDTO createVideoCallDto) {
     var response = videoCallFacade.startVideoCall(createVideoCallDto, rcUserId);
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);

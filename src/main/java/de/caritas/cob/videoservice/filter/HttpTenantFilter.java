@@ -1,8 +1,6 @@
 package de.caritas.cob.videoservice.filter;
 
-
 import de.caritas.cob.videoservice.api.tenant.TenantContext;
-import de.caritas.cob.videoservice.api.tenant.TenantResolver;
 import de.caritas.cob.videoservice.api.tenant.TenantResolverService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,31 +13,27 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.lang.Nullable;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
-/**
- * Sets tenantId for current thread needed for tenant feature.
- */
-
+/** Sets tenantId for current thread needed for tenant feature. */
 @Component
 @ConditionalOnExpression("${multitenancy.enabled:true}")
 @RequiredArgsConstructor
 @Slf4j
 public class HttpTenantFilter extends OncePerRequestFilter {
 
-  private static final String[] TENANCY_FILTER_WHITELIST = new String[]{"/actuator/health",
-      "/actuator/health/**", "/swagger-ui.html", "/favicon.ico"};
+  private static final String[] TENANCY_FILTER_WHITELIST =
+      new String[] {"/actuator/health", "/actuator/health/**", "/swagger-ui.html", "/favicon.ico"};
   private final TenantResolverService tenantResolverService;
   private final DefaultRequiresTenantFilterMatcher requiresTenantFilterMatcher =
       new DefaultRequiresTenantFilterMatcher();
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
     if (requiresTenantFilterMatcher.matches(request)) {
 
       log.debug("Trying to resolve tenant for request coming from URI {}", request.getRequestURI());

@@ -25,25 +25,26 @@ public class RoleAuthorizationAuthoritiesMapperTest {
 
   @Test
   public void mapAuthorities_Should_returnGrantedConsultantAuthority_When_authorityIsConsultant() {
-    List<GrantedAuthority> grantedAuthorities = Stream.of(ROLE_CONSULTANT)
-        .map(SimpleGrantedAuthority::new)
-        .collect(Collectors.toList());
+    List<GrantedAuthority> grantedAuthorities =
+        Stream.of(ROLE_CONSULTANT).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-    Collection<? extends GrantedAuthority> mappedAuthorities = this.roleAuthorizationAuthorityMapper
-        .mapAuthorities(grantedAuthorities);
+    Collection<? extends GrantedAuthority> mappedAuthorities =
+        this.roleAuthorizationAuthorityMapper.mapAuthorities(grantedAuthorities);
 
     assertThat(mappedAuthorities, hasSize(1));
     assertThat(mappedAuthorities.iterator().next().getAuthority(), is(CONSULTANT.getAuthority()));
   }
 
   @Test
-  public void mapAuthorities_Should_returnGrantedConsultantAuthority_When_authoritiesContainConsultant() {
-    List<GrantedAuthority> grantedAuthorities = Stream.of("a", "v", ROLE_CONSULTANT, "c")
-        .map(SimpleGrantedAuthority::new)
-        .collect(Collectors.toList());
+  public void
+      mapAuthorities_Should_returnGrantedConsultantAuthority_When_authoritiesContainConsultant() {
+    List<GrantedAuthority> grantedAuthorities =
+        Stream.of("a", "v", ROLE_CONSULTANT, "c")
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
 
-    Collection<? extends GrantedAuthority> mappedAuthorities = this.roleAuthorizationAuthorityMapper
-        .mapAuthorities(grantedAuthorities);
+    Collection<? extends GrantedAuthority> mappedAuthorities =
+        this.roleAuthorizationAuthorityMapper.mapAuthorities(grantedAuthorities);
 
     assertThat(mappedAuthorities, hasSize(1));
     assertThat(mappedAuthorities.iterator().next().getAuthority(), is(CONSULTANT.getAuthority()));
@@ -51,20 +52,19 @@ public class RoleAuthorizationAuthoritiesMapperTest {
 
   @Test
   public void mapAuthorities_Should_returnEmptyCollection_When_authorityIsEmpty() {
-    Collection<? extends GrantedAuthority> mappedAuthorities = this.roleAuthorizationAuthorityMapper
-        .mapAuthorities(emptyList());
+    Collection<? extends GrantedAuthority> mappedAuthorities =
+        this.roleAuthorizationAuthorityMapper.mapAuthorities(emptyList());
 
     assertThat(mappedAuthorities, hasSize(0));
   }
 
   @Test
   public void mapAuthorities_Should_returnEmptyCollection_When_authoritiesAreNotProvided() {
-    List<GrantedAuthority> grantedAuthorities = Stream.of("a", "v", "b", "c")
-        .map(SimpleGrantedAuthority::new)
-        .collect(Collectors.toList());
+    List<GrantedAuthority> grantedAuthorities =
+        Stream.of("a", "v", "b", "c").map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-    Collection<? extends GrantedAuthority> mappedAuthorities = this.roleAuthorizationAuthorityMapper
-        .mapAuthorities(grantedAuthorities);
+    Collection<? extends GrantedAuthority> mappedAuthorities =
+        this.roleAuthorizationAuthorityMapper.mapAuthorities(grantedAuthorities);
 
     assertThat(mappedAuthorities, hasSize(0));
   }

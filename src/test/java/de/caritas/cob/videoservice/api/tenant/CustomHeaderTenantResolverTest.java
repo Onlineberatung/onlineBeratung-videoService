@@ -14,13 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CustomHeaderTenantResolverTest {
-  @Mock
-  HttpServletRequest request;
-  @Mock
-  TenantHeaderSupplier tenantHeaderSupplier;
+  @Mock HttpServletRequest request;
+  @Mock TenantHeaderSupplier tenantHeaderSupplier;
 
-  @InjectMocks
-  CustomHeaderTenantResolver customHeaderTenantResolver;
+  @InjectMocks CustomHeaderTenantResolver customHeaderTenantResolver;
 
   @Test
   void resolve_Should_ResolveTenantId_When_SupplierCanResolveTenantId() {

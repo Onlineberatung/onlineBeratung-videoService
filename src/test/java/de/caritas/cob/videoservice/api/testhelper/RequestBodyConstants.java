@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 
 public class RequestBodyConstants {
-  
-  public static final CreateVideoCallDTO CREATE_VIDEO_CALL_DTO = new CreateVideoCallDTO()
-      .sessionId(SESSION_ID);
+
+  public static final CreateVideoCallDTO CREATE_VIDEO_CALL_DTO =
+      new CreateVideoCallDTO().sessionId(SESSION_ID);
   public static String VALID_START_VIDEO_CALL_BODY = null;
 
   static {

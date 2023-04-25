@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/**
- * Url generator for video call urls.
- */
+/** Url generator for video call urls. */
 @Service
 @RequiredArgsConstructor
 public class VideoCallUrlGeneratorService {
@@ -37,15 +35,17 @@ public class VideoCallUrlGeneratorService {
 
     return VideoCallUrls.builder()
         .userVideoUrl(buildUrl(uuid, token.getUserRelatedToken()))
-        .moderatorVideoUrl(buildUrl(uuid, this.tokenGeneratorService
-            .generateModeratorToken(uuid, buildUrl(uuid, token.getGuestToken()))))
+        .moderatorVideoUrl(
+            buildUrl(
+                uuid,
+                this.tokenGeneratorService.generateModeratorToken(
+                    uuid, buildUrl(uuid, token.getGuestToken()))))
         .build();
   }
 
   private String buildUrl(String uuid, String token) {
     try {
-      return UriComponentsBuilder
-          .fromHttpUrl(this.videoCallServerUrl)
+      return UriComponentsBuilder.fromHttpUrl(this.videoCallServerUrl)
           .pathSegment(uuid)
           .queryParam(JWT_QUERY_PARAM, token)
           .build()

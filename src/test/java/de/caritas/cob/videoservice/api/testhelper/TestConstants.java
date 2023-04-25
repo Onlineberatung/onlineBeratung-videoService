@@ -42,8 +42,7 @@ public class TestConstants {
   public static final String MODERATOR_VIDEO_CALL_URL =
       "https://video.call/237849234-34534-345345?jwt={moderatorToken}";
   public static final CreateVideoCallResponseDTO CREATE_VIDEO_CALL_RESPONSE_DTO =
-      new CreateVideoCallResponseDTO()
-          .moderatorVideoCallUrl(MODERATOR_VIDEO_CALL_URL);
+      new CreateVideoCallResponseDTO().moderatorVideoCallUrl(MODERATOR_VIDEO_CALL_URL);
   public static final String VIDEO_CALL_UUID = UUID.randomUUID().toString();
 
   /*

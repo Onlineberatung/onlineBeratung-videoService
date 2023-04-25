@@ -20,9 +20,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-/**
- * JWT token generator service.
- */
+/** JWT token generator service. */
 @Service
 public class TokenGeneratorService {
 
@@ -75,7 +73,7 @@ public class TokenGeneratorService {
   /**
    * Generates the {@link VideoCallToken} for anonymous user and asker.
    *
-   * @param roomId    the generated unique roomId
+   * @param roomId the generated unique roomId
    * @return the generated {@link VideoCallToken}
    */
   public VideoCallToken generateNonModeratorVideoCallToken(String roomId) {
@@ -86,8 +84,7 @@ public class TokenGeneratorService {
   }
 
   public String generateNonModeratorToken(String roomId) {
-    return buildBasicJwt(roomId)
-        .sign(algorithm);
+    return buildBasicJwt(roomId).sign(algorithm);
   }
 
   private Builder buildBasicJwt(String roomId) {
@@ -100,30 +97,28 @@ public class TokenGeneratorService {
   }
 
   private Date buildThreeHoursValidityDate() {
-    long epochMilli = LocalDateTime.now(UTC)
-        .plus(this.validityHours, HOURS)
-        .toInstant(UTC)
-        .toEpochMilli();
+    long epochMilli =
+        LocalDateTime.now(UTC).plus(this.validityHours, HOURS).toInstant(UTC).toEpochMilli();
     return new Date(epochMilli);
   }
 
   private String buildUserRelatedJwt(String roomId) {
-    return buildBasicJwt(roomId)
-        .sign(algorithm);
+    return buildBasicJwt(roomId).sign(algorithm);
   }
 
   /**
    * Generates the {@link VideoCallToken} for the currently logged in moderator.
    *
-   * @param roomId            the generated unique roomId
+   * @param roomId the generated unique roomId
    * @param guestVideoCallUrl the guest video call URL
    * @return the generated moderator token
    */
   public String generateModeratorToken(String roomId, String guestVideoCallUrl) {
     if (isEmpty(roomId) || isEmpty(guestVideoCallUrl)) {
-      throw new InternalServerErrorException(String
-          .format("Room ID (%s) or guest video call URL (%s) cannot be empty.", roomId,
-              guestVideoCallUrl));
+      throw new InternalServerErrorException(
+          String.format(
+              "Room ID (%s) or guest video call URL (%s) cannot be empty.",
+              roomId, guestVideoCallUrl));
     }
 
     return buildModeratorJwt(roomId, guestVideoCallUrl);
@@ -136,9 +131,7 @@ public class TokenGeneratorService {
    * @return token
    */
   public String generateModeratorToken(String roomId) {
-    return buildBasicJwt(roomId)
-        .withClaim(MODERATOR_CLAIM, true)
-        .sign(algorithm);
+    return buildBasicJwt(roomId).withClaim(MODERATOR_CLAIM, true).sign(algorithm);
   }
 
   private String buildModeratorJwt(String roomId, String guestVideoCallUrl) {

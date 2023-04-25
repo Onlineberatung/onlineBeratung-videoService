@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
-/**
- * Service class to provide handle session methods of the UserService.
- */
+/** Service class to provide handle session methods of the UserService. */
 @Service
 @RequiredArgsConstructor
 public class SessionService {
@@ -35,9 +33,8 @@ public class SessionService {
   private void addDefaultHeaders() {
     HttpHeaders headers = this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
     tenantHeaderSupplier.addTenantHeader(headers);
-    headers.forEach((key, value) -> this.userControllerApi.getApiClient()
-        .addDefaultHeader(key, value.iterator().next()));
+    headers.forEach(
+        (key, value) ->
+            this.userControllerApi.getApiClient().addDefaultHeader(key, value.iterator().next()));
   }
-
-
 }

@@ -35,8 +35,8 @@ public class TenantHeaderSupplier {
    * @return the id of the tenant
    */
   public Optional<Long> getTenantFromHeader() {
-    var request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-        .getRequest();
+    var request =
+        ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     try {
       return Optional.of(Long.parseLong(request.getHeader("tenantId")));
     } catch (NumberFormatException exception) {
@@ -44,5 +44,4 @@ public class TenantHeaderSupplier {
       return Optional.empty();
     }
   }
-
 }

@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum SessionStatus {
-
   INITIAL(0),
   NEW(1),
   IN_PROGRESS(2);
@@ -14,5 +13,4 @@ public enum SessionStatus {
   SessionStatus(Integer value) {
     this.value = value;
   }
-
 }

@@ -24,11 +24,9 @@ import org.springframework.http.HttpStatus;
 @RunWith(MockitoJUnitRunner.class)
 public class LogServiceTest {
 
-  @Mock
-  Exception exception;
+  @Mock Exception exception;
 
-  @Mock
-  private Logger logger;
+  @Mock private Logger logger;
 
   public static final Exception EXCEPTION = new Exception();
 
@@ -56,8 +54,8 @@ public class LogServiceTest {
   public void logWarning_Should_LogWarnMessage_When_onlyExceptionAndStatusProvided() {
     LogService.logWarning(HttpStatus.MULTI_STATUS, exception);
 
-    verify(logger, atLeastOnce()).warn(eq("VideoService API: {}: {}"),
-        eq("Multi-Status"), anyString());
+    verify(logger, atLeastOnce())
+        .warn(eq("VideoService API: {}: {}"), eq("Multi-Status"), anyString());
     verify(exception, atLeastOnce()).printStackTrace(any(PrintWriter.class));
   }
 
@@ -65,8 +63,8 @@ public class LogServiceTest {
   public void logInternalServerError_Should_LogError() {
     LogService.logInternalServerError(exception);
 
-    verify(logger, atLeastOnce()).error(eq("VideoService API: 500 Internal Server Error: {}"),
-        anyString());
+    verify(logger, atLeastOnce())
+        .error(eq("VideoService API: 500 Internal Server Error: {}"), anyString());
     verify(exception, atLeastOnce()).printStackTrace(any(PrintWriter.class));
   }
 
@@ -74,8 +72,7 @@ public class LogServiceTest {
   public void logError_Should_LogError() {
     LogService.logError(exception);
 
-    verify(logger, atLeastOnce()).error(eq("VideoService API: {}"),
-        anyString());
+    verify(logger, atLeastOnce()).error(eq("VideoService API: {}"), anyString());
     verify(exception, atLeastOnce()).printStackTrace(any(PrintWriter.class));
   }
 
@@ -94,5 +91,4 @@ public class LogServiceTest {
     verify(logger, times(1))
         .warn(anyString(), eq(STATISTICS_EVENT_PROCESSING_WARNING), eq(ERROR_MESSAGE));
   }
-
 }

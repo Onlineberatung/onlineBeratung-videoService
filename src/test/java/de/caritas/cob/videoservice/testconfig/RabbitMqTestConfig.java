@@ -16,9 +16,11 @@ public class RabbitMqTestConfig {
 
   public static final String STATISTICS_EXCHANGE_NAME = "statistics.topic";
   private static final String QUEUE_PREFIX = "statistics.";
-  public static final String QUEUE_NAME_START_VIDEO_CALL = QUEUE_PREFIX + EventType.START_VIDEO_CALL;
+  public static final String QUEUE_NAME_START_VIDEO_CALL =
+      QUEUE_PREFIX + EventType.START_VIDEO_CALL;
 
-  @Bean ConnectionFactory connectionFactory() {
+  @Bean
+  ConnectionFactory connectionFactory() {
     return new CachingConnectionFactory(new MockConnectionFactory());
   }
 
@@ -36,9 +38,8 @@ public class RabbitMqTestConfig {
     return new Declarables(
         assignSessionStatisticEventQueue,
         topicExchange,
-        BindingBuilder
-            .bind(assignSessionStatisticEventQueue)
-            .to(topicExchange).with(
-                EventType.START_VIDEO_CALL));
+        BindingBuilder.bind(assignSessionStatisticEventQueue)
+            .to(topicExchange)
+            .with(EventType.START_VIDEO_CALL));
   }
 }

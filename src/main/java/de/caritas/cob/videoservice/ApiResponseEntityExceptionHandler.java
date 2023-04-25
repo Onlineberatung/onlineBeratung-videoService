@@ -36,11 +36,11 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
    * Custom BadRequest exception.
    *
    * @param request the invoking request
-   * @param ex      the thrown exception
+   * @param ex the thrown exception
    */
   @ExceptionHandler({BadRequestException.class})
-  public ResponseEntity<Object> handleCustomBadRequest(final BadRequestException ex,
-      final WebRequest request) {
+  public ResponseEntity<Object> handleCustomBadRequest(
+      final BadRequestException ex, final WebRequest request) {
     ex.executeLogging();
 
     return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
@@ -49,9 +49,9 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   /**
    * Incoming request body could not be deserialized.
    *
-   * @param ex      the thrown exception
+   * @param ex the thrown exception
    * @param headers HTTP headers
-   * @param status  HTTP status
+   * @param status HTTP status
    * @param request web request
    * @return response entity
    */
@@ -70,9 +70,9 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   /**
    * ´@Valid´ on object fails validation.
    *
-   * @param ex      the thrown exception
+   * @param ex the thrown exception
    * @param headers http headers
-   * @param status  http status
+   * @param status http status
    * @param request web request
    * @return response entity
    */
@@ -91,13 +91,17 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
   /**
    * 500 - Internal Server Error.
    *
-   * @param ex      the thrown exception
+   * @param ex the thrown exception
    * @param request web request
    * @return response entity
    */
-  @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class,
-      IllegalStateException.class, KeycloakException.class,
-      UnknownHostException.class})
+  @ExceptionHandler({
+    NullPointerException.class,
+    IllegalArgumentException.class,
+    IllegalStateException.class,
+    KeycloakException.class,
+    UnknownHostException.class
+  })
   public ResponseEntity<Object> handleInternal(
       final RuntimeException ex, final WebRequest request) {
     LogService.logInternalServerError(ex);
@@ -110,48 +114,47 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
    * 500 - Custom Internal Server Error.
    *
    * @param request the invoking request
-   * @param ex      the thrown exception
+   * @param ex the thrown exception
    * @return response entity
    */
   @ExceptionHandler({InternalServerErrorException.class})
-  public ResponseEntity<Object> handleInternal(final InternalServerErrorException ex,
-      final WebRequest request) {
+  public ResponseEntity<Object> handleInternal(
+      final InternalServerErrorException ex, final WebRequest request) {
     ex.executeLogging();
 
-    return handleExceptionInternal(EMPTY_EXCEPTION, null, new HttpHeaders(),
-        HttpStatus.INTERNAL_SERVER_ERROR, request);
+    return handleExceptionInternal(
+        EMPTY_EXCEPTION, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
   }
 
   /**
    * Handles generic HTTP status.
    *
-   * @param ex      {@link ResponseStatusException}
+   * @param ex {@link ResponseStatusException}
    * @param request {@link WebRequest}
    * @return response entity
    */
   @ExceptionHandler({ResponseStatusException.class})
-  public ResponseEntity<Object> handleInternal(final ResponseStatusException ex,
-      final WebRequest request) {
+  public ResponseEntity<Object> handleInternal(
+      final ResponseStatusException ex, final WebRequest request) {
     LogService.logWarning(ex);
 
-    return handleExceptionInternal(EMPTY_EXCEPTION, null, new HttpHeaders(), ex.getStatus(),
-        request);
+    return handleExceptionInternal(
+        EMPTY_EXCEPTION, null, new HttpHeaders(), ex.getStatus(), request);
   }
 
   /**
    * Handles generic HTTP client error status for generated apis.
    *
-   * @param ex      {@link HttpClientErrorException}
+   * @param ex {@link HttpClientErrorException}
    * @param request {@link WebRequest}
    * @return response entity
    */
   @ExceptionHandler({HttpClientErrorException.class})
-  public ResponseEntity<Object> handleInternal(final HttpClientErrorException ex,
-      final WebRequest request) {
+  public ResponseEntity<Object> handleInternal(
+      final HttpClientErrorException ex, final WebRequest request) {
     LogService.logError(ex);
 
-    return handleExceptionInternal(EMPTY_EXCEPTION, null, new HttpHeaders(), ex.getStatusCode(),
-        request);
+    return handleExceptionInternal(
+        EMPTY_EXCEPTION, null, new HttpHeaders(), ex.getStatusCode(), request);
   }
-
 }

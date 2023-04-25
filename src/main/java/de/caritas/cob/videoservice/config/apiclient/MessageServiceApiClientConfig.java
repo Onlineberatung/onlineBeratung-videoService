@@ -8,9 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * Configuration beans for the generated MessageService API client.
- */
+/** Configuration beans for the generated MessageService API client. */
 @Configuration
 public class MessageServiceApiClientConfig {
 
@@ -39,5 +37,4 @@ public class MessageServiceApiClientConfig {
   public ApiClient messageServiceApiClient(RestTemplate restTemplate) {
     return new ApiClient(restTemplate).setBasePath(this.messageServiceApiUrl);
   }
-
 }

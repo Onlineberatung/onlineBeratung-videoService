@@ -1,6 +1,5 @@
 package de.caritas.cob.videoservice.api.service;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -21,20 +20,15 @@ import org.springframework.http.HttpHeaders;
 @RunWith(MockitoJUnitRunner.class)
 public class RejectVideoCallServiceTest {
 
-  @InjectMocks
-  private RejectVideoCallService rejectVideoCallService;
+  @InjectMocks private RejectVideoCallService rejectVideoCallService;
 
-  @Mock
-  private MessageControllerApi messageControllerApi;
+  @Mock private MessageControllerApi messageControllerApi;
 
-  @Mock
-  private SecurityHeaderSupplier securityHeaderSupplier;
+  @Mock private SecurityHeaderSupplier securityHeaderSupplier;
 
-  @Mock
-  private TenantHeaderSupplier tenantHeaderSupplier;
+  @Mock private TenantHeaderSupplier tenantHeaderSupplier;
 
-  @Mock
-  private ApiClient apiClient;
+  @Mock private ApiClient apiClient;
 
   @Test
   public void rejectVideoCall_Should_useServicesCorrectly() {
@@ -45,14 +39,14 @@ public class RejectVideoCallServiceTest {
 
     this.rejectVideoCallService.rejectVideoCall(rejectVideoCallDto);
 
-    VideoCallMessageDTO expectedMessage = new VideoCallMessageDTO()
-        .eventType(EventTypeEnum.IGNORED_CALL)
-        .initiatorUserName(rejectVideoCallDto.getInitiatorUsername())
-        .initiatorRcUserId(rejectVideoCallDto.getInitiatorRcUserId());
+    VideoCallMessageDTO expectedMessage =
+        new VideoCallMessageDTO()
+            .eventType(EventTypeEnum.IGNORED_CALL)
+            .initiatorUserName(rejectVideoCallDto.getInitiatorUsername())
+            .initiatorRcUserId(rejectVideoCallDto.getInitiatorRcUserId());
     verify(this.securityHeaderSupplier).getKeycloakAndCsrfHttpHeaders();
     verify(this.tenantHeaderSupplier).addTenantHeader(securityHeaders);
     verify(this.messageControllerApi)
         .createVideoHintMessage(rejectVideoCallDto.getRcGroupId(), expectedMessage);
   }
-
 }

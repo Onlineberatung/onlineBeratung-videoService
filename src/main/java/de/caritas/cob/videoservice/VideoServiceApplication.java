@@ -3,9 +3,7 @@ package de.caritas.cob.videoservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Starter class for the application.
- */
+/** Starter class for the application. */
 @SpringBootApplication
 public class VideoServiceApplication {
 

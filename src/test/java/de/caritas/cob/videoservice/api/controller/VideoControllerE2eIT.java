@@ -29,8 +29,7 @@ class VideoControllerE2eIT {
   private static final String CSRF_VALUE = "test";
   private static final Cookie CSRF_COOKIE = new Cookie("csrfCookie", CSRF_VALUE);
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @MockBean
   @SuppressWarnings("unused")
@@ -49,12 +48,12 @@ class VideoControllerE2eIT {
     givenARoomId();
     givenAValidAuthUser();
 
-    mockMvc.perform(
-        post("/videocalls/stop/" + roomId)
-            .cookie(CSRF_COOKIE)
-            .header(CSRF_HEADER, CSRF_VALUE)
-            .accept(MediaType.APPLICATION_JSON)
-        )
+    mockMvc
+        .perform(
+            post("/videocalls/stop/" + roomId)
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
@@ -64,12 +63,12 @@ class VideoControllerE2eIT {
     givenAnInvalidRoomId();
     givenAValidAuthUser();
 
-    mockMvc.perform(
+    mockMvc
+        .perform(
             post("/videocalls/stop/" + roomId)
                 .cookie(CSRF_COOKIE)
                 .header(CSRF_HEADER, CSRF_VALUE)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().is4xxClientError());
   }
 

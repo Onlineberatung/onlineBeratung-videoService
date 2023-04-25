@@ -36,12 +36,9 @@ public class StatisticsServiceTest {
   private StartVideoCallStatisticsEvent startVideoCallStatisticsEvent;
   private final EventType eventType = EventType.START_VIDEO_CALL;
 
-  @InjectMocks
-  private StatisticsService statisticsService;
-  @Mock
-  private AmqpTemplate amqpTemplate;
-  @Mock
-  Logger logger;
+  @InjectMocks private StatisticsService statisticsService;
+  @Mock private AmqpTemplate amqpTemplate;
+  @Mock Logger logger;
 
   @Before
   public void setup() {
@@ -96,5 +93,4 @@ public class StatisticsServiceTest {
         .setContentType(MessageProperties.CONTENT_TYPE_JSON)
         .build();
   }
-
 }

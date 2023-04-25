@@ -19,9 +19,7 @@ import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-/**
- * This custom filter checks CSRF cookie and header token for equality.
- */
+/** This custom filter checks CSRF cookie and header token for equality. */
 public class StatelessCsrfFilter extends OncePerRequestFilter {
 
   private final RequestMatcher requireCsrfProtectionMatcher = new DefaultRequiresCsrfMatcher();
@@ -35,8 +33,10 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(@NonNull HttpServletRequest request,
-      @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
+  protected void doFilterInternal(
+      @NonNull HttpServletRequest request,
+      @NonNull HttpServletResponse response,
+      @NonNull FilterChain filterChain)
       throws ServletException, IOException {
 
     if (requireCsrfProtectionMatcher.matches(request)) {
@@ -53,8 +53,8 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
       }
 
       if (isNull(csrfTokenValue) || !csrfTokenValue.equals(csrfCookieValue)) {
-        accessDeniedHandler.handle(request, response,
-            new AccessDeniedException("Missing or non-matching CSRF-token"));
+        accessDeniedHandler.handle(
+            request, response, new AccessDeniedException("Missing or non-matching CSRF-token"));
         return;
       }
     }
@@ -74,7 +74,8 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
     @Override
     public boolean matches(HttpServletRequest request) {
 
-      if (Arrays.stream(SpringFoxConfig.WHITE_LIST).parallel()
+      if (Arrays.stream(SpringFoxConfig.WHITE_LIST)
+          .parallel()
           .anyMatch(request.getRequestURI().toLowerCase()::contains)) {
         return false;
       }

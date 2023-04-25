@@ -20,18 +20,14 @@ public class StartVideoCallStatisticsEvent implements StatisticsEvent {
   private @NonNull Long sessionId;
   private @NonNull String videoCallUuid;
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public Optional<String> getPayload() {
     return JsonHelper.serializeWithOffsetDateTimeAsString(
         createStartVideoCallStatisticsEventMessage(), LogService::logStatisticsEventError);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public EventType getEventType() {
     return EVENT_TYPE;
@@ -46,5 +42,4 @@ public class StartVideoCallStatisticsEvent implements StatisticsEvent {
         .videoCallUuid(videoCallUuid)
         .timestamp(CustomOffsetDateTime.nowInUtc());
   }
-
 }

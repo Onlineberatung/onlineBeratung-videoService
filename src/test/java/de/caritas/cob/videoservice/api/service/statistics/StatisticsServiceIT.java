@@ -33,10 +33,8 @@ public class StatisticsServiceIT {
 
   private static final long MAX_TIMEOUT_MILLIS = 5000;
 
-  @Autowired
-  StatisticsService statisticsService;
-  @Autowired
-  AmqpTemplate amqpTemplate;
+  @Autowired StatisticsService statisticsService;
+  @Autowired AmqpTemplate amqpTemplate;
 
   @Test
   public void fireEvent_Should_Send_ExpectedAssignSessionStatisticsEventMessageToQueue()
@@ -44,8 +42,8 @@ public class StatisticsServiceIT {
 
     UUID uuid = UUID.randomUUID();
     StartVideoCallStatisticsEvent startVideoCallStatisticsEvent =
-        new StartVideoCallStatisticsEvent(CONSULTANT_ID, UserRole.CONSULTANT, SESSION_ID, uuid.toString());
-
+        new StartVideoCallStatisticsEvent(
+            CONSULTANT_ID, UserRole.CONSULTANT, SESSION_ID, uuid.toString());
 
     statisticsService.fireEvent(startVideoCallStatisticsEvent);
     Message message =
@@ -82,5 +80,4 @@ public class StatisticsServiceIT {
   private String extractBodyFromAmpQMessage(Message message) throws IOException {
     return IOUtils.toString(message.getBody(), UTF_8);
   }
-
 }
