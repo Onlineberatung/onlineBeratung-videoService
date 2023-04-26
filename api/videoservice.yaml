@@ -129,6 +129,32 @@ paths:
           description: NOT FOUND - rcGroupId unknown
         500:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
+  /videocalls/room/{jitsiRoomId}:
+    post:
+      tags:
+        - video-controller
+      summary: 'Creates a new room [Authorization: Role: jitsi-technical]'
+      operationId: createRoom
+      parameters:
+        - name: jitsiRoomId
+          in: path
+          required: true
+          schema:
+            type: long
+      responses:
+        200:
+          description: OK - successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoRoomResponseDTO'
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+
 
 components:
   schemas:
@@ -176,6 +202,20 @@ components:
         domain:
           type: string
         jwt:
+          type: string
+
+    VideoRoomResponseDTO:
+      type: object
+      properties:
+        jitsiRoomId:
+          type: long
+          example: 12132
+        videoLink:
+          type: string
+          example: 12132
+        createDate:
+          type: string
+        updateDate:
           type: string
 
   securitySchemes:

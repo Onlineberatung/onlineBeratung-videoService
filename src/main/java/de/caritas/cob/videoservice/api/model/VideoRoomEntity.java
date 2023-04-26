@@ -32,6 +32,9 @@ public class VideoRoomEntity {
   @Column(name = "jitsi_room_id", updatable = false, nullable = false)
   private Long jitsiRoomId;
 
+  @Column(name = "session_id", updatable = false, nullable = false)
+  private Long sessionId;
+
   @Column(name = "videolink", nullable = false)
   private String videolink;
 

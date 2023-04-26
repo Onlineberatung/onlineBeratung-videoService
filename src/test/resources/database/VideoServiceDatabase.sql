@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS VIDEOROOM
 (
     ID bigint NOT NULL,
+    session_id bigint NOT NULL,
     jitsi_room_id bigint NOT NULL,
     videolink varchar(2048) NOT NULL,
     create_date datetime NOT NULL,

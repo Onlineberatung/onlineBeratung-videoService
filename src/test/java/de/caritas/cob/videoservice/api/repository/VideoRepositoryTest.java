@@ -1,9 +1,10 @@
 package de.caritas.cob.videoservice.api.repository;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import de.caritas.cob.videoservice.api.model.VideoRoomEntity;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -41,12 +42,21 @@ class VideoRepositoryTest {
   }
 
   @Test
+  void findById_Should_findRoomBySessionId() {
+    // given, when
+    Collection<VideoRoomEntity> videoRoomEntityEntity = videoRepository.findBySessionId(2L);
+    // then
+    assertThat(videoRoomEntityEntity).hasSize(1);
+  }
+
+  @Test
   void create_Should_createVideoRoom() {
     // given
     VideoRoomEntity entity = new VideoRoomEntity();
     entity.setVideolink("https://videolink." + UUID.randomUUID());
     entity.setCreateDate(LocalDateTime.now());
     entity.setJitsiRoomId(2L);
+    entity.setSessionId(1L);
 
     // when
     var saved = videoRepository.save(entity);
