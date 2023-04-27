@@ -3,6 +3,7 @@ package de.caritas.cob.videoservice.api.facade;
 import static de.caritas.cob.videoservice.api.service.session.SessionStatus.IN_PROGRESS;
 import static de.caritas.cob.videoservice.api.service.session.SessionStatus.NEW;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CONSULTANT_ID;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.GROUP_CHAT_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.USERNAME;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.VIDEO_CALL_UUID;
@@ -23,10 +24,12 @@ import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
+import de.caritas.cob.videoservice.api.service.session.ChatService;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.api.service.statistics.StatisticsService;
 import de.caritas.cob.videoservice.api.service.statistics.event.StartVideoCallStatisticsEvent;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
+import de.caritas.cob.videoservice.api.service.video.VideoRoomService;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
@@ -53,6 +56,10 @@ public class VideoCallFacadeTest {
   @Mock private UuidRegistry uuidRegistry;
   @Mock private StatisticsService statisticsService;
 
+  @Mock private VideoRoomService videoRoomService;
+
+  @Mock private ChatService chatService;
+
   @Test
   public void startVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
 
@@ -68,6 +75,36 @@ public class VideoCallFacadeTest {
 
     CreateVideoCallResponseDTO result =
         videoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
+
+    assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
+  }
+
+  @Test
+  public void
+      startGroupVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
+
+    when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
+    when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
+
+    VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
+
+    when(chatService.findChatById(GROUP_CHAT_ID))
+        .thenReturn(
+            new EasyRandom()
+                .nextObject(
+                    de.caritas.cob.videoservice.userservice.generated.web.model.ChatInfoResponseDTO
+                        .class));
+    when(chatService.getChatMembers(GROUP_CHAT_ID))
+        .thenReturn(
+            new EasyRandom()
+                .nextObject(
+                    de.caritas.cob.videoservice.userservice.generated.web.model
+                        .ChatMembersResponseDTO.class));
+    when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
+
+    CreateVideoCallResponseDTO result =
+        videoCallFacade.startVideoCall(
+            new CreateVideoCallDTO().groupChatId(GROUP_CHAT_ID), "rcUserId");
 
     assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
   }

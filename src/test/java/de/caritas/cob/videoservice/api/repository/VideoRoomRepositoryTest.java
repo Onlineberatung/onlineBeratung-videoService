@@ -19,16 +19,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-class VideoRepositoryTest {
+class VideoRoomRepositoryTest {
 
   private static final long EXISTING_ID = 1L;
 
-  @Autowired private VideoRepository videoRepository;
+  @Autowired private VideoRoomRepository videoRoomRepository;
 
   @Test
   void findById_Should_findRoomById() {
     // given, when
-    Optional<VideoRoomEntity> videoRoomEntity = videoRepository.findById(1L);
+    Optional<VideoRoomEntity> videoRoomEntity = videoRoomRepository.findById(1L);
     // then
     assertThat(videoRoomEntity).isPresent();
   }
@@ -36,7 +36,8 @@ class VideoRepositoryTest {
   @Test
   void findById_Should_findRoomByJitsiRoomId() {
     // given, when
-    Optional<VideoRoomEntity> videoRoomEntityEntity = videoRepository.findByJitsiRoomId(1L);
+    Optional<VideoRoomEntity> videoRoomEntityEntity =
+        videoRoomRepository.findByJitsiRoomId("653ae5b9-a932-42a6-8935-d24010e3c5c1");
     // then
     assertThat(videoRoomEntityEntity).isPresent();
   }
@@ -44,7 +45,7 @@ class VideoRepositoryTest {
   @Test
   void findById_Should_findRoomBySessionId() {
     // given, when
-    Collection<VideoRoomEntity> videoRoomEntityEntity = videoRepository.findBySessionId(2L);
+    Collection<VideoRoomEntity> videoRoomEntityEntity = videoRoomRepository.findBySessionId(2L);
     // then
     assertThat(videoRoomEntityEntity).hasSize(1);
   }
@@ -55,14 +56,14 @@ class VideoRepositoryTest {
     VideoRoomEntity entity = new VideoRoomEntity();
     entity.setVideolink("https://videolink." + UUID.randomUUID());
     entity.setCreateDate(LocalDateTime.now());
-    entity.setJitsiRoomId(2L);
+    entity.setJitsiRoomId(UUID.randomUUID().toString());
     entity.setSessionId(1L);
 
     // when
-    var saved = videoRepository.save(entity);
-    videoRepository.flush();
+    var saved = videoRoomRepository.save(entity);
+    videoRoomRepository.flush();
 
-    Optional<VideoRoomEntity> videoRoomEntity = videoRepository.findById(saved.getId());
+    Optional<VideoRoomEntity> videoRoomEntity = videoRoomRepository.findById(saved.getId());
     // then
     assertThat(videoRoomEntity).isPresent();
     assertThat(videoRoomEntity).contains(entity);
@@ -71,17 +72,17 @@ class VideoRepositoryTest {
   @Test
   void save_Should_updateVideoRoom() {
     // given
-    VideoRoomEntity videoRoomEntity = videoRepository.findById(EXISTING_ID).get();
+    VideoRoomEntity videoRoomEntity = videoRoomRepository.findById(EXISTING_ID).get();
 
     // when
     LocalDateTime now = LocalDateTime.now();
-    videoRoomEntity.setUpdateDate(now);
-    videoRepository.save(videoRoomEntity);
-    videoRepository.flush();
+    videoRoomEntity.setCloseDate(now);
+    videoRoomRepository.save(videoRoomEntity);
+    videoRoomRepository.flush();
 
-    Optional<VideoRoomEntity> updated = videoRepository.findById(EXISTING_ID);
+    Optional<VideoRoomEntity> updated = videoRoomRepository.findById(EXISTING_ID);
     // then
     assertThat(updated).isPresent();
-    assertThat(updated.get().getUpdateDate()).isEqualTo(now);
+    assertThat(updated.get().getCloseDate()).isEqualTo(now);
   }
 }

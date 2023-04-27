@@ -35,6 +35,11 @@ public class TestConstants {
   public static final Long SESSION_ID = 0L;
 
   /*
+   * Group chat
+   */
+  public static final Long GROUP_CHAT_ID = 1L;
+
+  /*
    * Video call
    */
   public static final String GUEST_VIDEO_CALL_URL =

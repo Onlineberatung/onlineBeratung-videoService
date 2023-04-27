@@ -30,17 +30,20 @@ public class VideoRoomEntity {
   private Long id;
 
   @Column(name = "jitsi_room_id", updatable = false, nullable = false)
-  private Long jitsiRoomId;
+  private String jitsiRoomId;
 
-  @Column(name = "session_id", updatable = false, nullable = false)
+  @Column(name = "session_id", updatable = false)
   private Long sessionId;
 
-  @Column(name = "videolink", nullable = false)
+  @Column(name = "group_chat_id", updatable = false)
+  private Long groupChatId;
+
+  @Column(name = "video_link", nullable = false)
   private String videolink;
 
   @Column(name = "create_date", nullable = false)
   private LocalDateTime createDate;
 
   @Column(name = "close_date")
-  private LocalDateTime updateDate;
+  private LocalDateTime closeDate;
 }

@@ -2,9 +2,10 @@
 
 CREATE TABLE videoservice.`videoroom` (
   `id` bigint(21) NOT NULL,
-  `session_id` bigint(21) NOT NULL,
+  `session_id` bigint(21) NULL,
+  `group_chat_id` bigint(21) NULL,
   `jitsi_room_id` bigint(21) NOT NULL,
-  `videolink` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+  `video_link` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
   `create_date` datetime NOT NULL DEFAULT (UTC_TIMESTAMP),
   `close_date` datetime NOT NULL DEFAULT (UTC_TIMESTAMP),
   PRIMARY KEY (`id`)

@@ -1,9 +1,10 @@
 CREATE TABLE IF NOT EXISTS VIDEOROOM
 (
     ID bigint NOT NULL,
-    session_id bigint NOT NULL,
-    jitsi_room_id bigint NOT NULL,
-    videolink varchar(2048) NOT NULL,
+    session_id bigint NULL,
+    group_chat_id bigint NULL,
+    jitsi_room_id varchar(2048) NOT NULL,
+    video_link varchar(2048) NOT NULL,
     create_date datetime NOT NULL,
     close_date datetime,
     CONSTRAINT PK_VIDEOROOM PRIMARY KEY (ID)
