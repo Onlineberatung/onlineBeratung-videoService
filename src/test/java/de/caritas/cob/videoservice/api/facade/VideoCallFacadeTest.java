@@ -43,6 +43,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -109,6 +110,7 @@ public class VideoCallFacadeTest {
             new CreateVideoCallDTO().groupChatId(GROUP_CHAT_ID), "rcUserId");
 
     assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
+    verify(videoRoomService).createGroupVideoRoom(Mockito.eq(GROUP_CHAT_ID), Mockito.eq(VIDEO_CALL_UUID), Mockito.anyString());
   }
 
   @Test(expected = AccessDeniedException.class)
