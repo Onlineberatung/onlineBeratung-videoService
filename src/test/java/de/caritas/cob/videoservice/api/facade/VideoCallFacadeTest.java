@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,6 +43,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -107,6 +109,19 @@ public class VideoCallFacadeTest {
             new CreateVideoCallDTO().groupChatId(GROUP_CHAT_ID), "rcUserId");
 
     assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  public void startGroupVideoCall_Should_ThrowForbiddenException_When_UserDoesNotHavePermissions() {
+
+    when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
+    when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
+
+    doThrow(new AccessDeniedException("forbidden"))
+        .when(chatService)
+        .assertCanModerateChat(GROUP_CHAT_ID);
+
+    videoCallFacade.startVideoCall(new CreateVideoCallDTO().groupChatId(GROUP_CHAT_ID), "rcUserId");
   }
 
   @Test

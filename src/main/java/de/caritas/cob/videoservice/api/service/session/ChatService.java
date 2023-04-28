@@ -30,6 +30,11 @@ public class ChatService {
     return userControllerApi.getChatMembers(chatId);
   }
 
+  public void assertCanModerateChat(Long chatId) {
+    addDefaultHeaders();
+    userControllerApi.verifyCanModerateChat(chatId);
+  }
+
   private void addDefaultHeaders() {
     HttpHeaders headers = this.securityHeaderSupplier.getKeycloakAndCsrfHttpHeaders();
     tenantHeaderSupplier.addTenantHeader(headers);

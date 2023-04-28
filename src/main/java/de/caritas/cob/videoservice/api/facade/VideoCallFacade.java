@@ -58,11 +58,8 @@ public class VideoCallFacade {
    */
   public CreateVideoCallResponseDTO startVideoCall(
       CreateVideoCallDTO createVideoCallRequest, String initiatorRcUserId) {
-
     var sessionId = createVideoCallRequest.getSessionId();
-
     if (createVideoCallRequest.getGroupChatId() != null) {
-      log.info("Video call request for group chat with id {} received.");
       return startGroupVideoCall(createVideoCallRequest, initiatorRcUserId);
     } else {
       return startOneToOneVideoCall(createVideoCallRequest, initiatorRcUserId, sessionId);
@@ -86,9 +83,7 @@ public class VideoCallFacade {
         singletonList(consultantSessionDto.getAskerId()));
 
     this.videoRoomService.createOneToOneVideoRoom(
-        consultantSessionDto.getId(),
-        videoCallUuid,
-        videoCallUrls.getModeratorVideoUrl());
+        consultantSessionDto.getId(), videoCallUuid, videoCallUrls.getModeratorVideoUrl());
     var createVideoCallResponseDto =
         new CreateVideoCallResponseDTO()
             .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
@@ -103,7 +98,8 @@ public class VideoCallFacade {
   private CreateVideoCallResponseDTO startGroupVideoCall(
       CreateVideoCallDTO createVideoCallRequest, String initiatorRcUserId) {
 
-    // TODO validate that user is owner of the chat
+    chatService.assertCanModerateChat(createVideoCallRequest.getGroupChatId());
+
     ChatInfoResponseDTO chatById =
         chatService.findChatById(createVideoCallRequest.getGroupChatId());
 
@@ -128,19 +124,8 @@ public class VideoCallFacade {
         createVideoCallRequest.getGroupChatId(),
         videoCallUuid,
         videoCallUrls.getModeratorVideoUrl());
-    var createVideoCallResponseDto =
-        new CreateVideoCallResponseDTO()
-            .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
-
-    // TODO check if we need to fire an event for group calls
-    statisticsService.fireEvent(
-        new StartVideoCallStatisticsEvent(
-            authenticatedUser.getUserId(),
-            UserRole.CONSULTANT,
-            createVideoCallRequest.getGroupChatId(),
-            videoCallUuid));
-
-    return createVideoCallResponseDto;
+    return new CreateVideoCallResponseDTO()
+        .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
   }
 
   /**
