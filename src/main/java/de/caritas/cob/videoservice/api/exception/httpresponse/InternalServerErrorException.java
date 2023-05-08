@@ -25,4 +25,8 @@ public class InternalServerErrorException extends CustomHttpStatusException {
   public InternalServerErrorException(String message) {
     super(message, LogService::logInternalServerError);
   }
+
+  public InternalServerErrorException(String message, Exception ex) {
+    super(message, ex, LogService::logInternalServerError);
+  }
 }

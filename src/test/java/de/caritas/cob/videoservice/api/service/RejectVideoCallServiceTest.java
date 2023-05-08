@@ -4,7 +4,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
-import de.caritas.cob.videoservice.api.service.securityheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import de.caritas.cob.videoservice.messageservice.generated.ApiClient;
 import de.caritas.cob.videoservice.messageservice.generated.web.MessageControllerApi;
 import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO;

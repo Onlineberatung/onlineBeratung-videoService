@@ -1,4 +1,4 @@
-package de.caritas.cob.videoservice.api.service;
+package de.caritas.cob.videoservice.api.service.httpheader;
 
 import de.caritas.cob.videoservice.api.tenant.TenantContext;
 import java.util.Optional;

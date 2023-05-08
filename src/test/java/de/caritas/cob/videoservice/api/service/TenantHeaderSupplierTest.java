@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import de.caritas.cob.videoservice.api.tenant.TenantContext;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;

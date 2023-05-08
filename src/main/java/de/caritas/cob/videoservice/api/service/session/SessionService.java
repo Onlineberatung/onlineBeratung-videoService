@@ -1,7 +1,7 @@
 package de.caritas.cob.videoservice.api.service.session;
 
-import de.caritas.cob.videoservice.api.service.TenantHeaderSupplier;
-import de.caritas.cob.videoservice.api.service.securityheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import de.caritas.cob.videoservice.userservice.generated.web.UserControllerApi;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
 import lombok.NonNull;

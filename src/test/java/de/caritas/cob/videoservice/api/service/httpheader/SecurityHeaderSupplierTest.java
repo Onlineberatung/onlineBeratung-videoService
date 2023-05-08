@@ -1,4 +1,4 @@
-package de.caritas.cob.videoservice.api.service.securityheader;
+package de.caritas.cob.videoservice.api.service.httpheader;
 
 import static de.caritas.cob.videoservice.api.testhelper.FieldConstants.FIELD_NAME_CSRF_TOKEN_COOKIE_PROPERTY;
 import static de.caritas.cob.videoservice.api.testhelper.FieldConstants.FIELD_NAME_CSRF_TOKEN_HEADER_PROPERTY;

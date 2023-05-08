@@ -14,7 +14,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import de.caritas.cob.videoservice.api.service.securityheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.userservice.generated.ApiClient;
 import de.caritas.cob.videoservice.userservice.generated.web.UserControllerApi;

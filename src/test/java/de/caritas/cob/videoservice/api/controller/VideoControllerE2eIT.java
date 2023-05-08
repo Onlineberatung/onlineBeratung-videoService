@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
-import java.util.UUID;
 import javax.servlet.http.Cookie;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +27,7 @@ class VideoControllerE2eIT {
   private static final String CSRF_HEADER = "csrfHeader";
   private static final String CSRF_VALUE = "test";
   private static final Cookie CSRF_COOKIE = new Cookie("csrfCookie", CSRF_VALUE);
+  private static final String EXISTING_ROOM_ID = "653ae5b9-a932-42a6-8935-d24010e3c5c1";
 
   @Autowired private MockMvc mockMvc;
 
@@ -45,12 +45,11 @@ class VideoControllerE2eIT {
   @Test
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
   void stopVideoCallShouldReturnNoContent() throws Exception {
-    givenARoomId();
     givenAValidAuthUser();
 
     mockMvc
         .perform(
-            post("/videocalls/stop/" + roomId)
+            post("/videocalls/stop/" + EXISTING_ROOM_ID)
                 .cookie(CSRF_COOKIE)
                 .header(CSRF_HEADER, CSRF_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
@@ -70,10 +69,6 @@ class VideoControllerE2eIT {
                 .header(CSRF_HEADER, CSRF_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().is4xxClientError());
-  }
-
-  private void givenARoomId() {
-    roomId = UUID.randomUUID().toString();
   }
 
   private void givenAnInvalidRoomId() {

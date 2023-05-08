@@ -8,9 +8,11 @@ import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
+import de.caritas.cob.videoservice.api.model.VideoRoomEntity;
 import de.caritas.cob.videoservice.api.service.LogService;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
+import de.caritas.cob.videoservice.api.service.message.MessageService;
 import de.caritas.cob.videoservice.api.service.session.ChatService;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.api.service.statistics.StatisticsService;
@@ -48,6 +50,8 @@ public class VideoCallFacade {
   private final @NonNull StatisticsService statisticsService;
   private final @NonNull VideoRoomService videoRoomService;
 
+  private final @NonNull MessageService messageService;
+
   /**
    * Generates unique video call URLs and triggers a live event to inform the receiver of the call.
    *
@@ -58,10 +62,10 @@ public class VideoCallFacade {
    */
   public CreateVideoCallResponseDTO startVideoCall(
       CreateVideoCallDTO createVideoCallRequest, String initiatorRcUserId) {
-    var sessionId = createVideoCallRequest.getSessionId();
     if (createVideoCallRequest.getGroupChatId() != null) {
       return startGroupVideoCall(createVideoCallRequest, initiatorRcUserId);
     } else {
+      var sessionId = createVideoCallRequest.getSessionId();
       return startOneToOneVideoCall(createVideoCallRequest, initiatorRcUserId, sessionId);
     }
   }
@@ -120,10 +124,15 @@ public class VideoCallFacade {
             createVideoCallRequest.getInitiatorDisplayName()),
         chatMemberIds);
 
-    this.videoRoomService.createGroupVideoRoom(
-        createVideoCallRequest.getGroupChatId(),
-        videoCallUuid,
-        videoCallUrls.getModeratorVideoUrl());
+    VideoRoomEntity groupVideoRoom =
+        this.videoRoomService.createGroupVideoRoom(
+            createVideoCallRequest.getGroupChatId(),
+            videoCallUuid,
+            videoCallUrls.getModeratorVideoUrl());
+
+    messageService.createAndSendVideoChatStartdMessage(
+        chatById.getGroupId(), authenticatedUser.getUsername(), groupVideoRoom);
+
     return new CreateVideoCallResponseDTO()
         .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
   }
@@ -132,12 +141,32 @@ public class VideoCallFacade {
    * @param roomId room ID
    */
   public void stopVideoCall(String roomId) {
+    VideoRoomEntity byJitsiRoomId = videoRoomService.findByJitsiRoomId(roomId).orElseThrow();
+    if (byJitsiRoomId.getGroupChatId() != null) {
+      stopGroupVideoCall(byJitsiRoomId);
+    } else {
+      stopOneToOneVideoCall(roomId);
+    }
+  }
+
+  private void stopGroupVideoCall(VideoRoomEntity videoRoomEntity) {
+    ChatInfoResponseDTO chatById = chatService.findChatById(videoRoomEntity.getGroupChatId());
+    videoRoomService.closeVideoRoom(videoRoomEntity);
+    messageService.createAndSendMessage(
+        chatById.getGroupId(), "Video-Call stopped", videoRoomEntity);
+
+    fireVideoCallStoppedStatisticsEvent(videoRoomEntity.getJitsiRoomId());
+  }
+
+  private void fireVideoCallStoppedStatisticsEvent(String roomId) {
     var event =
         new StopVideoCallStatisticsEvent(
             authenticatedUser.getUserId(), UserRole.CONSULTANT, roomId);
-
-    videoRoomService.closeVideoRoom(roomId);
     statisticsService.fireEvent(event);
+  }
+
+  private void stopOneToOneVideoCall(String roomId) {
+    fireVideoCallStoppedStatisticsEvent(roomId);
   }
 
   private void verifySessionStatus(ConsultantSessionDTO consultantSessionDto) {

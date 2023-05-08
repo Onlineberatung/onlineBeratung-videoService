@@ -1,4 +1,4 @@
-package de.caritas.cob.videoservice.api.service.securityheader;
+package de.caritas.cob.videoservice.api.service.httpheader;
 
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import java.util.UUID;

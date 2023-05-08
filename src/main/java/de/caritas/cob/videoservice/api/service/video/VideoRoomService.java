@@ -43,12 +43,12 @@ public class VideoRoomService {
         .findFirst();
   }
 
-  public void closeVideoRoom(String roomId) {
-    videoRoomRepository.findByJitsiRoomId(roomId).ifPresent(this::closeVideoRoom);
-  }
-
-  private void closeVideoRoom(VideoRoomEntity videoRoomEntity) {
+  public void closeVideoRoom(VideoRoomEntity videoRoomEntity) {
     videoRoomEntity.setCloseDate(LocalDateTime.now());
     videoRoomRepository.save(videoRoomEntity);
+  }
+
+  public Optional<VideoRoomEntity> findByJitsiRoomId(String roomId) {
+    return videoRoomRepository.findByJitsiRoomId(roomId);
   }
 }

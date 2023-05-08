@@ -25,6 +25,7 @@ import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
 import de.caritas.cob.videoservice.api.service.liveevent.LiveEventNotificationService;
+import de.caritas.cob.videoservice.api.service.message.MessageService;
 import de.caritas.cob.videoservice.api.service.session.ChatService;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.api.service.statistics.StatisticsService;
@@ -62,6 +63,8 @@ public class VideoCallFacadeTest {
   @Mock private VideoRoomService videoRoomService;
 
   @Mock private ChatService chatService;
+
+  @Mock private MessageService messageService;
 
   @Test
   public void startVideoCall_Should_ReturnCorrectVideoCallUrl_When_UrlWasGeneratedSuccessfully() {
@@ -110,7 +113,9 @@ public class VideoCallFacadeTest {
             new CreateVideoCallDTO().groupChatId(GROUP_CHAT_ID), "rcUserId");
 
     assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
-    verify(videoRoomService).createGroupVideoRoom(Mockito.eq(GROUP_CHAT_ID), Mockito.eq(VIDEO_CALL_UUID), Mockito.anyString());
+    verify(videoRoomService)
+        .createGroupVideoRoom(
+            Mockito.eq(GROUP_CHAT_ID), Mockito.eq(VIDEO_CALL_UUID), Mockito.anyString());
   }
 
   @Test(expected = AccessDeniedException.class)
