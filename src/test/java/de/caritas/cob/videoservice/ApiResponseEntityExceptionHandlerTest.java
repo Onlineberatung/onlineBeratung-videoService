@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.LogService;
+import java.util.NoSuchElementException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,17 @@ public class ApiResponseEntityExceptionHandlerTest {
     this.exceptionHandler.handleCustomBadRequest(badRequestException, mock(WebRequest.class));
 
     verify(logger, times(1)).warn(eq("VideoService API: {}"), anyString());
+  }
+
+  @Test
+  public void
+      handleNoSuchElementException_Should_executeLogging_When_noSuchElementExceptionRequestIsGiven() {
+    NoSuchElementException noSuchElementException = new NoSuchElementException("test");
+
+    this.exceptionHandler.handleNoSuchElementException(
+        noSuchElementException, mock(WebRequest.class));
+
+    verify(logger, times(1)).warn(eq("VideoService API: {}: {}"), eq("Not Found"), anyString());
   }
 
   @Test

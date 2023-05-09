@@ -30,7 +30,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/CreateVideoCallResponseDTO'
+                $ref: '#/components/schemas/VideoCallResponseDTO'
         400:
           description: BAD REQUEST - invalid/incomplete request or body object
         401:
@@ -40,6 +40,39 @@ paths:
           permission for given session'
         404:
           description: NOT FOUND - Session not found
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+      security:
+        - Bearer: [ ]
+  /videocalls/join/{roomId}:
+    post:
+      tags:
+        - video-controller
+      summary: 'Join an existing new video call room Id [Authorization: Role: consultant]'
+      operationId: joinVideoCall
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: JOINED - joined successfully to a video call room
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/VideoCallResponseDTO'
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: 'FORBIDDEN - no/invalid role/authorization, CSRF token or consultant without
+          permission for given session'
+        404:
+          description: NOT FOUND - Room not found
         500:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
       security:
@@ -171,7 +204,7 @@ components:
           format: int64
         initiatorDisplayName:
           type: string
-    CreateVideoCallResponseDTO:
+    VideoCallResponseDTO:
       type: object
       required:
         - moderatorVideoCallUrl

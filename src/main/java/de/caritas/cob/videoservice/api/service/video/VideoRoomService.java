@@ -32,6 +32,8 @@ public class VideoRoomService {
     videoRoom.setGroupChatId(groupChatId);
     videoRoom.setJitsiRoomId(jitsiRoomId);
     videoRoom.setVideolink(videoLink);
+    videoRoom.setCreateDate(LocalDateTime.now());
+    videoRoom.setCloseDate(null);
     return videoRoomRepository.save(videoRoom);
   }
 

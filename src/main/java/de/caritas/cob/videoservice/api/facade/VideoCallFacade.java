@@ -7,7 +7,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
-import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
+import de.caritas.cob.videoservice.api.model.VideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.model.VideoRoomEntity;
 import de.caritas.cob.videoservice.api.service.LogService;
 import de.caritas.cob.videoservice.api.service.UuidRegistry;
@@ -58,9 +58,9 @@ public class VideoCallFacade {
    * @param createVideoCallRequest The requested DTO containing session id and optional initiators
    *     username
    * @param initiatorRcUserId initiator Rocket.Chat user ID
-   * @return {@link CreateVideoCallResponseDTO}
+   * @return {@link VideoCallResponseDTO}
    */
-  public CreateVideoCallResponseDTO startVideoCall(
+  public VideoCallResponseDTO startVideoCall(
       CreateVideoCallDTO createVideoCallRequest, String initiatorRcUserId) {
     if (createVideoCallRequest.getGroupChatId() != null) {
       return startGroupVideoCall(createVideoCallRequest, initiatorRcUserId);
@@ -70,7 +70,7 @@ public class VideoCallFacade {
     }
   }
 
-  private CreateVideoCallResponseDTO startOneToOneVideoCall(
+  private VideoCallResponseDTO startOneToOneVideoCall(
       CreateVideoCallDTO createVideoCallRequest, String initiatorRcUserId, Long sessionId) {
     var consultantSessionDto = this.sessionService.findSessionOfCurrentConsultant(sessionId);
     verifySessionStatus(consultantSessionDto);
@@ -89,8 +89,7 @@ public class VideoCallFacade {
     this.videoRoomService.createOneToOneVideoRoom(
         consultantSessionDto.getId(), videoCallUuid, videoCallUrls.getModeratorVideoUrl());
     var createVideoCallResponseDto =
-        new CreateVideoCallResponseDTO()
-            .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
+        new VideoCallResponseDTO().moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
 
     statisticsService.fireEvent(
         new StartVideoCallStatisticsEvent(
@@ -99,7 +98,7 @@ public class VideoCallFacade {
     return createVideoCallResponseDto;
   }
 
-  private CreateVideoCallResponseDTO startGroupVideoCall(
+  private VideoCallResponseDTO startGroupVideoCall(
       CreateVideoCallDTO createVideoCallRequest, String initiatorRcUserId) {
 
     chatService.assertCanModerateChat(createVideoCallRequest.getGroupChatId());
@@ -130,11 +129,27 @@ public class VideoCallFacade {
             videoCallUuid,
             videoCallUrls.getModeratorVideoUrl());
 
-    messageService.createAndSendVideoChatStartdMessage(
+    messageService.createAndSendVideoChatStartedMessage(
         chatById.getGroupId(), authenticatedUser.getUsername(), groupVideoRoom);
 
-    return new CreateVideoCallResponseDTO()
-        .moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
+    return new VideoCallResponseDTO().moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
+  }
+
+  public VideoCallResponseDTO joinGroupVideoCall(String jitsiRoomId) {
+
+    VideoRoomEntity videoRoomEntity = videoRoomService.findByJitsiRoomId(jitsiRoomId).orElseThrow();
+
+    chatService.assertCanModerateChat(videoRoomEntity.getGroupChatId());
+
+    var videoCallUrls = this.videoCallUrlGeneratorService.generateVideoCallUrls(jitsiRoomId);
+    ChatInfoResponseDTO chatById = chatService.findChatById(videoRoomEntity.getGroupChatId());
+
+    videoRoomService.findLatestActiveRoomForSessionId(videoRoomEntity.getGroupChatId());
+
+    messageService.createAndSendVideoChatJoinedMessage(
+        chatById.getGroupId(), authenticatedUser.getUsername(), videoRoomEntity);
+
+    return new VideoCallResponseDTO().moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
   }
 
   /**

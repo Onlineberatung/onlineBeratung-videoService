@@ -73,20 +73,31 @@ public class MessageService {
         apiClient);
   }
 
-  public void createAndSendVideoChatStartdMessage(
+  public void createAndSendVideoChatStartedMessage(
       String groupId, String username, VideoRoomEntity videoRoomEntity) {
-    AliasMessageDTO message = createVideoChatStartedMessage(username, videoRoomEntity);
+    AliasMessageDTO message =
+        createVideoChatMessage(
+            username,
+            videoRoomEntity,
+            "Videochat has started. Initiating moderator has joined the call.");
     sendMessage(groupId, message);
   }
 
-  private static AliasMessageDTO createVideoChatStartedMessage(
-      String username, VideoRoomEntity videoRoomEntity) {
+  public void createAndSendVideoChatJoinedMessage(
+      String groupId, String username, VideoRoomEntity videoRoomEntity) {
+    AliasMessageDTO message =
+        createVideoChatMessage(username, videoRoomEntity, "Moderator joined the videochat");
+    sendMessage(groupId, message);
+  }
+
+  private static AliasMessageDTO createVideoChatMessage(
+      String username, VideoRoomEntity videoRoomEntity, String messageTitle) {
     AliasMessageDTO message = new AliasMessageDTO();
     JSONObject messageContent = new JSONObject();
-    messageContent.put("title", "Video chat started");
+    messageContent.put("title", messageTitle);
     message.setMessageType(MessageType.VIDEOCALL);
     messageContent.put("date", videoRoomEntity.getCreateDate());
-    messageContent.put("initiatinguser", username);
+    messageContent.put("moderator_user", username);
     messageContent.put("note", videoRoomEntity.getVideolink());
     message.setContent(messageContent.toString());
     return message;

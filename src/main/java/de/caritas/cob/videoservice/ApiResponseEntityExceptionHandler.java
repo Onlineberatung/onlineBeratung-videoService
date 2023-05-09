@@ -5,6 +5,7 @@ import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestExceptio
 import de.caritas.cob.videoservice.api.exception.httpresponse.InternalServerErrorException;
 import de.caritas.cob.videoservice.api.service.LogService;
 import java.net.UnknownHostException;
+import java.util.NoSuchElementException;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.springframework.core.Ordered;
@@ -44,6 +45,14 @@ public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     ex.executeLogging();
 
     return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+  }
+
+  @ExceptionHandler({NoSuchElementException.class})
+  public ResponseEntity<Object> handleNoSuchElementException(
+      final NoSuchElementException ex, final WebRequest request) {
+    LogService.logWarning(HttpStatus.NOT_FOUND, ex);
+
+    return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
   }
 
   /**

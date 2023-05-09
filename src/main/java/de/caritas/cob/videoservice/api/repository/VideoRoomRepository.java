@@ -10,4 +10,6 @@ public interface VideoRoomRepository extends JpaRepository<VideoRoomEntity, Long
   Optional<VideoRoomEntity> findByJitsiRoomId(String jitsiRoomId);
 
   Collection<VideoRoomEntity> findBySessionId(Long sessionId);
+
+  Collection<VideoRoomEntity> findByGroupChatId(Long groupChatId);
 }
