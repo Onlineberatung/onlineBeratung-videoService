@@ -147,8 +147,6 @@ public class VideoCallFacadeTest {
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
 
-    VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
-
     ChatInfoResponseDTO chat = new EasyRandom().nextObject(ChatInfoResponseDTO.class);
     when(chatService.findChatById(GROUP_CHAT_ID)).thenReturn(chat);
 
@@ -157,6 +155,7 @@ public class VideoCallFacadeTest {
     when(videoRoomService.findByJitsiRoomId(VIDEO_CALL_UUID))
         .thenReturn(Optional.of(videoRoomEntity));
 
+    VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
     // when
