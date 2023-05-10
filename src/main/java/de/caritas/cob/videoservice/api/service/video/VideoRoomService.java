@@ -23,6 +23,7 @@ public class VideoRoomService {
     videoRoom.setSessionId(sessionId);
     videoRoom.setJitsiRoomId(jitsiRoomId);
     videoRoom.setVideolink(videoLink);
+    videoRoom.setCreateDate(LocalDateTime.now());
     return videoRoomRepository.save(videoRoom);
   }
 
