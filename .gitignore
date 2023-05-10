@@ -26,3 +26,4 @@
 /.nb-gradle/
 wrapper
 log
+/src/main/resources/application-local.properties
