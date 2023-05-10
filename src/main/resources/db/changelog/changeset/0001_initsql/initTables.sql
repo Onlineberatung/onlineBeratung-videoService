@@ -7,7 +7,7 @@ CREATE TABLE videoservice.`videoroom` (
   `jitsi_room_id` bigint(21) NOT NULL,
   `video_link` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
   `create_date` datetime NOT NULL DEFAULT (UTC_TIMESTAMP),
-  `close_date` datetime NULL
+  `close_date` datetime NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
