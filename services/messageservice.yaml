@@ -677,6 +677,8 @@ components:
           type: string
           enum:
             - "IGNORED_CALL"
+            - "CALL_STARTED"
+            - "CALL_ENDED"
         initiatorUserName:
           type: string
           example: "consultant23"

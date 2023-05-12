@@ -4,8 +4,11 @@ import de.caritas.cob.videoservice.api.model.VideoRoomEntity;
 import de.caritas.cob.videoservice.api.service.httpheader.SecurityHeaderSupplier;
 import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import de.caritas.cob.videoservice.config.apiclient.MessageApiClient;
+import de.caritas.cob.videoservice.messageservice.generated.web.MessageControllerApi;
 import de.caritas.cob.videoservice.messageservice.generated.web.model.AliasMessageDTO;
 import de.caritas.cob.videoservice.messageservice.generated.web.model.MessageType;
+import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO;
+import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO.EventTypeEnum;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -25,25 +28,6 @@ public class MessageService {
   @Value("${message.service.api.url}")
   private String messageServiceApiUrl;
 
-  public AliasMessageDTO createAndSendMessage(
-      String rcGroupId, String title, VideoRoomEntity videoRoomEntity) {
-    AliasMessageDTO message = createMessage(title, videoRoomEntity);
-    sendMessage(rcGroupId, message);
-    return message;
-  }
-
-  private AliasMessageDTO createMessage(String title, VideoRoomEntity videoRoomEntity) {
-    AliasMessageDTO message = new AliasMessageDTO();
-    JSONObject messageContent = new JSONObject();
-    messageContent.put("title", title);
-    message.setMessageType(MessageType.VIDEOCALL);
-    messageContent.put("date", videoRoomEntity.getCreateDate());
-    messageContent.put(
-        "initiatinguser", messageContent.put("note", videoRoomEntity.getVideolink()));
-    message.setContent(messageContent.toString());
-    return message;
-  }
-
   private void sendMessage(String rcGroupId, AliasMessageDTO message) {
     var messageControllerApi = getMessageControllerApi();
     addDefaultHeaders(messageControllerApi.getApiClient());
@@ -57,8 +41,7 @@ public class MessageService {
     headers.forEach((key, value) -> apiClient.addDefaultHeader(key, value.iterator().next()));
   }
 
-  public de.caritas.cob.videoservice.messageservice.generated.web.MessageControllerApi
-      getMessageControllerApi() {
+  public MessageControllerApi getMessageControllerApi() {
     final RestTemplate restTemplate = new RestTemplate();
     final HttpComponentsClientHttpRequestFactory factory =
         new HttpComponentsClientHttpRequestFactory();
@@ -73,25 +56,33 @@ public class MessageService {
         apiClient);
   }
 
-  public void createAndSendVideoChatStartedMessage(
+  public void createAndSendVideoCallStartedMessage(
       String groupId, String username, VideoRoomEntity videoRoomEntity) {
     AliasMessageDTO message =
         createVideoChatMessage(
             username,
             videoRoomEntity,
-            "Videochat has started. Initiating moderator has joined the call.");
+            "Videochat has started. Initiating moderator has joined the call.",
+            EventTypeEnum.CALL_STARTED);
     sendMessage(groupId, message);
   }
 
-  public void createAndSendVideoChatJoinedMessage(
+  public void createAndSendVideoCallEndedMessage(
       String groupId, String username, VideoRoomEntity videoRoomEntity) {
     AliasMessageDTO message =
-        createVideoChatMessage(username, videoRoomEntity, "Moderator joined the videochat");
+        createVideoChatMessage(
+            username,
+            videoRoomEntity,
+            "Videochat has closed. Initiating moderator has left the call.",
+            EventTypeEnum.CALL_ENDED);
     sendMessage(groupId, message);
   }
 
   private static AliasMessageDTO createVideoChatMessage(
-      String username, VideoRoomEntity videoRoomEntity, String messageTitle) {
+      String username,
+      VideoRoomEntity videoRoomEntity,
+      String messageTitle,
+      EventTypeEnum eventType) {
     AliasMessageDTO message = new AliasMessageDTO();
     JSONObject messageContent = new JSONObject();
     messageContent.put("title", messageTitle);
@@ -100,6 +91,7 @@ public class MessageService {
     messageContent.put("moderator_user", username);
     messageContent.put("note", videoRoomEntity.getVideolink());
     message.setContent(messageContent.toString());
+    message.setVideoCallMessageDTO(new VideoCallMessageDTO().eventType(eventType));
     return message;
   }
 }

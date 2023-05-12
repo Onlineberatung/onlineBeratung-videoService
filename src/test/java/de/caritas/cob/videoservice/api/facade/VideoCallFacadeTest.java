@@ -163,9 +163,6 @@ public class VideoCallFacadeTest {
 
     // then
     assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
-    verify(messageService)
-        .createAndSendVideoChatJoinedMessage(
-            chat.getGroupId(), authenticatedUser.getUsername(), videoRoomEntity);
   }
 
   @Test(expected = NoSuchElementException.class)
