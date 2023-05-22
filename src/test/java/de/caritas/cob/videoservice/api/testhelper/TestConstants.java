@@ -12,6 +12,7 @@ public class TestConstants {
   public static final String ROLE_USER = "user";
   public static final String ROLE_UNKNOWN = "unknown";
   public static final String AUTHORITY_CONSULTANT = "AUTHORIZATION_CONSULTANT_DEFAULT";
+  public static final String AUTHORITY_JITSI_TECHNICAL = "AUTHORIZATION_JITSI_TECHNICAL_DEFAULT";
   public static final String AUTHORITY_USER = "AUTHORIZATION_USER_DEFAULT";
   public static final String BEARER_TOKEN = "w948hisidfgjaoidg839huishdfkjsdkfjhsdf34";
 

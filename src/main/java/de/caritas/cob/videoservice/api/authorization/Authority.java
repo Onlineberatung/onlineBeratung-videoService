@@ -5,7 +5,9 @@ import java.util.stream.Stream;
 /** Definition of all authorities and of the role-authority-mapping. */
 public enum Authority {
   CONSULTANT(UserRole.CONSULTANT, "AUTHORIZATION_CONSULTANT_DEFAULT"),
-  USER(UserRole.USER, "AUTHORIZATION_USER_DEFAULT");
+  USER(UserRole.USER, "AUTHORIZATION_USER_DEFAULT"),
+
+  JITSI_TECHNICAL(UserRole.JITSI_TECHNICAL, "AUTHORIZATION_JITSI_TECHNICAL_DEFAULT");
 
   private final UserRole role;
   private final String authorityName;

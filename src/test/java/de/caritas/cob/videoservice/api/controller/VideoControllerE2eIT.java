@@ -1,6 +1,8 @@
 package de.caritas.cob.videoservice.api.controller;
 
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_CONSULTANT;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_JITSI_TECHNICAL;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_USER;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,6 +47,34 @@ class VideoControllerE2eIT {
   @Test
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
   void stopVideoCallShouldReturnNoContent() throws Exception {
+    givenAValidAuthUser();
+
+    mockMvc
+        .perform(
+            post("/videocalls/stop/" + EXISTING_ROOM_ID)
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @WithMockUser(authorities = AUTHORITY_USER)
+  void stopVideoCallShouldNotAllowToStopIfCalledAsUserAuthority() throws Exception {
+    givenAValidAuthUser();
+
+    mockMvc
+        .perform(
+            post("/videocalls/stop/" + EXISTING_ROOM_ID)
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(authorities = AUTHORITY_JITSI_TECHNICAL)
+  void stopVideoCallShouldReturnNoContentIfJitsiTechnicalUserRole() throws Exception {
     givenAValidAuthUser();
 
     mockMvc

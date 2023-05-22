@@ -1,6 +1,7 @@
 package de.caritas.cob.videoservice.config.security;
 
 import static de.caritas.cob.videoservice.api.authorization.Authority.CONSULTANT;
+import static de.caritas.cob.videoservice.api.authorization.Authority.JITSI_TECHNICAL;
 import static de.caritas.cob.videoservice.api.authorization.Authority.USER;
 
 import de.caritas.cob.videoservice.api.authorization.RoleAuthorizationAuthorityMapper;
@@ -63,7 +64,7 @@ public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .antMatchers("/videocalls/new")
         .hasAuthority(CONSULTANT.getAuthority())
         .antMatchers("/videocalls/stop/{sessionId:" + UUID_PATTERN + "}")
-        .hasAuthority(CONSULTANT.getAuthority())
+        .hasAnyAuthority(CONSULTANT.getAuthority(), JITSI_TECHNICAL.getAuthority())
         .antMatchers("/videocalls/reject")
         .hasAnyAuthority(USER.getAuthority())
         .antMatchers("/videocalls/*/jwt")

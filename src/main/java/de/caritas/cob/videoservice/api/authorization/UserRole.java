@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public enum UserRole {
   USER("user"),
-  CONSULTANT("consultant");
+  CONSULTANT("consultant"),
+  JITSI_TECHNICAL("jitsi-technical");
 
   private final String value;
 }
