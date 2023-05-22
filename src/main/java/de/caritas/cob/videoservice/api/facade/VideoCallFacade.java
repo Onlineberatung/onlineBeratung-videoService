@@ -144,11 +144,12 @@ public class VideoCallFacade {
     return new VideoCallResponseDTO().moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
   }
 
-  /**
-   * @param roomId room ID
-   */
   public void stopVideoCall(String roomId) {
-    log.info("Stopping video call with roomId {}", roomId);
+    fireVideoCallStoppedStatisticsEvent(roomId);
+  }
+
+  public void handleVideoCallStoppedEvent(String roomId) {
+    log.info("Handling video call stopped event for roomId {}", roomId);
     VideoRoomEntity byJitsiRoomId = videoRoomService.findByJitsiRoomId(roomId).orElseThrow();
     if (byJitsiRoomId.getGroupChatId() != null) {
       stopGroupVideoCall(byJitsiRoomId);

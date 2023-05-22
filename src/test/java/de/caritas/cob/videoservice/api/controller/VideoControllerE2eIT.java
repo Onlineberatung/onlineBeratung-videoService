@@ -79,7 +79,7 @@ class VideoControllerE2eIT {
 
     mockMvc
         .perform(
-            post("/videocalls/stop/" + EXISTING_ROOM_ID)
+            post("/videocalls/event/stop/" + EXISTING_ROOM_ID)
                 .cookie(CSRF_COOKIE)
                 .header(CSRF_HEADER, CSRF_VALUE)
                 .accept(MediaType.APPLICATION_JSON))

@@ -55,6 +55,7 @@ public class SpringFoxConfig {
       new String[] {
         "/videocalls/docs",
         "/videocalls/docs/**",
+        "/videocalls/event/stop/**",
         "/v2/api-docs",
         "/configuration/ui",
         "/swagger-resources/**",

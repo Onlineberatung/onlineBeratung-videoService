@@ -306,4 +306,27 @@ public class VideoCallFacadeTest {
     assertNotNull(eventContent);
     assertThat(eventContent.getInitiatorUsername(), is("initiator display name"));
   }
+
+  @Test
+  public void handleVideoCallStoppedEvent_Should_StopPeristentVideoCallRoom() {
+
+    // given
+    when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
+    when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
+    VideoRoomEntity videoRoomEntity = new VideoRoomEntity();
+    videoRoomEntity.setGroupChatId(1L);
+    videoRoomEntity.setJitsiRoomId("roomId");
+    when(videoRoomService.findByJitsiRoomId("roomId")).thenReturn(Optional.of(videoRoomEntity));
+    when(chatService.findChatById(videoRoomEntity.getGroupChatId()))
+        .thenReturn(new ChatInfoResponseDTO().groupId("rocketchat-group-id"));
+
+    messageService.createAndSendVideoCallEndedMessage(
+        "rocketchat-group-id", "Video-Call stopped", videoRoomEntity);
+
+    // when
+    videoCallFacade.handleVideoCallStoppedEvent("roomId");
+
+    // then
+    verify(videoRoomService).closeVideoRoom(videoRoomEntity);
+  }
 }
