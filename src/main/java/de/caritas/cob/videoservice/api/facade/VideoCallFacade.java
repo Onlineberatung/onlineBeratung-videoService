@@ -152,11 +152,11 @@ public class VideoCallFacade {
   public void handleVideoCallStoppedEvent(String roomId) {
     log.info("Handling video call stopped event for roomId {}", roomId);
     roomId = removeJitsiSuffix(roomId);
-    VideoRoomEntity byJitsiRoomId = videoRoomService.findByJitsiRoomId(roomId).orElseThrow();
-    if (byJitsiRoomId.getGroupChatId() != null) {
-      stopGroupVideoCall(byJitsiRoomId);
+    VideoRoomEntity videoRoomEntity = videoRoomService.findByJitsiRoomId(roomId).orElseThrow();
+    if (videoRoomEntity.getGroupChatId() != null) {
+      stopGroupVideoCall(videoRoomEntity);
     } else {
-      stopOneToOneVideoCall(roomId);
+      stopOneToOneVideoCall(videoRoomEntity);
     }
     log.info("Stopped video call with roomId {}", roomId);
   }
@@ -185,8 +185,9 @@ public class VideoCallFacade {
     statisticsService.fireEvent(event);
   }
 
-  private void stopOneToOneVideoCall(String roomId) {
-    fireVideoCallStoppedStatisticsEvent(roomId);
+  private void stopOneToOneVideoCall(VideoRoomEntity videoRoomEntity) {
+    videoRoomService.closeVideoRoom(videoRoomEntity);
+    fireVideoCallStoppedStatisticsEvent(videoRoomEntity.getJitsiRoomId());
   }
 
   private void verifySessionStatus(ConsultantSessionDTO consultantSessionDto) {
