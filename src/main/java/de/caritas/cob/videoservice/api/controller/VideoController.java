@@ -57,9 +57,8 @@ public class VideoController implements VideocallsApi {
   }
 
   @Override
-  public ResponseEntity<Void> handleVideoCallStoppedEvent(UUID roomId) {
-    videoCallFacade.handleVideoCallStoppedEvent(roomId.toString());
-
+  public ResponseEntity<Void> handleVideoCallStoppedEvent(String roomId) {
+    videoCallFacade.handleVideoCallStoppedEvent(roomId);
     return ResponseEntity.noContent().build();
   }
 

@@ -30,6 +30,7 @@ class VideoControllerE2eIT {
   private static final String CSRF_VALUE = "test";
   private static final Cookie CSRF_COOKIE = new Cookie("csrfCookie", CSRF_VALUE);
   private static final String EXISTING_ROOM_ID = "653ae5b9-a932-42a6-8935-d24010e3c5c1";
+  public static final String MUC_MEET_JITSI_SUFFIX = "@muc.meet.jitsi";
 
   @Autowired private MockMvc mockMvc;
 
@@ -79,7 +80,7 @@ class VideoControllerE2eIT {
 
     mockMvc
         .perform(
-            post("/videocalls/event/stop/" + EXISTING_ROOM_ID)
+            post("/videocalls/event/stop/" + EXISTING_ROOM_ID + MUC_MEET_JITSI_SUFFIX)
                 .cookie(CSRF_COOKIE)
                 .header(CSRF_HEADER, CSRF_VALUE)
                 .accept(MediaType.APPLICATION_JSON))

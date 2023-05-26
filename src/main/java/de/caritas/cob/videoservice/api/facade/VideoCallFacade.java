@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class VideoCallFacade {
 
+  public static final String MUC_MEET_JITSI_SUFFIX = "@muc.meet.jitsi";
   private final @NonNull SessionService sessionService;
 
   private final @NonNull ChatService chatService;
@@ -150,6 +151,7 @@ public class VideoCallFacade {
 
   public void handleVideoCallStoppedEvent(String roomId) {
     log.info("Handling video call stopped event for roomId {}", roomId);
+    roomId = removeJitsiSuffix(roomId);
     VideoRoomEntity byJitsiRoomId = videoRoomService.findByJitsiRoomId(roomId).orElseThrow();
     if (byJitsiRoomId.getGroupChatId() != null) {
       stopGroupVideoCall(byJitsiRoomId);
@@ -157,6 +159,13 @@ public class VideoCallFacade {
       stopOneToOneVideoCall(roomId);
     }
     log.info("Stopped video call with roomId {}", roomId);
+  }
+
+  private String removeJitsiSuffix(String roomId) {
+    if (roomId != null) {
+      roomId = roomId.replace(MUC_MEET_JITSI_SUFFIX, "");
+    }
+    return roomId;
   }
 
   private void stopGroupVideoCall(VideoRoomEntity videoRoomEntity) {
