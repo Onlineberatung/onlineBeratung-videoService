@@ -61,13 +61,19 @@ public class MessageService {
   }
 
   public void createAndSendVideoCallStartedMessage(
-      String groupId, String username, VideoRoomEntity videoRoomEntity) {
+      String groupId,
+      String username,
+      VideoRoomEntity videoRoomEntity,
+      String initiatorDisplayName,
+      String initiatorRcUserId) {
     AliasMessageDTO message =
         createVideoChatMessage(
             username,
             videoRoomEntity,
             "Videochat has started. Initiating moderator has joined the call.",
             EventTypeEnum.CALL_STARTED);
+    message.getVideoCallMessageDTO().setInitiatorRcUserId(initiatorRcUserId);
+    message.getVideoCallMessageDTO().setInitiatorUserName(initiatorDisplayName);
     sendMessage(groupId, message);
   }
 
@@ -79,6 +85,8 @@ public class MessageService {
             videoRoomEntity,
             "Videochat has ended. All moderators have left the call.",
             EventTypeEnum.CALL_ENDED);
+    message.getVideoCallMessageDTO().setInitiatorRcUserId("");
+    message.getVideoCallMessageDTO().setInitiatorUserName("");
     sendMessage(groupId, message);
   }
 
@@ -88,6 +96,7 @@ public class MessageService {
       String messageTitle,
       EventTypeEnum eventType) {
     AliasMessageDTO message = new AliasMessageDTO();
+
     message.setContent(
         getMessageContent(username, videoRoomEntity, messageTitle, message).toString());
     message.setVideoCallMessageDTO(new VideoCallMessageDTO().eventType(eventType));

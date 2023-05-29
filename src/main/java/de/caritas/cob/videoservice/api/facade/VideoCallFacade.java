@@ -129,7 +129,11 @@ public class VideoCallFacade {
             videoCallUrls.getUserVideoUrl());
 
     messageService.createAndSendVideoCallStartedMessage(
-        chatById.getGroupId(), authenticatedUser.getUsername(), groupVideoRoom);
+        chatById.getGroupId(),
+        authenticatedUser.getUsername(),
+        groupVideoRoom,
+        createVideoCallRequest.getInitiatorDisplayName(),
+        initiatorRcUserId);
 
     log.info(
         "Started group video call for groupChatId {}", createVideoCallRequest.getGroupChatId());
