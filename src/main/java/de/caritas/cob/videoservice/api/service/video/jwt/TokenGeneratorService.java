@@ -87,6 +87,10 @@ public class TokenGeneratorService {
     return buildBasicJwt(roomId).sign(algorithm);
   }
 
+  private String buildUserRelatedJwt(String roomId) {
+    return buildBasicJwt(roomId).sign(algorithm);
+  }
+
   private Builder buildBasicJwt(String roomId) {
     return JWT.create()
         .withAudience(this.audience)
@@ -100,10 +104,6 @@ public class TokenGeneratorService {
     long epochMilli =
         LocalDateTime.now(UTC).plus(this.validityHours, HOURS).toInstant(UTC).toEpochMilli();
     return new Date(epochMilli);
-  }
-
-  private String buildUserRelatedJwt(String roomId) {
-    return buildBasicJwt(roomId).sign(algorithm);
   }
 
   /**

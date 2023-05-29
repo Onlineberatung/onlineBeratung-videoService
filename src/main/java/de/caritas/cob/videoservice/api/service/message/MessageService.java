@@ -9,6 +9,9 @@ import de.caritas.cob.videoservice.messageservice.generated.web.model.AliasMessa
 import de.caritas.cob.videoservice.messageservice.generated.web.model.MessageType;
 import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO;
 import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO.EventTypeEnum;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@Slf4j
 public class MessageService {
   @Autowired private SecurityHeaderSupplier securityHeaderSupplier;
 
@@ -73,25 +77,45 @@ public class MessageService {
         createVideoChatMessage(
             username,
             videoRoomEntity,
-            "Videochat has closed. Initiating moderator has left the call.",
+            "Videochat has ended. All moderators have left the call.",
             EventTypeEnum.CALL_ENDED);
     sendMessage(groupId, message);
   }
 
-  private static AliasMessageDTO createVideoChatMessage(
+  private AliasMessageDTO createVideoChatMessage(
       String username,
       VideoRoomEntity videoRoomEntity,
       String messageTitle,
       EventTypeEnum eventType) {
     AliasMessageDTO message = new AliasMessageDTO();
+    message.setContent(
+        getMessageContent(username, videoRoomEntity, messageTitle, message).toString());
+    message.setVideoCallMessageDTO(new VideoCallMessageDTO().eventType(eventType));
+    return message;
+  }
+
+  JSONObject getMessageContent(
+      String username,
+      VideoRoomEntity videoRoomEntity,
+      String messageTitle,
+      AliasMessageDTO message) {
     JSONObject messageContent = new JSONObject();
     messageContent.put("title", messageTitle);
     message.setMessageType(MessageType.VIDEOCALL);
     messageContent.put("date", videoRoomEntity.getCreateDate());
     messageContent.put("moderator_user", username);
-    messageContent.put("note", videoRoomEntity.getVideolink());
-    message.setContent(messageContent.toString());
-    message.setVideoCallMessageDTO(new VideoCallMessageDTO().eventType(eventType));
-    return message;
+    messageContent.put("note", videoRoomEntity.getGuestVideoLink());
+    long calculateDurationInSecods = calculateDurationInSeconds(videoRoomEntity);
+    messageContent.put("durationSeconds", calculateDurationInSecods);
+    return messageContent;
+  }
+
+  private long calculateDurationInSeconds(VideoRoomEntity videoRoomEntity) {
+    if (videoRoomEntity.getCreateDate() != null) {
+      return Duration.between(videoRoomEntity.getCreateDate(), LocalDateTime.now()).getSeconds();
+    } else {
+      log.warn("VideoRoomEntity.getCreateDate() is null, assuming duration seconds is zero");
+      return 0;
+    }
   }
 }

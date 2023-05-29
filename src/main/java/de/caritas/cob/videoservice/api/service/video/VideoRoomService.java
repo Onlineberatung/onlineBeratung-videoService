@@ -22,17 +22,17 @@ public class VideoRoomService {
     var videoRoom = new VideoRoomEntity();
     videoRoom.setSessionId(sessionId);
     videoRoom.setJitsiRoomId(jitsiRoomId);
-    videoRoom.setVideolink(videoLink);
+    videoRoom.setGuestVideoLink(videoLink);
     videoRoom.setCreateDate(LocalDateTime.now());
     return videoRoomRepository.save(videoRoom);
   }
 
   public VideoRoomEntity createGroupVideoRoom(
-      Long groupChatId, String jitsiRoomId, String videoLink) {
+      Long groupChatId, String jitsiRoomId, String guestVideoLink) {
     var videoRoom = new VideoRoomEntity();
     videoRoom.setGroupChatId(groupChatId);
     videoRoom.setJitsiRoomId(jitsiRoomId);
-    videoRoom.setVideolink(videoLink);
+    videoRoom.setGuestVideoLink(guestVideoLink);
     videoRoom.setCreateDate(LocalDateTime.now());
     videoRoom.setCloseDate(null);
     return videoRoomRepository.save(videoRoom);

@@ -35,7 +35,7 @@ class VideoRoomServiceTest {
     VideoRoomEntity capturedValue = captor.getValue();
     assertThat(capturedValue.getJitsiRoomId()).isEqualTo(jitsiRoomId);
     assertThat(capturedValue.getSessionId()).isEqualTo(1L);
-    assertThat(capturedValue.getVideolink()).isEqualTo("https://test.de");
+    assertThat(capturedValue.getGuestVideoLink()).isEqualTo("https://test.de");
     assertThat(capturedValue.getCreateDate()).isNotNull();
   }
 
@@ -51,7 +51,7 @@ class VideoRoomServiceTest {
     VideoRoomEntity capturedValue = captor.getValue();
     assertThat(capturedValue.getJitsiRoomId()).isEqualTo(jitsiRoomId);
     assertThat(capturedValue.getGroupChatId()).isEqualTo(1L);
-    assertThat(capturedValue.getVideolink()).isEqualTo("https://test.de");
+    assertThat(capturedValue.getGuestVideoLink()).isEqualTo("https://test.de");
   }
 
   @Test

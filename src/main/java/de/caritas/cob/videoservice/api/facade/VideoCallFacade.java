@@ -126,7 +126,7 @@ public class VideoCallFacade {
         this.videoRoomService.createGroupVideoRoom(
             createVideoCallRequest.getGroupChatId(),
             videoCallUuid,
-            videoCallUrls.getModeratorVideoUrl());
+            videoCallUrls.getUserVideoUrl());
 
     messageService.createAndSendVideoCallStartedMessage(
         chatById.getGroupId(), authenticatedUser.getUsername(), groupVideoRoom);
