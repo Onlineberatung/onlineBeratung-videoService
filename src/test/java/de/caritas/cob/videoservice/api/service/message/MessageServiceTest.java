@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.caritas.cob.videoservice.api.model.VideoRoomEntity;
 import de.caritas.cob.videoservice.messageservice.generated.web.model.AliasMessageDTO;
+import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO.EventTypeEnum;
 import java.time.LocalDateTime;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class MessageServiceTest {
     // when
     JSONObject messageContent =
         this.messageService.getMessageContent(
-            "user", videoRoomEntity, "title", new AliasMessageDTO());
+            "user", videoRoomEntity, "title", new AliasMessageDTO(), EventTypeEnum.CALL_STARTED);
     // then
     assertThat((Long) messageContent.get("durationSeconds")).isGreaterThanOrEqualTo(60L);
   }
@@ -36,7 +37,7 @@ class MessageServiceTest {
     // when
     JSONObject messageContent =
         this.messageService.getMessageContent(
-            "user", videoRoomEntity, "title", new AliasMessageDTO());
+            "user", videoRoomEntity, "title", new AliasMessageDTO(), EventTypeEnum.CALL_STARTED);
     // then
     assertThat((Long) messageContent.get("durationSeconds")).isZero();
   }

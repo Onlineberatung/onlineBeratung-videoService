@@ -98,7 +98,7 @@ public class MessageService {
     AliasMessageDTO message = new AliasMessageDTO();
 
     message.setContent(
-        getMessageContent(username, videoRoomEntity, messageTitle, message).toString());
+        getMessageContent(username, videoRoomEntity, messageTitle, message, eventType).toString());
     message.setVideoCallMessageDTO(new VideoCallMessageDTO().eventType(eventType));
     return message;
   }
@@ -107,7 +107,8 @@ public class MessageService {
       String username,
       VideoRoomEntity videoRoomEntity,
       String messageTitle,
-      AliasMessageDTO message) {
+      AliasMessageDTO message,
+      EventTypeEnum eventType) {
     JSONObject messageContent = new JSONObject();
     messageContent.put("title", messageTitle);
     message.setMessageType(MessageType.VIDEOCALL);
@@ -116,6 +117,7 @@ public class MessageService {
     messageContent.put("note", videoRoomEntity.getGuestVideoLink());
     long calculateDurationInSecods = calculateDurationInSeconds(videoRoomEntity);
     messageContent.put("durationSeconds", calculateDurationInSecods);
+    messageContent.put("eventType", eventType.getValue());
     return messageContent;
   }
 
