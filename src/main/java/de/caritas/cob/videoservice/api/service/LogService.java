@@ -6,17 +6,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
-/**
- * Service for logging.
- */
+/** Service for logging. */
 public class LogService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LogService.class);
-  public static final String STATISTICS_EVENT_PROCESSING_ERROR = "StatisticsEventProcessing error: ";
-  public static final String STATISTICS_EVENT_PROCESSING_WARNING = "StatisticsEventProcessing warning: ";
+  public static final String STATISTICS_EVENT_PROCESSING_ERROR =
+      "StatisticsEventProcessing error: ";
+  public static final String STATISTICS_EVENT_PROCESSING_WARNING =
+      "StatisticsEventProcessing warning: ";
 
-  private LogService() {
-  }
+  private LogService() {}
 
   /**
    * Logs an info message.
@@ -40,7 +39,7 @@ public class LogService {
    * Logs a warning message.
    *
    * @param httpStatus http status
-   * @param exception  The exception
+   * @param exception The exception
    */
   public static void logWarning(HttpStatus httpStatus, Exception exception) {
     LOGGER.warn("VideoService API: {}: {}", httpStatus.getReasonPhrase(), getStackTrace(exception));
@@ -49,7 +48,7 @@ public class LogService {
   /**
    * Logs a error message.
    *
-   * @param exception  The exception
+   * @param exception The exception
    */
   public static void logError(Exception exception) {
     LOGGER.error("VideoService API: {}", getStackTrace(exception));

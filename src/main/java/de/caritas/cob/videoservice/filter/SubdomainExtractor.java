@@ -44,8 +44,5 @@ public class SubdomainExtractor {
       return Optional.empty();
     }
     return of(domain.parts().get(0));
-
   }
-
 }
-

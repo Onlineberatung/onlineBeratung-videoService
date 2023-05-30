@@ -15,8 +15,11 @@ public class TechnicalUserTenantResolver implements TenantResolver {
   }
 
   private boolean isTechnicalUserRole(HttpServletRequest request) {
-    AccessToken token = ((KeycloakAuthenticationToken) request.getUserPrincipal()).getAccount()
-        .getKeycloakSecurityContext().getToken();
+    AccessToken token =
+        ((KeycloakAuthenticationToken) request.getUserPrincipal())
+            .getAccount()
+            .getKeycloakSecurityContext()
+            .getToken();
     return hasRoles(token) && token.getRealmAccess().getRoles().contains("technical");
   }
 

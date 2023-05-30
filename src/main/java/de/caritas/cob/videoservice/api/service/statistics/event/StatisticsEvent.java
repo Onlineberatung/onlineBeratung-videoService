@@ -3,9 +3,7 @@ package de.caritas.cob.videoservice.api.service.statistics.event;
 import de.caritas.cob.videoservice.statisticsservice.generated.web.model.EventType;
 import java.util.Optional;
 
-/**
- * Interface for statistics event.
- */
+/** Interface for statistics event. */
 public interface StatisticsEvent {
 
   /**
@@ -21,5 +19,4 @@ public interface StatisticsEvent {
    * @return the {@link EventType}
    */
   EventType getEventType();
-
 }

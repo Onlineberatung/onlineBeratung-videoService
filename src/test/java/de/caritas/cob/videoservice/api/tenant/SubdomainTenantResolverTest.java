@@ -16,25 +16,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class SubdomainTenantResolverTest {
 
-  @Mock
-  SubdomainExtractor subdomainExtractor;
+  @Mock SubdomainExtractor subdomainExtractor;
 
-  @Mock
-  TenantService tenantService;
+  @Mock TenantService tenantService;
 
-  @Mock
-  HttpServletRequest httpServletRequest;
+  @Mock HttpServletRequest httpServletRequest;
 
-  @InjectMocks
-  SubdomainTenantResolver subdomainTenantResolver;
+  @InjectMocks SubdomainTenantResolver subdomainTenantResolver;
 
   @Test
   void resolve_should_resolveTenantId_When_SubdomainCouldBeDetermined() {
     // given
     when(subdomainExtractor.getCurrentSubdomain()).thenReturn(Optional.of("mucoviscidose"));
-    when(tenantService.getRestrictedTenantDataBySubdomain("mucoviscidose")).thenReturn(
-        new de.caritas.cob.videoservice.tenantservice.generated.web.model.RestrictedTenantDTO()
-            .id(1L));
+    when(tenantService.getRestrictedTenantDataBySubdomain("mucoviscidose"))
+        .thenReturn(
+            new de.caritas.cob.videoservice.tenantservice.generated.web.model.RestrictedTenantDTO()
+                .id(1L));
 
     // when
     Optional<Long> resolve = subdomainTenantResolver.resolve(httpServletRequest);
@@ -54,5 +51,4 @@ class SubdomainTenantResolverTest {
     // then
     assertThat(resolve).isEmpty();
   }
-
 }

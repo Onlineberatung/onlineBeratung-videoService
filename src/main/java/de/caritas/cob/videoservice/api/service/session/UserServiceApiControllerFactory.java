@@ -12,11 +12,12 @@ public class UserServiceApiControllerFactory {
   @Value("${user.service.api.url}")
   private String userServiceApiUrl;
 
-  @Autowired
-  private RestTemplate restTemplate;
+  @Autowired private RestTemplate restTemplate;
 
   public UserControllerApi createControllerApi() {
-    var apiClient = new de.caritas.cob.videoservice.userservice.generated.ApiClient(restTemplate).setBasePath(this.userServiceApiUrl);
+    var apiClient =
+        new de.caritas.cob.videoservice.userservice.generated.ApiClient(restTemplate)
+            .setBasePath(this.userServiceApiUrl);
     return new UserControllerApi(apiClient);
   }
 }

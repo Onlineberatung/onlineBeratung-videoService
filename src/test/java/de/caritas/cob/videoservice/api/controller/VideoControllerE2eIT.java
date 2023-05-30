@@ -1,12 +1,13 @@
 package de.caritas.cob.videoservice.api.controller;
 
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_CONSULTANT;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_JITSI_TECHNICAL;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_USER;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
-import java.util.UUID;
 import javax.servlet.http.Cookie;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -28,9 +29,10 @@ class VideoControllerE2eIT {
   private static final String CSRF_HEADER = "csrfHeader";
   private static final String CSRF_VALUE = "test";
   private static final Cookie CSRF_COOKIE = new Cookie("csrfCookie", CSRF_VALUE);
+  private static final String EXISTING_ROOM_ID = "653ae5b9-a932-42a6-8935-d24010e3c5c1";
+  public static final String MUC_MEET_JITSI_SUFFIX = "@muc.meet.jitsi";
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @MockBean
   @SuppressWarnings("unused")
@@ -46,15 +48,42 @@ class VideoControllerE2eIT {
   @Test
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
   void stopVideoCallShouldReturnNoContent() throws Exception {
-    givenARoomId();
     givenAValidAuthUser();
 
-    mockMvc.perform(
-        post("/videocalls/stop/" + roomId)
-            .cookie(CSRF_COOKIE)
-            .header(CSRF_HEADER, CSRF_VALUE)
-            .accept(MediaType.APPLICATION_JSON)
-        )
+    mockMvc
+        .perform(
+            post("/videocalls/stop/" + EXISTING_ROOM_ID)
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @WithMockUser(authorities = AUTHORITY_USER)
+  void stopVideoCallShouldNotAllowToStopIfCalledAsUserAuthority() throws Exception {
+    givenAValidAuthUser();
+
+    mockMvc
+        .perform(
+            post("/videocalls/stop/" + EXISTING_ROOM_ID)
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(authorities = AUTHORITY_JITSI_TECHNICAL)
+  void stopVideoCallShouldReturnNoContentIfJitsiTechnicalUserRole() throws Exception {
+    givenAValidAuthUser();
+
+    mockMvc
+        .perform(
+            post("/videocalls/event/stop/" + EXISTING_ROOM_ID + MUC_MEET_JITSI_SUFFIX)
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
@@ -64,17 +93,13 @@ class VideoControllerE2eIT {
     givenAnInvalidRoomId();
     givenAValidAuthUser();
 
-    mockMvc.perform(
+    mockMvc
+        .perform(
             post("/videocalls/stop/" + roomId)
                 .cookie(CSRF_COOKIE)
                 .header(CSRF_HEADER, CSRF_VALUE)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().is4xxClientError());
-  }
-
-  private void givenARoomId() {
-    roomId = UUID.randomUUID().toString();
   }
 
   private void givenAnInvalidRoomId() {

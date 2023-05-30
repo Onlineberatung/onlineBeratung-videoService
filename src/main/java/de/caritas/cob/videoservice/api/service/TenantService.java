@@ -18,5 +18,4 @@ public class TenantService {
   public RestrictedTenantDTO getRestrictedTenantDataBySubdomain(String subdomain) {
     return tenantControllerApi.getRestrictedTenantDataBySubdomainWithHttpInfo(subdomain).getBody();
   }
-
 }

@@ -18,8 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = "spring.profiles.active=testing")
 public class MessageServiceApiClientConfigIT {
 
-  @Autowired
-  private MessageControllerApi messageControllerApi;
+  @Autowired private MessageControllerApi messageControllerApi;
 
   @Value("${message.service.api.url}")
   private String serviceApiUrl;
@@ -30,5 +29,4 @@ public class MessageServiceApiClientConfigIT {
 
     assertThat(apiClientUrl, is(this.serviceApiUrl));
   }
-
 }

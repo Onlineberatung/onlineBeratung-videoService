@@ -33,6 +33,7 @@ public class CacheManagerConfig {
 
   /**
    * Defines cache manager.
+   *
    * @return
    */
   @Bean(destroyMethod = "shutdown")
@@ -52,6 +53,4 @@ public class CacheManagerConfig {
     tenantCacheConfiguration.setTimeToLiveSeconds(tenantTimeToLiveSeconds);
     return tenantCacheConfiguration;
   }
-
-
 }

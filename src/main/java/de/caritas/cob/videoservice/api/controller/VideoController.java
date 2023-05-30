@@ -2,9 +2,9 @@ package de.caritas.cob.videoservice.api.controller;
 
 import de.caritas.cob.videoservice.api.facade.VideoCallFacade;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
-import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
 import de.caritas.cob.videoservice.api.model.VideoCallInfoDTO;
+import de.caritas.cob.videoservice.api.model.VideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.generated.api.controller.VideocallsApi;
@@ -18,9 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Controller for video call requests.
- */
+/** Controller for video call requests. */
 @RestController
 @RequiredArgsConstructor
 @Api(tags = "video-controller")
@@ -34,12 +32,19 @@ public class VideoController implements VideocallsApi {
    * Starts a new video call.
    *
    * @param createVideoCallDto {@link CreateVideoCallDTO}
-   * @return response entity with {@link CreateVideoCallResponseDTO} body
+   * @return response entity with {@link VideoCallResponseDTO} body
    */
   @Override
-  public ResponseEntity<CreateVideoCallResponseDTO> createVideoCall(@RequestHeader String rcUserId,
-      @Valid CreateVideoCallDTO createVideoCallDto) {
+  public ResponseEntity<VideoCallResponseDTO> createVideoCall(
+      @RequestHeader String rcUserId, @Valid CreateVideoCallDTO createVideoCallDto) {
     var response = videoCallFacade.startVideoCall(createVideoCallDto, rcUserId);
+
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  @Override
+  public ResponseEntity<VideoCallResponseDTO> joinVideoCall(UUID roomId) {
+    var response = videoCallFacade.joinGroupVideoCall(roomId.toString());
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
@@ -48,6 +53,12 @@ public class VideoController implements VideocallsApi {
   public ResponseEntity<Void> stopVideoCall(UUID roomId) {
     videoCallFacade.stopVideoCall(roomId.toString());
 
+    return ResponseEntity.noContent().build();
+  }
+
+  @Override
+  public ResponseEntity<Void> handleVideoCallStoppedEvent(String roomId) {
+    videoCallFacade.handleVideoCallStoppedEvent(roomId);
     return ResponseEntity.noContent().build();
   }
 
@@ -66,7 +77,6 @@ public class VideoController implements VideocallsApi {
   @Override
   public ResponseEntity<VideoCallInfoDTO> getWebToken(String roomId) {
     var videoCallInfo = videoCallUrlGeneratorService.generateJwt(roomId);
-
     return ResponseEntity.ok(videoCallInfo);
   }
 }

@@ -26,8 +26,8 @@ public class StartVideoCallStatisticsEventTest {
   public void setup() {
     uuid = UUID.randomUUID();
     startVideoCallStatisticsEvent =
-        new StartVideoCallStatisticsEvent(CONSULTANT_ID, UserRole.CONSULTANT, SESSION_ID,
-            uuid.toString());
+        new StartVideoCallStatisticsEvent(
+            CONSULTANT_ID, UserRole.CONSULTANT, SESSION_ID, uuid.toString());
   }
 
   @Test
@@ -66,5 +66,4 @@ public class StartVideoCallStatisticsEventTest {
     assertThat(result.isPresent(), is(true));
     assertThat(result.get(), jsonEquals(expectedJson).whenIgnoringPaths("timestamp"));
   }
-
 }

@@ -1,6 +1,5 @@
 package de.caritas.cob.videoservice.api.service;
 
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -8,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import de.caritas.cob.videoservice.api.tenant.TenantContext;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
@@ -65,5 +65,4 @@ class TenantHeaderSupplierTest {
     var requestAttributes = new ServletRequestAttributes(mockedServletRequest);
     RequestContextHolder.setRequestAttributes(requestAttributes);
   }
-
 }

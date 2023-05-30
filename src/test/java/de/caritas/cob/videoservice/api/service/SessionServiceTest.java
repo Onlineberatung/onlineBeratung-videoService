@@ -14,7 +14,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import de.caritas.cob.videoservice.api.service.securityheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import de.caritas.cob.videoservice.api.service.session.SessionService;
 import de.caritas.cob.videoservice.api.service.session.UserServiceApiControllerFactory;
 import de.caritas.cob.videoservice.userservice.generated.ApiClient;
@@ -36,33 +37,25 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @RunWith(MockitoJUnitRunner.class)
 public class SessionServiceTest {
 
-  @InjectMocks
-  private SessionService sessionService;
-  @Mock
-  private UserControllerApi userControllerApi;
-  @Mock
-  private SecurityHeaderSupplier serviceHelper;
+  @InjectMocks private SessionService sessionService;
+  @Mock private UserControllerApi userControllerApi;
+  @Mock private SecurityHeaderSupplier serviceHelper;
 
-  @Mock
-  private HttpHeaders httpHeaders;
+  @Mock private HttpHeaders httpHeaders;
 
-  @Mock
-  private ServletRequestAttributes requestAttributes;
+  @Mock private ServletRequestAttributes requestAttributes;
 
-  @Mock
-  private HttpServletRequest httpServletRequest;
+  @Mock private HttpServletRequest httpServletRequest;
 
-  @Mock
-  private TenantHeaderSupplier tenantHeaderSupplier;
+  @Mock private TenantHeaderSupplier tenantHeaderSupplier;
 
-  @Mock
-  private Enumeration<String> headers;
+  @Mock private Enumeration<String> headers;
 
-  @Mock
-  private UserServiceApiControllerFactory userControllerApiControllerFactory;
+  @Mock private UserServiceApiControllerFactory userControllerApiControllerFactory;
 
   @Test
-  public void findSessionOfCurrentConsultant_Should_ReturnConsultantSessionDto_When_GetSessionIsSuccessful() {
+  public void
+      findSessionOfCurrentConsultant_Should_ReturnConsultantSessionDto_When_GetSessionIsSuccessful() {
     ConsultantSessionDTO consultantSessionDto = mock(ConsultantSessionDTO.class);
     when(userControllerApiControllerFactory.createControllerApi()).thenReturn(userControllerApi);
 
@@ -101,5 +94,4 @@ public class SessionServiceTest {
   private void resetRequestAttributes() {
     RequestContextHolder.setRequestAttributes(null);
   }
-
 }

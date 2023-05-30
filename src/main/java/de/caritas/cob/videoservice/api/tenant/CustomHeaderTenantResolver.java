@@ -1,6 +1,6 @@
 package de.caritas.cob.videoservice.api.tenant;
 
-import de.caritas.cob.videoservice.api.service.TenantHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;

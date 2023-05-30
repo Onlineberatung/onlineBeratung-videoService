@@ -17,14 +17,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AccessTokenTenantResolverTest {
-  @Mock
-  HttpServletRequest authenticatedRequest;
+  @Mock HttpServletRequest authenticatedRequest;
 
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   KeycloakAuthenticationToken token;
 
-  @InjectMocks
-  AccessTokenTenantResolver accessTokenTenantResolver;
+  @InjectMocks AccessTokenTenantResolver accessTokenTenantResolver;
 
   @Test
   void resolve_Should_ResolveTenantId_When_TenantIdInAccessTokenClaim() {

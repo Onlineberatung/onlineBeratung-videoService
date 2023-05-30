@@ -28,5 +28,4 @@ public class UsernameDecoderTest {
   public void decodeUsername_Should_throwIllegalArgumentException_WhenDecodedUsernameIsNull() {
     String decodedUsername = new UsernameDecoder().decodeUsername(null);
   }
-
 }

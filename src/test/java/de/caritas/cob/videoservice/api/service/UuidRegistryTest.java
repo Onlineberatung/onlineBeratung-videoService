@@ -20,10 +20,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 public class UuidRegistryTest {
 
-  @InjectMocks
-  private UuidRegistry uuidRegistry;
-  @Mock
-  private List<UUID> uuidList;
+  @InjectMocks private UuidRegistry uuidRegistry;
+  @Mock private List<UUID> uuidList;
 
   @Before
   public void setUp() {

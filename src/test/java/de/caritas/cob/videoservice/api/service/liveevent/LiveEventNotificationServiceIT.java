@@ -19,8 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 @DirtiesContext
 class LiveEventNotificationServiceIT {
 
-  @Autowired
-  private LiveEventNotificationService underTest;
+  @Autowired private LiveEventNotificationService underTest;
 
   @MockBean
   @Qualifier("liveControllerApi")

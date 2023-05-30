@@ -3,7 +3,7 @@ package de.caritas.cob.videoservice.api.tenant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import de.caritas.cob.videoservice.api.service.TenantHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
@@ -14,13 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CustomHeaderTenantResolverTest {
-  @Mock
-  HttpServletRequest request;
-  @Mock
-  TenantHeaderSupplier tenantHeaderSupplier;
+  @Mock HttpServletRequest request;
+  @Mock TenantHeaderSupplier tenantHeaderSupplier;
 
-  @InjectMocks
-  CustomHeaderTenantResolver customHeaderTenantResolver;
+  @InjectMocks CustomHeaderTenantResolver customHeaderTenantResolver;
 
   @Test
   void resolve_Should_ResolveTenantId_When_SupplierCanResolveTenantId() {

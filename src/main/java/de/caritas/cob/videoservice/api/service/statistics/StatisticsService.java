@@ -51,5 +51,4 @@ public class StatisticsService {
                           statisticsEvent.getClass().getSimpleName())));
     }
   }
-
 }

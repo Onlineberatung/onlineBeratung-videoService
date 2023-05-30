@@ -1,6 +1,6 @@
 package de.caritas.cob.videoservice.api.testhelper;
 
-import de.caritas.cob.videoservice.api.model.CreateVideoCallResponseDTO;
+import de.caritas.cob.videoservice.api.model.VideoCallResponseDTO;
 import java.util.UUID;
 
 public class TestConstants {
@@ -12,6 +12,7 @@ public class TestConstants {
   public static final String ROLE_USER = "user";
   public static final String ROLE_UNKNOWN = "unknown";
   public static final String AUTHORITY_CONSULTANT = "AUTHORIZATION_CONSULTANT_DEFAULT";
+  public static final String AUTHORITY_JITSI_TECHNICAL = "AUTHORIZATION_JITSI_TECHNICAL_DEFAULT";
   public static final String AUTHORITY_USER = "AUTHORIZATION_USER_DEFAULT";
   public static final String BEARER_TOKEN = "w948hisidfgjaoidg839huishdfkjsdkfjhsdf34";
 
@@ -35,15 +36,19 @@ public class TestConstants {
   public static final Long SESSION_ID = 0L;
 
   /*
+   * Group chat
+   */
+  public static final Long GROUP_CHAT_ID = 1L;
+
+  /*
    * Video call
    */
   public static final String GUEST_VIDEO_CALL_URL =
       "https://video.call/237849234-34534-345345?jwt={guestToken}";
   public static final String MODERATOR_VIDEO_CALL_URL =
       "https://video.call/237849234-34534-345345?jwt={moderatorToken}";
-  public static final CreateVideoCallResponseDTO CREATE_VIDEO_CALL_RESPONSE_DTO =
-      new CreateVideoCallResponseDTO()
-          .moderatorVideoCallUrl(MODERATOR_VIDEO_CALL_URL);
+  public static final VideoCallResponseDTO CREATE_VIDEO_CALL_RESPONSE_DTO =
+      new VideoCallResponseDTO().moderatorVideoCallUrl(MODERATOR_VIDEO_CALL_URL);
   public static final String VIDEO_CALL_UUID = UUID.randomUUID().toString();
 
   /*

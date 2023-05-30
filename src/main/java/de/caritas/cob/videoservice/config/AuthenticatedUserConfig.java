@@ -19,9 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-/**
- * Configuration for the {@link VideoUser}.
- */
+/** Configuration for the {@link VideoUser}. */
 @Configuration
 public class AuthenticatedUserConfig {
 
@@ -84,8 +82,7 @@ public class AuthenticatedUserConfig {
 
   private String getUserAttribute(Map<String, Object> claimMap, String claimValue) {
     if (!claimMap.containsKey(claimValue)) {
-      throw new KeycloakException(
-          "Keycloak user attribute '" + claimValue + "' not found.");
+      throw new KeycloakException("Keycloak user attribute '" + claimValue + "' not found.");
     }
 
     return claimMap.get(claimValue).toString();
@@ -112,7 +109,8 @@ public class AuthenticatedUserConfig {
   @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
   public KeycloakSecurityContext getKeycloakSecurityContext() {
     return ((KeycloakAuthenticationToken) getRequest().getUserPrincipal())
-        .getAccount().getKeycloakSecurityContext();
+        .getAccount()
+        .getKeycloakSecurityContext();
   }
 
   private HttpServletRequest getRequest() {
