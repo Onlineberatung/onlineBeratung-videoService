@@ -58,6 +58,7 @@ class VideoRoomRepositoryTest {
     entity.setCreateDate(LocalDateTime.now());
     entity.setJitsiRoomId(UUID.randomUUID().toString());
     entity.setSessionId(1L);
+    entity.setRocketChatRoomId("rocketChatRoomId");
 
     // when
     var saved = videoRoomRepository.save(entity);
