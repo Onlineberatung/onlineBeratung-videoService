@@ -4,6 +4,7 @@ import static de.caritas.cob.videoservice.api.service.session.SessionStatus.IN_P
 import static de.caritas.cob.videoservice.api.service.session.SessionStatus.NEW;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CONSULTANT_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.GROUP_CHAT_ID;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ROCKETCHAT_ROOM_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.USERNAME;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.VIDEO_CALL_UUID;
@@ -34,6 +35,7 @@ import de.caritas.cob.videoservice.api.service.statistics.event.StartVideoCallSt
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.api.service.video.VideoRoomService;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
+import de.caritas.cob.videoservice.api.testhelper.TestConstants;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
 import de.caritas.cob.videoservice.statisticsservice.generated.web.model.UserRole;
@@ -98,19 +100,16 @@ public class VideoCallFacadeTest {
     // given
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
-    VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
-    when(chatService.findChatById(GROUP_CHAT_ID))
-        .thenReturn(
-            new EasyRandom()
-                .nextObject(
-                    de.caritas.cob.videoservice.userservice.generated.web.model.ChatInfoResponseDTO
-                        .class));
+    ChatInfoResponseDTO chatInfoResponse = new EasyRandom().nextObject(ChatInfoResponseDTO.class);
+    chatInfoResponse.setGroupId(TestConstants.ROCKETCHAT_ROOM_ID);
+    when(chatService.findChatById(GROUP_CHAT_ID)).thenReturn(chatInfoResponse);
     when(chatService.getChatMembers(GROUP_CHAT_ID))
         .thenReturn(
             new EasyRandom()
                 .nextObject(
                     de.caritas.cob.videoservice.userservice.generated.web.model
                         .ChatMembersResponseDTO.class));
+    VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
     // when
@@ -122,7 +121,10 @@ public class VideoCallFacadeTest {
     assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
     verify(videoRoomService)
         .createGroupVideoRoom(
-            Mockito.eq(GROUP_CHAT_ID), Mockito.eq(VIDEO_CALL_UUID), Mockito.anyString());
+            Mockito.eq(GROUP_CHAT_ID),
+            Mockito.eq(ROCKETCHAT_ROOM_ID),
+            Mockito.eq(VIDEO_CALL_UUID),
+            Mockito.anyString());
   }
 
   @Test(expected = AccessDeniedException.class)

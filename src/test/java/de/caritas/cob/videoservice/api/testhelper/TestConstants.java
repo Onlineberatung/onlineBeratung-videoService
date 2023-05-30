@@ -61,4 +61,5 @@ public class TestConstants {
    * Common
    */
   public static final String ERROR_MESSAGE = "Error message";
+  public static final String ROCKETCHAT_ROOM_ID = "R_ID_12345678";
 }

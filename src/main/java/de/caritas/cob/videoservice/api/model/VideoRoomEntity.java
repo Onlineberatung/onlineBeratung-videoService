@@ -29,6 +29,9 @@ public class VideoRoomEntity {
   @Column(name = "id", updatable = false, nullable = false)
   private Long id;
 
+  @Column(name = "rocketchat_room_id", updatable = false, nullable = false)
+  private String rocketChatRoomId;
+
   @Column(name = "jitsi_room_id", updatable = false, nullable = false)
   private String jitsiRoomId;
 

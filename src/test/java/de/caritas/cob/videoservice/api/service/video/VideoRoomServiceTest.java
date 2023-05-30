@@ -26,8 +26,10 @@ class VideoRoomServiceTest {
   void createOneToOneVideoRoom_Should_ReturnsCreatedVideoRoom() {
     // When
     String jitsiRoomId = UUID.randomUUID().toString();
+    String rocketChatRoomId = UUID.randomUUID().toString();
     var videoRoomResult =
-        videoRoomService.createOneToOneVideoRoom(1L, jitsiRoomId, "https://test.de");
+        videoRoomService.createOneToOneVideoRoom(
+            1L, rocketChatRoomId, jitsiRoomId, "https://test.de");
 
     // Then
     ArgumentCaptor<VideoRoomEntity> captor = ArgumentCaptor.forClass(VideoRoomEntity.class);
@@ -35,6 +37,7 @@ class VideoRoomServiceTest {
     VideoRoomEntity capturedValue = captor.getValue();
     assertThat(capturedValue.getJitsiRoomId()).isEqualTo(jitsiRoomId);
     assertThat(capturedValue.getSessionId()).isEqualTo(1L);
+    assertThat(capturedValue.getRocketChatRoomId()).isEqualTo(rocketChatRoomId);
     assertThat(capturedValue.getGuestVideoLink()).isEqualTo("https://test.de");
     assertThat(capturedValue.getCreateDate()).isNotNull();
   }
@@ -43,7 +46,9 @@ class VideoRoomServiceTest {
   void createGroupVideoRoom_Should_ReturnsCreatedVideoRoom() {
     // When
     String jitsiRoomId = UUID.randomUUID().toString();
-    var videoRoomResult = videoRoomService.createGroupVideoRoom(1L, jitsiRoomId, "https://test.de");
+    String rocketChatRoomId = UUID.randomUUID().toString();
+    var videoRoomResult =
+        videoRoomService.createGroupVideoRoom(1L, rocketChatRoomId, jitsiRoomId, "https://test.de");
 
     // Then
     ArgumentCaptor<VideoRoomEntity> captor = ArgumentCaptor.forClass(VideoRoomEntity.class);

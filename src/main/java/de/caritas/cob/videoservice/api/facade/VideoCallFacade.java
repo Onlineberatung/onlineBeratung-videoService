@@ -24,10 +24,7 @@ import de.caritas.cob.videoservice.liveservice.generated.web.model.EventType;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
 import de.caritas.cob.videoservice.statisticsservice.generated.web.model.UserRole;
-import de.caritas.cob.videoservice.userservice.generated.web.model.ChatInfoResponseDTO;
-import de.caritas.cob.videoservice.userservice.generated.web.model.ChatMembersResponseDTO;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
-import java.util.List;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -86,8 +83,12 @@ public class VideoCallFacade {
             initiatorRcUserId,
             createVideoCallRequest.getInitiatorDisplayName()),
         singletonList(consultantSessionDto.getAskerId()));
+
     this.videoRoomService.createOneToOneVideoRoom(
-        consultantSessionDto.getId(), videoCallUuid, videoCallUrls.getModeratorVideoUrl());
+        consultantSessionDto.getId(),
+        consultantSessionDto.getGroupId(),
+        videoCallUuid,
+        videoCallUrls.getModeratorVideoUrl());
     var createVideoCallResponseDto =
         new VideoCallResponseDTO().moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
     statisticsService.fireEvent(
@@ -104,13 +105,11 @@ public class VideoCallFacade {
     log.info(
         "Starting group video call for groupChatId {}", createVideoCallRequest.getGroupChatId());
 
-    ChatInfoResponseDTO chatById =
-        chatService.findChatById(createVideoCallRequest.getGroupChatId());
-    ChatMembersResponseDTO chatMembers =
-        chatService.getChatMembers(createVideoCallRequest.getGroupChatId());
+    var chatById = chatService.findChatById(createVideoCallRequest.getGroupChatId());
+    var chatMembers = chatService.getChatMembers(createVideoCallRequest.getGroupChatId());
     var videoCallUuid = uuidRegistry.generateUniqueUuid();
     var videoCallUrls = this.videoCallUrlGeneratorService.generateVideoCallUrls(videoCallUuid);
-    List<String> chatMemberIds =
+    var chatMemberIds =
         chatMembers.getMembers().stream()
             .map(member -> member.getId())
             .collect(Collectors.toList());
@@ -122,9 +121,10 @@ public class VideoCallFacade {
             createVideoCallRequest.getInitiatorDisplayName()),
         chatMemberIds);
 
-    VideoRoomEntity groupVideoRoom =
+    var groupVideoRoom =
         this.videoRoomService.createGroupVideoRoom(
             createVideoCallRequest.getGroupChatId(),
+            chatById.getGroupId(),
             videoCallUuid,
             videoCallUrls.getUserVideoUrl());
 
@@ -141,7 +141,7 @@ public class VideoCallFacade {
   }
 
   public VideoCallResponseDTO joinGroupVideoCall(String jitsiRoomId) {
-    VideoRoomEntity videoRoomEntity = videoRoomService.findByJitsiRoomId(jitsiRoomId).orElseThrow();
+    var videoRoomEntity = videoRoomService.findByJitsiRoomId(jitsiRoomId).orElseThrow();
     chatService.assertCanModerateChat(videoRoomEntity.getGroupChatId());
     log.info("Joining group video call for jitsiRoomId {}", jitsiRoomId);
     var videoCallUrls = this.videoCallUrlGeneratorService.generateVideoCallUrls(jitsiRoomId);
@@ -156,7 +156,7 @@ public class VideoCallFacade {
   public void handleVideoCallStoppedEvent(String roomId) {
     log.info("Handling video call stopped event for roomId {}", roomId);
     roomId = removeJitsiSuffix(roomId);
-    VideoRoomEntity videoRoomEntity = videoRoomService.findByJitsiRoomId(roomId).orElseThrow();
+    var videoRoomEntity = videoRoomService.findByJitsiRoomId(roomId).orElseThrow();
     if (videoRoomEntity.getGroupChatId() != null) {
       stopGroupVideoCall(videoRoomEntity);
     } else {
@@ -174,10 +174,9 @@ public class VideoCallFacade {
 
   private void stopGroupVideoCall(VideoRoomEntity videoRoomEntity) {
     log.info("Stopping group video call with groupChatId {}", videoRoomEntity.getGroupChatId());
-    ChatInfoResponseDTO chatById = chatService.findChatById(videoRoomEntity.getGroupChatId());
     videoRoomService.closeVideoRoom(videoRoomEntity);
     messageService.createAndSendVideoCallEndedMessage(
-        chatById.getGroupId(), "Video-Call stopped", videoRoomEntity);
+        videoRoomEntity.getRocketChatRoomId(), "Video-Call stopped", videoRoomEntity);
     fireVideoCallStoppedStatisticsEvent(videoRoomEntity.getJitsiRoomId());
     log.info("Stopped group video call with groupChatId {}", videoRoomEntity.getGroupChatId());
   }
