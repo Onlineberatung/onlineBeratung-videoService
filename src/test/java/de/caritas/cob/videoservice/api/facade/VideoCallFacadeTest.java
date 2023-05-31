@@ -106,10 +106,11 @@ public class VideoCallFacadeTest {
     chatInfoResponse.setGroupId(TestConstants.ROCKETCHAT_ROOM_ID);
     when(chatService.findChatById(GROUP_CHAT_ID)).thenReturn(chatInfoResponse);
     ChatMembersResponseDTO chatMembers = new EasyRandom().nextObject(ChatMembersResponseDTO.class);
-    chatMembers.setMembers(Lists.newArrayList(new ChatMemberResponseDTO().id("initiatorRcUserId").userId("initiatorUserId"), new ChatMemberResponseDTO().id("anotherRcUserId").userId("anotherUserId")));
-    when(chatService.getChatMembers(GROUP_CHAT_ID))
-        .thenReturn(
-            chatMembers);
+    chatMembers.setMembers(
+        Lists.newArrayList(
+            new ChatMemberResponseDTO().id("initiatorRcUserId").userId("initiatorUserId"),
+            new ChatMemberResponseDTO().id("anotherRcUserId").userId("anotherUserId")));
+    when(chatService.getChatMembers(GROUP_CHAT_ID)).thenReturn(chatMembers);
     VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
@@ -129,7 +130,8 @@ public class VideoCallFacadeTest {
 
     ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
 
-    verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(Mockito.any(LiveEventMessage.class), captor.capture());
+    verify(liveEventNotificationService)
+        .sendVideoCallRequestLiveEvent(Mockito.any(LiveEventMessage.class), captor.capture());
 
     assertThat(captor.getValue()).containsExactlyInAnyOrder("anotherUserId");
   }
