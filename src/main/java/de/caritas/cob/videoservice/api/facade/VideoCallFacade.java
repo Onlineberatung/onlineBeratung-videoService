@@ -111,7 +111,7 @@ public class VideoCallFacade {
     var videoCallUrls = this.videoCallUrlGeneratorService.generateVideoCallUrls(videoCallUuid);
     var chatMemberIds =
         chatMembers.getMembers().stream()
-            .map(member -> member.getId())
+            .map(member -> member.getUserId())
             .collect(Collectors.toList());
     this.liveEventNotificationService.sendVideoCallRequestLiveEvent(
         buildLiveEventMessage(
