@@ -65,6 +65,8 @@ public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .hasAuthority(CONSULTANT.getAuthority())
         .antMatchers("/videocalls/stop/{sessionId:" + UUID_PATTERN + "}")
         .hasAnyAuthority(CONSULTANT.getAuthority())
+        .antMatchers("/videocalls/join/{sessionId:" + UUID_PATTERN + "}")
+        .hasAnyAuthority(CONSULTANT.getAuthority())
         .antMatchers("/videocalls/event/stop/*")
         .hasAnyAuthority(JITSI_TECHNICAL.getAuthority())
         .antMatchers("/videocalls/reject")

@@ -143,6 +143,10 @@ public class VideoCallFacade {
 
   public VideoCallResponseDTO joinGroupVideoCall(String jitsiRoomId) {
     var videoRoomEntity = videoRoomService.findByJitsiRoomId(jitsiRoomId).orElseThrow();
+    if (videoRoomEntity.getSessionId() != null) {
+      throw new BadRequestException(
+          "Bad request: jitsiRoomId is not a group video call id", LogService::logWarning);
+    }
     chatService.assertCanModerateChat(videoRoomEntity.getGroupChatId());
     log.info("Joining group video call for jitsiRoomId {}", jitsiRoomId);
     var videoCallUrls = this.videoCallUrlGeneratorService.generateVideoCallUrls(jitsiRoomId);

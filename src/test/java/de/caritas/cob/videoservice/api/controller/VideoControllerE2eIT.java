@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
+import de.caritas.cob.videoservice.api.service.session.ChatService;
 import javax.servlet.http.Cookie;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +31,9 @@ class VideoControllerE2eIT {
   private static final String CSRF_VALUE = "test";
   private static final Cookie CSRF_COOKIE = new Cookie("csrfCookie", CSRF_VALUE);
   private static final String EXISTING_ROOM_ID = "653ae5b9-a932-42a6-8935-d24010e3c5c1";
+
+  private static final String EXISTING_GROUP_ROOM_ID = "999ae5b9-a932-42a6-8935-d24010e3c999";
+
   public static final String MUC_MEET_JITSI_SUFFIX = "@muc.meet.jitsi";
 
   @Autowired private MockMvc mockMvc;
@@ -37,6 +41,8 @@ class VideoControllerE2eIT {
   @MockBean
   @SuppressWarnings("unused")
   private VideoUser authenticatedUser;
+
+  @MockBean ChatService chatService;
 
   private String roomId;
 
@@ -67,6 +73,34 @@ class VideoControllerE2eIT {
     mockMvc
         .perform(
             post("/videocalls/stop/" + EXISTING_ROOM_ID)
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(authorities = AUTHORITY_CONSULTANT)
+  void joinVideoCallShouldReturnNoContentIfAuthorityConsultant() throws Exception {
+    givenAValidAuthUser();
+
+    mockMvc
+        .perform(
+            post("/videocalls/join/" + EXISTING_GROUP_ROOM_ID)
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @WithMockUser(authorities = AUTHORITY_USER)
+  void joinVideoCallShouldReturnNoContentIfAuthorityAdviceSeeker() throws Exception {
+    givenAValidAuthUser();
+
+    mockMvc
+        .perform(
+            post("/videocalls/join/" + EXISTING_GROUP_ROOM_ID)
                 .cookie(CSRF_COOKIE)
                 .header(CSRF_HEADER, CSRF_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
