@@ -70,7 +70,7 @@ public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .antMatchers("/videocalls/event/stop/*")
         .hasAnyAuthority(JITSI_TECHNICAL.getAuthority())
         .antMatchers("/videocalls/reject")
-        .hasAnyAuthority(USER.getAuthority())
+        .hasAnyAuthority(USER.getAuthority(), CONSULTANT.getAuthority())
         .antMatchers("/videocalls/*/jwt")
         .permitAll()
         .anyRequest()

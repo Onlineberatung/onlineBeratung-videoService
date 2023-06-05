@@ -3,11 +3,17 @@ package de.caritas.cob.videoservice.api.controller;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_CONSULTANT;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_JITSI_TECHNICAL;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_USER;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
+import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
+import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.api.service.session.ChatService;
 import javax.servlet.http.Cookie;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -21,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -43,6 +50,9 @@ class VideoControllerE2eIT {
   private VideoUser authenticatedUser;
 
   @MockBean ChatService chatService;
+
+  @MockBean
+  RejectVideoCallService rejectVideoCallService;
 
   private String roomId;
 
@@ -81,7 +91,7 @@ class VideoControllerE2eIT {
 
   @Test
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
-  void joinVideoCallShouldReturnNoContentIfAuthorityConsultant() throws Exception {
+  void joinVideoCallShouldReturnModeratorVideoCallUrlIfAuthorityConsultant() throws Exception {
     givenAValidAuthUser();
 
     mockMvc
@@ -90,7 +100,30 @@ class VideoControllerE2eIT {
                 .cookie(CSRF_COOKIE)
                 .header(CSRF_HEADER, CSRF_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent());
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("moderatorVideoCallUrl").isNotEmpty());
+  }
+
+  @Test
+  @WithMockUser(authorities = AUTHORITY_CONSULTANT)
+  void rejectVideoCallShouldReturnNoContentIfAuthorityConsultant() throws Exception {
+    givenAValidAuthUser();
+    var objectMapper = new ObjectMapper();
+
+    RejectVideoCallDTO rejectVideoCallDTO = new RejectVideoCallDTO();
+    rejectVideoCallDTO.setInitiatorRcUserId("123");
+    rejectVideoCallDTO.setInitiatorUsername("username");
+    rejectVideoCallDTO.setRcGroupId("rcGroupId");
+
+    mockMvc
+        .perform(
+            post("/videocalls/reject" )
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(rejectVideoCallDTO))
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
   }
 
   @Test
