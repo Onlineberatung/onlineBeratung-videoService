@@ -3,9 +3,7 @@ package de.caritas.cob.videoservice.api.service.video.jwt.model;
 import lombok.Builder;
 import lombok.Getter;
 
-/**
- * Video call token for anonymous user and asker (containing user name).
- */
+/** Video call token for anonymous user and asker (containing user name). */
 @Getter
 @Builder
 public class VideoCallToken {

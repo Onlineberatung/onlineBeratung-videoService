@@ -1,7 +1,8 @@
 package de.caritas.cob.videoservice.api.service;
 
 import de.caritas.cob.videoservice.api.model.RejectVideoCallDTO;
-import de.caritas.cob.videoservice.api.service.securityheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.SecurityHeaderSupplier;
+import de.caritas.cob.videoservice.api.service.httpheader.TenantHeaderSupplier;
 import de.caritas.cob.videoservice.messageservice.generated.ApiClient;
 import de.caritas.cob.videoservice.messageservice.generated.web.MessageControllerApi;
 import de.caritas.cob.videoservice.messageservice.generated.web.model.VideoCallMessageDTO;
@@ -10,9 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/**
- * Facade to encapsulate logic for the rejection of a video call.
- */
+/** Facade to encapsulate logic for the rejection of a video call. */
 @Service
 @RequiredArgsConstructor
 public class RejectVideoCallService {
@@ -25,12 +24,12 @@ public class RejectVideoCallService {
    * Sends a system message with rejection type to the message service.
    *
    * @param rejectVideoCallDto {@link RejectVideoCallDTO} containing all necessary reject
-   *                           information
+   *     information
    */
   public void rejectVideoCall(RejectVideoCallDTO rejectVideoCallDto) {
     addDefaultHeaders(this.messageControllerApi.getApiClient());
-    this.messageControllerApi.createVideoHintMessage(rejectVideoCallDto.getRcGroupId(),
-        fromRejectVideoCallDto(rejectVideoCallDto));
+    this.messageControllerApi.createVideoHintMessage(
+        rejectVideoCallDto.getRcGroupId(), fromRejectVideoCallDto(rejectVideoCallDto));
   }
 
   private void addDefaultHeaders(ApiClient apiClient) {
@@ -45,5 +44,4 @@ public class RejectVideoCallService {
         .initiatorRcUserId(rejectVideoCallDto.getInitiatorRcUserId())
         .initiatorUserName(rejectVideoCallDto.getInitiatorUsername());
   }
-
 }

@@ -20,11 +20,9 @@ import org.springframework.web.context.request.WebRequest;
 @RunWith(MockitoJUnitRunner.class)
 public class ApiDefaultResponseEntityExceptionHandlerTest {
 
-  @InjectMocks
-  private ApiDefaultResponseEntityExceptionHandler exceptionHandler;
+  @InjectMocks private ApiDefaultResponseEntityExceptionHandler exceptionHandler;
 
-  @Mock
-  private Logger logger;
+  @Mock private Logger logger;
 
   @Before
   public void setup() {
@@ -40,5 +38,4 @@ public class ApiDefaultResponseEntityExceptionHandlerTest {
     verify(this.logger, times(1))
         .error(eq("VideoService API: 500 Internal Server Error: {}"), anyString());
   }
-
 }

@@ -18,8 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = "spring.profiles.active=testing")
 public class UserServiceApiClientConfigIT {
 
-  @Autowired
-  private UserControllerApi userControllerApi;
+  @Autowired private UserControllerApi userControllerApi;
 
   @Value("${user.service.api.url}")
   private String userServiceApiUrl;

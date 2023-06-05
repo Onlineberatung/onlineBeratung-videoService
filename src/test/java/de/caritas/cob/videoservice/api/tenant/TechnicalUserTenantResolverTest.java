@@ -1,6 +1,5 @@
 package de.caritas.cob.videoservice.api.tenant;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -19,8 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TechnicalUserTenantResolverTest {
   public static final long TECHNICAL_CONTEXT = 0L;
-  @Mock
-  HttpServletRequest authenticatedRequest;
+  @Mock HttpServletRequest authenticatedRequest;
 
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   KeycloakAuthenticationToken token;
@@ -28,18 +26,15 @@ class TechnicalUserTenantResolverTest {
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   AccessToken accessToken;
 
-  @Mock
-  Access access;
+  @Mock Access access;
 
-  @InjectMocks
-  TechnicalUserTenantResolver technicalUserTenantResolver;
+  @InjectMocks TechnicalUserTenantResolver technicalUserTenantResolver;
 
   @Test
   void resolve_should_ResolveTechnicalTenantId_ForTechnicalUserRole() {
     // given
     when(authenticatedRequest.getUserPrincipal()).thenReturn(token);
-    when(token.getAccount()
-        .getKeycloakSecurityContext().getToken()).thenReturn(accessToken);
+    when(token.getAccount().getKeycloakSecurityContext().getToken()).thenReturn(accessToken);
     when(accessToken.getRealmAccess().getRoles()).thenReturn(Sets.newLinkedHashSet("technical"));
     var resolved = technicalUserTenantResolver.resolve(authenticatedRequest);
     // then
@@ -50,8 +45,7 @@ class TechnicalUserTenantResolverTest {
   void resolve_should_NotResolveTenantId_When_NonTechnicalUserRole() {
     // given
     when(authenticatedRequest.getUserPrincipal()).thenReturn(token);
-    when(token.getAccount()
-        .getKeycloakSecurityContext().getToken()).thenReturn(accessToken);
+    when(token.getAccount().getKeycloakSecurityContext().getToken()).thenReturn(accessToken);
     when(accessToken.getRealmAccess().getRoles()).thenReturn(Sets.newLinkedHashSet("another-role"));
     var resolved = technicalUserTenantResolver.resolve(authenticatedRequest);
     // then

@@ -30,7 +30,7 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/CreateVideoCallResponseDTO'
+                $ref: '#/components/schemas/VideoCallResponseDTO'
         400:
           description: BAD REQUEST - invalid/incomplete request or body object
         401:
@@ -40,6 +40,39 @@ paths:
           permission for given session'
         404:
           description: NOT FOUND - Session not found
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+      security:
+        - Bearer: [ ]
+  /videocalls/join/{roomId}:
+    post:
+      tags:
+        - video-controller
+      summary: 'Join an existing new video call room Id [Authorization: Role: consultant]'
+      operationId: joinGroupVideoCall
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: JOINED - joined successfully to a video call room
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/VideoCallResponseDTO'
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: 'FORBIDDEN - no/invalid role/authorization, CSRF token or consultant without
+          permission for given session'
+        404:
+          description: NOT FOUND - Room not found
         500:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
       security:
@@ -68,6 +101,33 @@ paths:
           description: UNAUTHORIZED - no/invalid Keycloak token
         403:
           description: FORBIDDEN - no/invalid CSRF token
+        404:
+          description: NOT FOUND - room ID unknown
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+
+  /videocalls/event/stop/{roomId}:
+    post:
+      tags:
+        - video-controller
+      summary: 'Stops a video call [Auth: jitsi-technical]'
+      description: 'Handles video call stop event fired by Jitsi (Machine2Machine).'
+      operationId: handleVideoCallStoppedEvent
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: NO CONTENT
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        403:
+          description: FORBIDDEN - access denied
         404:
           description: NOT FOUND - room ID unknown
         500:
@@ -129,6 +189,32 @@ paths:
           description: NOT FOUND - rcGroupId unknown
         500:
           description: INTERNAL SERVER ERROR - server encountered unexpected condition
+  /videocalls/room/{jitsiRoomId}:
+    post:
+      tags:
+        - video-controller
+      summary: 'Creates a new room [Authorization: Role: jitsi-technical]'
+      operationId: createRoom
+      parameters:
+        - name: jitsiRoomId
+          in: path
+          required: true
+          schema:
+            type: long
+      responses:
+        200:
+          description: OK - successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoRoomResponseDTO'
+        400:
+          description: BAD REQUEST - invalid/incomplete request or body object
+        401:
+          description: UNAUTHORIZED - no/invalid Keycloak token
+        500:
+          description: INTERNAL SERVER ERROR - server encountered unexpected condition
+
 
 components:
   schemas:
@@ -140,9 +226,12 @@ components:
         sessionId:
           type: integer
           format: int64
+        groupChatId:
+          type: integer
+          format: int64
         initiatorDisplayName:
           type: string
-    CreateVideoCallResponseDTO:
+    VideoCallResponseDTO:
       type: object
       required:
         - moderatorVideoCallUrl
@@ -176,6 +265,20 @@ components:
         domain:
           type: string
         jwt:
+          type: string
+
+    VideoRoomResponseDTO:
+      type: object
+      properties:
+        jitsiRoomId:
+          type: long
+          example: 12132
+        videoLink:
+          type: string
+          example: 12132
+        createDate:
+          type: string
+        updateDate:
           type: string
 
   securitySchemes:

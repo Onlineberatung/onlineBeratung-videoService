@@ -8,9 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * Configuration beans for the generated UserService API client.
- */
+/** Configuration beans for the generated UserService API client. */
 @Configuration
 public class UserServiceApiClientConfig {
 

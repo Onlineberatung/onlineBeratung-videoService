@@ -21,6 +21,7 @@ public class TenantServiceApiClientConfig {
 
   /**
    * Api client bean definition.
+   *
    * @param restTemplate rest template bean
    * @return
    */

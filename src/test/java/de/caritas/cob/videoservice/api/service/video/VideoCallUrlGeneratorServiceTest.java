@@ -23,11 +23,9 @@ public class VideoCallUrlGeneratorServiceTest {
   private static final String FIELD_NAME_VIDEO_CALL_URL = "videoCallServerUrl";
   private static final String VIDEO_CALL_URL = "https://video.call";
 
-  @InjectMocks
-  private VideoCallUrlGeneratorService videoCallUrlGeneratorService;
+  @InjectMocks private VideoCallUrlGeneratorService videoCallUrlGeneratorService;
 
-  @Mock
-  private TokenGeneratorService tokenGeneratorService;
+  @Mock private TokenGeneratorService tokenGeneratorService;
 
   @Test
   public void generateVideoCallUrls_Should_generateExpectedVideoCallUrls_When_askerNameIsGiven() {
@@ -39,22 +37,24 @@ public class VideoCallUrlGeneratorServiceTest {
     when(this.tokenGeneratorService.generateModeratorToken(any(), any()))
         .thenReturn(moderatorToken);
 
-    VideoCallUrls videoCallUrls = this.videoCallUrlGeneratorService
-        .generateVideoCallUrls("uniqueId");
+    VideoCallUrls videoCallUrls =
+        this.videoCallUrlGeneratorService.generateVideoCallUrls("uniqueId");
 
-    assertThat(videoCallUrls.getUserVideoUrl(),
+    assertThat(
+        videoCallUrls.getUserVideoUrl(),
         is(VIDEO_CALL_URL + "/uniqueId?jwt=" + videoCallToken.getUserRelatedToken()));
-    assertThat(videoCallUrls.getModeratorVideoUrl(),
+    assertThat(
+        videoCallUrls.getModeratorVideoUrl(),
         is(VIDEO_CALL_URL + "/uniqueId?jwt=" + moderatorToken));
   }
 
   @Test(expected = InternalServerErrorException.class)
-  public void generateVideoCallUrls_Should_throwInternalServerErrorException_When_videoUrlIsInvalid() {
+  public void
+      generateVideoCallUrls_Should_throwInternalServerErrorException_When_videoUrlIsInvalid() {
     VideoCallToken videoCallToken = new EasyRandom().nextObject(VideoCallToken.class);
     when(this.tokenGeneratorService.generateNonModeratorVideoCallToken(any()))
         .thenReturn(videoCallToken);
 
     this.videoCallUrlGeneratorService.generateVideoCallUrls("uniqueId");
   }
-
 }

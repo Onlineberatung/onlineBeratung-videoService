@@ -9,7 +9,6 @@ import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-
 @AllArgsConstructor
 @Component
 @Slf4j
@@ -39,7 +38,8 @@ public class AccessTokenTenantResolver implements TenantResolver {
 
   private Map<String, Object> getClaimMap(HttpServletRequest request) {
     KeycloakSecurityContext keycloakSecContext =
-        ((KeycloakAuthenticationToken) request.getUserPrincipal()).getAccount()
+        ((KeycloakAuthenticationToken) request.getUserPrincipal())
+            .getAccount()
             .getKeycloakSecurityContext();
     return keycloakSecContext.getToken().getOtherClaims();
   }
@@ -48,6 +48,4 @@ public class AccessTokenTenantResolver implements TenantResolver {
   public boolean canResolve(HttpServletRequest request) {
     return resolve(request).isPresent();
   }
-
-
 }

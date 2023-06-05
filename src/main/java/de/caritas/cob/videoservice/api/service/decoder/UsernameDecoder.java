@@ -5,9 +5,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import org.apache.commons.codec.binary.Base32;
 
-/**
- * Decoder class to decode encoded usernames.
- */
+/** Decoder class to decode encoded usernames. */
 public class UsernameDecoder {
 
   private static final String ENCODING_PREFIX = "enc.";
@@ -39,5 +37,4 @@ public class UsernameDecoder {
         .toUpperCase()
         .replace(BASE32_PLACEHOLDER_USERNAME_REPLACE_STRING, BASE32_PLACEHOLDER);
   }
-
 }
