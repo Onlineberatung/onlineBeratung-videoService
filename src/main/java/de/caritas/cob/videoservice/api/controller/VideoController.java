@@ -43,10 +43,10 @@ public class VideoController implements VideocallsApi {
   }
 
   @Override
-  public ResponseEntity<VideoCallResponseDTO> joinVideoCall(UUID roomId) {
+  public ResponseEntity<VideoCallResponseDTO> joinGroupVideoCall(UUID roomId) {
     var response = videoCallFacade.joinGroupVideoCall(roomId.toString());
 
-    return new ResponseEntity<>(response, HttpStatus.CREATED);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @Override

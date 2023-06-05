@@ -4,12 +4,11 @@ import static de.caritas.cob.videoservice.api.service.session.SessionStatus.IN_P
 import static de.caritas.cob.videoservice.api.service.session.SessionStatus.NEW;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CONSULTANT_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.GROUP_CHAT_ID;
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ROCKETCHAT_ROOM_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.USERNAME;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.VIDEO_CALL_UUID;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,6 +18,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Lists;
 import de.caritas.cob.videoservice.api.authorization.VideoUser;
 import de.caritas.cob.videoservice.api.exception.httpresponse.BadRequestException;
 import de.caritas.cob.videoservice.api.model.CreateVideoCallDTO;
@@ -34,11 +34,15 @@ import de.caritas.cob.videoservice.api.service.statistics.event.StartVideoCallSt
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
 import de.caritas.cob.videoservice.api.service.video.VideoRoomService;
 import de.caritas.cob.videoservice.api.service.video.jwt.model.VideoCallUrls;
+import de.caritas.cob.videoservice.api.testhelper.TestConstants;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.LiveEventMessage;
 import de.caritas.cob.videoservice.liveservice.generated.web.model.VideoCallRequestDTO;
 import de.caritas.cob.videoservice.statisticsservice.generated.web.model.UserRole;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ChatInfoResponseDTO;
+import de.caritas.cob.videoservice.userservice.generated.web.model.ChatMemberResponseDTO;
+import de.caritas.cob.videoservice.userservice.generated.web.model.ChatMembersResponseDTO;
 import de.caritas.cob.videoservice.userservice.generated.web.model.ConsultantSessionDTO;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -88,7 +92,7 @@ public class VideoCallFacadeTest {
         videoCallFacade.startVideoCall(new CreateVideoCallDTO().sessionId(SESSION_ID), "rcUserId");
 
     // then
-    assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
+    assertThat(result.getModeratorVideoCallUrl()).isEqualTo(videoCallUrls.getModeratorVideoUrl());
   }
 
   @Test
@@ -98,31 +102,38 @@ public class VideoCallFacadeTest {
     // given
     when(authenticatedUser.getUserId()).thenReturn(CONSULTANT_ID);
     when(uuidRegistry.generateUniqueUuid()).thenReturn(VIDEO_CALL_UUID);
+    ChatInfoResponseDTO chatInfoResponse = new EasyRandom().nextObject(ChatInfoResponseDTO.class);
+    chatInfoResponse.setGroupId(TestConstants.ROCKETCHAT_ROOM_ID);
+    when(chatService.findChatById(GROUP_CHAT_ID)).thenReturn(chatInfoResponse);
+    ChatMembersResponseDTO chatMembers = new EasyRandom().nextObject(ChatMembersResponseDTO.class);
+    chatMembers.setMembers(
+        Lists.newArrayList(
+            new ChatMemberResponseDTO().id("initiatorRcUserId").userId("initiatorUserId"),
+            new ChatMemberResponseDTO().id("anotherRcUserId").userId("anotherUserId")));
+    when(chatService.getChatMembers(GROUP_CHAT_ID)).thenReturn(chatMembers);
     VideoCallUrls videoCallUrls = new EasyRandom().nextObject(VideoCallUrls.class);
-    when(chatService.findChatById(GROUP_CHAT_ID))
-        .thenReturn(
-            new EasyRandom()
-                .nextObject(
-                    de.caritas.cob.videoservice.userservice.generated.web.model.ChatInfoResponseDTO
-                        .class));
-    when(chatService.getChatMembers(GROUP_CHAT_ID))
-        .thenReturn(
-            new EasyRandom()
-                .nextObject(
-                    de.caritas.cob.videoservice.userservice.generated.web.model
-                        .ChatMembersResponseDTO.class));
     when(videoCallUrlGeneratorService.generateVideoCallUrls(any())).thenReturn(videoCallUrls);
 
     // when
     VideoCallResponseDTO result =
         videoCallFacade.startVideoCall(
-            new CreateVideoCallDTO().groupChatId(GROUP_CHAT_ID), "rcUserId");
+            new CreateVideoCallDTO().groupChatId(GROUP_CHAT_ID), "initiatorRcUserId");
 
     // then
-    assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
+    assertThat(result.getModeratorVideoCallUrl()).isEqualTo(videoCallUrls.getModeratorVideoUrl());
     verify(videoRoomService)
         .createGroupVideoRoom(
-            Mockito.eq(GROUP_CHAT_ID), Mockito.eq(VIDEO_CALL_UUID), Mockito.anyString());
+            Mockito.eq(GROUP_CHAT_ID),
+            Mockito.eq(ROCKETCHAT_ROOM_ID),
+            Mockito.eq(VIDEO_CALL_UUID),
+            Mockito.anyString());
+
+    ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
+
+    verify(liveEventNotificationService)
+        .sendVideoCallRequestLiveEvent(Mockito.any(LiveEventMessage.class), captor.capture());
+
+    assertThat(captor.getValue()).containsExactlyInAnyOrder("anotherUserId");
   }
 
   @Test(expected = AccessDeniedException.class)
@@ -162,7 +173,7 @@ public class VideoCallFacadeTest {
     VideoCallResponseDTO result = videoCallFacade.joinGroupVideoCall(VIDEO_CALL_UUID);
 
     // then
-    assertThat(result.getModeratorVideoCallUrl(), is(videoCallUrls.getModeratorVideoUrl()));
+    assertThat(result.getModeratorVideoCallUrl()).isEqualTo(videoCallUrls.getModeratorVideoUrl());
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -213,7 +224,7 @@ public class VideoCallFacadeTest {
     // then
     verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(argument.capture(), any());
     verify(liveEventNotificationService, times(1)).sendVideoCallRequestLiveEvent(any(), any());
-    assertThat(argument.getValue(), instanceOf(LiveEventMessage.class));
+    assertThat(argument.getValue()).isInstanceOf(LiveEventMessage.class);
     var eventContent = (VideoCallRequestDTO) argument.getValue().getEventContent();
     assertNotNull(eventContent);
     assertEquals(consultantSessionDto.getGroupId(), eventContent.getRcGroupId());
@@ -259,20 +270,20 @@ public class VideoCallFacadeTest {
     String userId =
         Objects.requireNonNull(ReflectionTestUtils.getField(captor.getValue(), "userId"))
             .toString();
-    assertThat(userId, is(CONSULTANT_ID));
+    assertThat(userId).isEqualTo(CONSULTANT_ID);
     String userRole =
         Objects.requireNonNull(ReflectionTestUtils.getField(captor.getValue(), "userRole"))
             .toString();
-    assertThat(userRole, is(UserRole.CONSULTANT.toString()));
+    assertThat(userRole).isEqualTo(UserRole.CONSULTANT.toString());
     Long sessionId =
         Long.valueOf(
             Objects.requireNonNull(ReflectionTestUtils.getField(captor.getValue(), "sessionId"))
                 .toString());
-    assertThat(sessionId, is(SESSION_ID));
+    assertThat(sessionId).isEqualTo(SESSION_ID);
     String videoCallUuid =
         Objects.requireNonNull(ReflectionTestUtils.getField(captor.getValue(), "videoCallUuid"))
             .toString();
-    assertThat(videoCallUuid, is(VIDEO_CALL_UUID));
+    assertThat(videoCallUuid).isEqualTo(VIDEO_CALL_UUID);
   }
 
   @Test
@@ -301,10 +312,10 @@ public class VideoCallFacadeTest {
     var argument = ArgumentCaptor.forClass(LiveEventMessage.class);
     verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(argument.capture(), any());
     verify(liveEventNotificationService).sendVideoCallRequestLiveEvent(any(), any());
-    assertThat(argument.getValue(), instanceOf(LiveEventMessage.class));
+    assertThat(argument.getValue()).isInstanceOf(LiveEventMessage.class);
     var eventContent = (VideoCallRequestDTO) argument.getValue().getEventContent();
     assertNotNull(eventContent);
-    assertThat(eventContent.getInitiatorUsername(), is("initiator display name"));
+    assertThat(eventContent.getInitiatorUsername()).isEqualTo("initiator display name");
   }
 
   @Test

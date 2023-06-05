@@ -49,7 +49,7 @@ paths:
       tags:
         - video-controller
       summary: 'Join an existing new video call room Id [Authorization: Role: consultant]'
-      operationId: joinVideoCall
+      operationId: joinGroupVideoCall
       parameters:
         - name: roomId
           in: path

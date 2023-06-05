@@ -3,7 +3,6 @@ package de.caritas.cob.videoservice.api.service.video;
 import de.caritas.cob.videoservice.api.model.VideoRoomEntity;
 import de.caritas.cob.videoservice.api.repository.VideoRoomRepository;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
 import lombok.NonNull;
@@ -18,9 +17,10 @@ public class VideoRoomService {
   private final @NonNull VideoRoomRepository videoRoomRepository;
 
   public VideoRoomEntity createOneToOneVideoRoom(
-      Long sessionId, String jitsiRoomId, String videoLink) {
+      Long sessionId, String rocketChatRoomId, String jitsiRoomId, String videoLink) {
     var videoRoom = new VideoRoomEntity();
     videoRoom.setSessionId(sessionId);
+    videoRoom.setRocketChatRoomId(rocketChatRoomId);
     videoRoom.setJitsiRoomId(jitsiRoomId);
     videoRoom.setGuestVideoLink(videoLink);
     videoRoom.setCreateDate(LocalDateTime.now());
@@ -28,10 +28,12 @@ public class VideoRoomService {
   }
 
   public VideoRoomEntity createGroupVideoRoom(
-      Long groupChatId, String jitsiRoomId, String guestVideoLink) {
+      Long groupChatId, String rocketChatRoomId, String jitsiRoomId, String guestVideoLink) {
     var videoRoom = new VideoRoomEntity();
     videoRoom.setGroupChatId(groupChatId);
     videoRoom.setJitsiRoomId(jitsiRoomId);
+    videoRoom.setRocketChatRoomId(rocketChatRoomId);
+
     videoRoom.setGuestVideoLink(guestVideoLink);
     videoRoom.setCreateDate(LocalDateTime.now());
     videoRoom.setCloseDate(null);
@@ -39,7 +41,7 @@ public class VideoRoomService {
   }
 
   public Optional<VideoRoomEntity> findLatestActiveRoomForSessionId(Long sessionId) {
-    Collection<VideoRoomEntity> bySessionId = videoRoomRepository.findBySessionId(sessionId);
+    var bySessionId = videoRoomRepository.findBySessionId(sessionId);
     return bySessionId.stream()
         .filter(x -> x.getCloseDate() == null)
         .sorted(Comparator.comparing(VideoRoomEntity::getCreateDate).reversed())
