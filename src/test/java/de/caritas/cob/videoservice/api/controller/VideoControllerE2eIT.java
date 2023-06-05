@@ -3,8 +3,6 @@ package de.caritas.cob.videoservice.api.controller;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_CONSULTANT;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_JITSI_TECHNICAL;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.AUTHORITY_USER;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,7 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -51,8 +48,7 @@ class VideoControllerE2eIT {
 
   @MockBean ChatService chatService;
 
-  @MockBean
-  RejectVideoCallService rejectVideoCallService;
+  @MockBean RejectVideoCallService rejectVideoCallService;
 
   private String roomId;
 
@@ -108,20 +104,19 @@ class VideoControllerE2eIT {
   @WithMockUser(authorities = AUTHORITY_CONSULTANT)
   void rejectVideoCallShouldReturnNoContentIfAuthorityConsultant() throws Exception {
     givenAValidAuthUser();
+    RejectVideoCallDTO rejectVideoCall = new RejectVideoCallDTO();
+    rejectVideoCall.setInitiatorRcUserId("123");
+    rejectVideoCall.setInitiatorUsername("username");
+    rejectVideoCall.setRcGroupId("rcGroupId");
     var objectMapper = new ObjectMapper();
-
-    RejectVideoCallDTO rejectVideoCallDTO = new RejectVideoCallDTO();
-    rejectVideoCallDTO.setInitiatorRcUserId("123");
-    rejectVideoCallDTO.setInitiatorUsername("username");
-    rejectVideoCallDTO.setRcGroupId("rcGroupId");
 
     mockMvc
         .perform(
-            post("/videocalls/reject" )
+            post("/videocalls/reject")
                 .cookie(CSRF_COOKIE)
                 .header(CSRF_HEADER, CSRF_VALUE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(rejectVideoCallDTO))
+                .content(objectMapper.writeValueAsString(rejectVideoCall))
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
