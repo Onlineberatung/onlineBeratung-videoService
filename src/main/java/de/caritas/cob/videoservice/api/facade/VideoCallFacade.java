@@ -85,10 +85,7 @@ public class VideoCallFacade {
         singletonList(consultantSessionDto.getAskerId()));
 
     this.videoRoomService.createOneToOneVideoRoom(
-        consultantSessionDto.getId(),
-        consultantSessionDto.getGroupId(),
-        videoCallUuid,
-        videoCallUrls.getModeratorVideoUrl());
+        consultantSessionDto.getId(), consultantSessionDto.getGroupId(), videoCallUuid);
     var createVideoCallResponseDto =
         new VideoCallResponseDTO().moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
     statisticsService.fireEvent(
@@ -124,15 +121,13 @@ public class VideoCallFacade {
 
     var groupVideoRoom =
         this.videoRoomService.createGroupVideoRoom(
-            createVideoCallRequest.getGroupChatId(),
-            chatById.getGroupId(),
-            videoCallUuid,
-            videoCallUrls.getUserVideoUrl());
+            createVideoCallRequest.getGroupChatId(), chatById.getGroupId(), videoCallUuid);
 
     messageService.createAndSendVideoCallStartedMessage(
         chatById.getGroupId(),
         authenticatedUser.getUsername(),
         groupVideoRoom,
+        videoCallUrls.getUserVideoUrl(),
         createVideoCallRequest.getInitiatorDisplayName(),
         initiatorRcUserId);
 
