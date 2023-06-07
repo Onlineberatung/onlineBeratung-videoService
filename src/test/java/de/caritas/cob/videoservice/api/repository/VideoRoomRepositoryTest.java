@@ -54,7 +54,6 @@ class VideoRoomRepositoryTest {
   void create_Should_createVideoRoom() {
     // given
     VideoRoomEntity entity = new VideoRoomEntity();
-    entity.setGuestVideoLink("https://videolink." + UUID.randomUUID());
     entity.setCreateDate(LocalDateTime.now());
     entity.setJitsiRoomId(UUID.randomUUID().toString());
     entity.setSessionId(1L);
