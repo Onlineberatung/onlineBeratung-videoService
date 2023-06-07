@@ -6,7 +6,6 @@ CREATE TABLE videoservice.`videoroom` (
   `group_chat_id` bigint(21) NULL,
   `jitsi_room_id` varchar(40) NOT NULL,
   `rocketchat_room_id` varchar(40) NULL,
-  `guest_video_link` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
   `create_date` datetime NOT NULL DEFAULT (UTC_TIMESTAMP),
   `close_date` datetime NULL,
   PRIMARY KEY (`id`)

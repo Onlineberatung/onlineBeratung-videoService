@@ -64,12 +64,14 @@ public class MessageService {
       String groupId,
       String username,
       VideoRoomEntity videoRoomEntity,
+      String guestVideoUrl,
       String initiatorDisplayName,
       String initiatorRcUserId) {
     AliasMessageDTO message =
         createVideoChatMessage(
             username,
             videoRoomEntity,
+            guestVideoUrl,
             "Videochat has started. Initiating moderator has joined the call.",
             EventTypeEnum.CALL_STARTED);
     message.getVideoCallMessageDTO().setInitiatorRcUserId(initiatorRcUserId);
@@ -78,11 +80,12 @@ public class MessageService {
   }
 
   public void createAndSendVideoCallEndedMessage(
-      String groupId, String username, VideoRoomEntity videoRoomEntity) {
+      String groupId, String username, VideoRoomEntity videoRoomEntity, String guestVideoUrl) {
     AliasMessageDTO message =
         createVideoChatMessage(
             username,
             videoRoomEntity,
+            guestVideoUrl,
             "Videochat has ended. All moderators have left the call.",
             EventTypeEnum.CALL_ENDED);
     message.getVideoCallMessageDTO().setInitiatorRcUserId("");
@@ -90,15 +93,23 @@ public class MessageService {
     sendMessage(groupId, message);
   }
 
+  public void createAndSendVideoCallEndedMessage(
+      String groupId, String username, VideoRoomEntity videoRoomEntity) {
+    createAndSendVideoCallEndedMessage(groupId, username, videoRoomEntity, "");
+  }
+
   private AliasMessageDTO createVideoChatMessage(
       String username,
       VideoRoomEntity videoRoomEntity,
+      String guestVideoUrl,
       String messageTitle,
       EventTypeEnum eventType) {
     AliasMessageDTO message = new AliasMessageDTO();
 
     message.setContent(
-        getMessageContent(username, videoRoomEntity, messageTitle, message, eventType).toString());
+        getMessageContent(
+                username, videoRoomEntity, guestVideoUrl, messageTitle, message, eventType)
+            .toString());
     message.setVideoCallMessageDTO(new VideoCallMessageDTO().eventType(eventType));
     return message;
   }
@@ -106,6 +117,7 @@ public class MessageService {
   JSONObject getMessageContent(
       String username,
       VideoRoomEntity videoRoomEntity,
+      String guestVideoUrl,
       String messageTitle,
       AliasMessageDTO message,
       EventTypeEnum eventType) {
@@ -114,7 +126,7 @@ public class MessageService {
     message.setMessageType(MessageType.VIDEOCALL);
     messageContent.put("date", videoRoomEntity.getCreateDate());
     messageContent.put("moderator_user", username);
-    messageContent.put("note", videoRoomEntity.getGuestVideoLink());
+    messageContent.put("note", guestVideoUrl);
     long calculateDurationInSecods = calculateDurationInSeconds(videoRoomEntity);
     messageContent.put("durationSeconds", calculateDurationInSecods);
     messageContent.put("eventType", eventType.getValue());

@@ -41,9 +41,6 @@ public class VideoRoomEntity {
   @Column(name = "group_chat_id", updatable = false)
   private Long groupChatId;
 
-  @Column(name = "guest_video_link", nullable = false)
-  private String guestVideoLink;
-
   @Column(name = "create_date", nullable = false)
   private LocalDateTime createDate;
 

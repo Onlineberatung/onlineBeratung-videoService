@@ -25,7 +25,12 @@ class MessageServiceTest {
     // when
     JSONObject messageContent =
         this.messageService.getMessageContent(
-            "user", videoRoomEntity, "title", new AliasMessageDTO(), EventTypeEnum.CALL_STARTED);
+            "user",
+            videoRoomEntity,
+            "guestVideoCallUrl",
+            "title",
+            new AliasMessageDTO(),
+            EventTypeEnum.CALL_STARTED);
     // then
     assertThat((Long) messageContent.get("durationSeconds")).isGreaterThanOrEqualTo(60L);
   }
@@ -37,7 +42,12 @@ class MessageServiceTest {
     // when
     JSONObject messageContent =
         this.messageService.getMessageContent(
-            "user", videoRoomEntity, "title", new AliasMessageDTO(), EventTypeEnum.CALL_STARTED);
+            "user",
+            videoRoomEntity,
+            "guestVideoCallUrl",
+            "title",
+            new AliasMessageDTO(),
+            EventTypeEnum.CALL_STARTED);
     // then
     assertThat((Long) messageContent.get("durationSeconds")).isZero();
   }

@@ -122,11 +122,7 @@ public class VideoCallFacadeTest {
     // then
     assertThat(result.getModeratorVideoCallUrl()).isEqualTo(videoCallUrls.getModeratorVideoUrl());
     verify(videoRoomService)
-        .createGroupVideoRoom(
-            Mockito.eq(GROUP_CHAT_ID),
-            Mockito.eq(ROCKETCHAT_ROOM_ID),
-            Mockito.eq(VIDEO_CALL_UUID),
-            Mockito.anyString());
+        .createGroupVideoRoom(GROUP_CHAT_ID, ROCKETCHAT_ROOM_ID, VIDEO_CALL_UUID);
 
     ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
 
