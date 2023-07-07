@@ -35,7 +35,7 @@
 		<java-jwt.version>3.12.1</java-jwt.version>
 		<commons-lang3.version>3.11</commons-lang3.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
-		<h2.version>2.1.214</h2.version>
+		<h2.version>2.2.220</h2.version>
 		<liquibase-core.version>4.9.1</liquibase-core.version>
 		<hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
 		<liquibase.maven.plugin.version>4.1.1</liquibase.maven.plugin.version>
