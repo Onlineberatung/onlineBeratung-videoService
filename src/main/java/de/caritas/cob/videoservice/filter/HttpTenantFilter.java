@@ -30,7 +30,7 @@ public class HttpTenantFilter extends OncePerRequestFilter {
         "/actuator/health/**",
         "/swagger-ui.html",
         "/favicon.ico",
-        "/videocalls/event/stop/**"
+        "/videocalls/event/stop/"
       };
   private final TenantResolverService tenantResolverService;
   private final DefaultRequiresTenantFilterMatcher requiresTenantFilterMatcher =
