@@ -7,12 +7,14 @@ import de.caritas.cob.videoservice.api.model.VideoCallInfoDTO;
 import de.caritas.cob.videoservice.api.model.VideoCallResponseDTO;
 import de.caritas.cob.videoservice.api.service.RejectVideoCallService;
 import de.caritas.cob.videoservice.api.service.video.VideoCallUrlGeneratorService;
+import de.caritas.cob.videoservice.api.tenant.TenantContext;
 import de.caritas.cob.videoservice.generated.api.controller.VideocallsApi;
 import io.swagger.annotations.Api;
 import java.util.UUID;
 import javax.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -27,6 +29,9 @@ public class VideoController implements VideocallsApi {
   private final @NonNull VideoCallFacade videoCallFacade;
   private final @NonNull RejectVideoCallService rejectVideoCallService;
   private final @NonNull VideoCallUrlGeneratorService videoCallUrlGeneratorService;
+
+  @Value("${multitenancy.enabled}")
+  private boolean multitenancy;
 
   /**
    * Starts a new video call.
@@ -58,6 +63,11 @@ public class VideoController implements VideocallsApi {
 
   @Override
   public ResponseEntity<Void> handleVideoCallStoppedEvent(String roomId) {
+    if (multitenancy) {
+      // prosody events are tenant-unaware, therefore set the tenant to 0 to be able to send
+      // messages
+      TenantContext.setCurrentTenant(0L);
+    }
     videoCallFacade.handleVideoCallStoppedEvent(roomId);
     return ResponseEntity.noContent().build();
   }

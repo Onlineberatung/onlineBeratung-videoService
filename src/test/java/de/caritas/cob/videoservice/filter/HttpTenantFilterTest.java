@@ -40,6 +40,20 @@ class HttpTenantFilterTest {
   }
 
   @Test
+  void doFilterInternal_Should_NotApply_When_RequestBelongsToTenancyWhiteListForStopEvent()
+      throws ServletException, IOException {
+    // given
+    Mockito.when(request.getRequestURI())
+        .thenReturn("/videocalls/event/stop/5bb0dc45-eb79-4f75-af53-a4d0de4eeaf2@muc.meet.jitsi");
+
+    // when
+    httpTenantFilter.doFilterInternal(request, response, filterChain);
+
+    // then
+    Mockito.verifyNoInteractions(tenantResolverService);
+  }
+
+  @Test
   void doFilterInternal_Should_Apply_When_DoesNotBelongBelongsToTenancyWhiteList()
       throws ServletException, IOException {
 
