@@ -124,6 +124,10 @@ components:
           format: int64
           description: The id of the session
           example: 12345
+        adviceSeekerId:
+          type: string
+          description: The id of the adviceseeker
+          example: 12345
         videoCallUuid:
           type: string
           description: The uuid of the video call
