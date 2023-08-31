@@ -57,6 +57,8 @@ public class TestConstants {
   public static final String USERNAME = "username";
   public static final String CONSULTANT_ID = "fb3cbee2-c5f3-4582-a5e4-d853572e9860";
 
+  public static final String ADVICESEEKER_ID = "jkhdsahas-c5f3-4582-a5e5-d853572e9861";
+
   /*
    * Common
    */

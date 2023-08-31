@@ -19,6 +19,7 @@ public class StartVideoCallStatisticsEvent implements StatisticsEvent {
   private @NonNull UserRole userRole;
   private @NonNull Long sessionId;
   private @NonNull String videoCallUuid;
+  private @NonNull String adviceSeekerId;
 
   /** {@inheritDoc} */
   @Override
@@ -40,6 +41,7 @@ public class StartVideoCallStatisticsEvent implements StatisticsEvent {
         .userRole(userRole)
         .sessionId(sessionId)
         .videoCallUuid(videoCallUuid)
+        .adviceSeekerId(adviceSeekerId)
         .timestamp(CustomOffsetDateTime.nowInUtc());
   }
 }

@@ -1,5 +1,6 @@
 package de.caritas.cob.videoservice.api.service.statistics;
 
+import static de.caritas.cob.videoservice.api.testhelper.TestConstants.ADVICESEEKER_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.CONSULTANT_ID;
 import static de.caritas.cob.videoservice.api.testhelper.TestConstants.SESSION_ID;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
@@ -43,7 +44,7 @@ public class StatisticsServiceIT {
     UUID uuid = UUID.randomUUID();
     StartVideoCallStatisticsEvent startVideoCallStatisticsEvent =
         new StartVideoCallStatisticsEvent(
-            CONSULTANT_ID, UserRole.CONSULTANT, SESSION_ID, uuid.toString());
+            CONSULTANT_ID, UserRole.CONSULTANT, SESSION_ID, uuid.toString(), ADVICESEEKER_ID);
 
     statisticsService.fireEvent(startVideoCallStatisticsEvent);
     Message message =
@@ -52,6 +53,9 @@ public class StatisticsServiceIT {
 
     String expectedJson =
         "{"
+            + "  \"adviceSeekerId\":\""
+            + ADVICESEEKER_ID
+            + "\","
             + "  \"userId\":\""
             + CONSULTANT_ID
             + "\","
