@@ -22,12 +22,18 @@ public class StartVideoCallStatisticsEventTest {
   private StartVideoCallStatisticsEvent startVideoCallStatisticsEvent;
   private UUID uuid;
 
+  private UUID adviceSeekerUuid;
+
   @Before
   public void setup() {
     uuid = UUID.randomUUID();
     startVideoCallStatisticsEvent =
         new StartVideoCallStatisticsEvent(
-            CONSULTANT_ID, UserRole.CONSULTANT, SESSION_ID, uuid.toString());
+            CONSULTANT_ID,
+            UserRole.CONSULTANT,
+            SESSION_ID,
+            uuid.toString(),
+            adviceSeekerUuid.toString());
   }
 
   @Test

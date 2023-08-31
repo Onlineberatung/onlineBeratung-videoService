@@ -90,7 +90,11 @@ public class VideoCallFacade {
         new VideoCallResponseDTO().moderatorVideoCallUrl(videoCallUrls.getModeratorVideoUrl());
     statisticsService.fireEvent(
         new StartVideoCallStatisticsEvent(
-            authenticatedUser.getUserId(), UserRole.CONSULTANT, sessionId, videoCallUuid));
+            authenticatedUser.getUserId(),
+            UserRole.CONSULTANT,
+            sessionId,
+            videoCallUuid,
+            consultantSessionDto.getAskerId()));
 
     log.info("Started one to one video call for sessionId {}", sessionId);
     return createVideoCallResponseDto;

@@ -12,7 +12,7 @@ paths:
       operationId: getConsultantStatistics
       responses:
         200:
-          description: OK - successfull operation
+          description: OK - successful operation
         400:
           description: BAD REQUEST - invalid/incomplete request or body object
         403:
@@ -29,7 +29,7 @@ paths:
       operationId: getConsultantStatisticsCsv
       responses:
         200:
-          description: OK - successfull operation
+          description: OK - successful operation
         400:
           description: BAD REQUEST - invalid/incomplete request or body object
         403:
@@ -123,6 +123,10 @@ components:
           type: integer
           format: int64
           description: The id of the session
+          example: 12345
+        adviceSeekerId:
+          type: string
+          description: The id of the adviceseeker
           example: 12345
         videoCallUuid:
           type: string
