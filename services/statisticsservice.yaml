@@ -132,6 +132,10 @@ components:
           type: string
           description: The uuid of the video call
           example: 123e4567-e89b-12d3-a456-556642440000
+        tenantId:
+          type: string
+          description: The id of the tenant
+          example: 12345
 
     StopVideoCallStatisticsEventMessage:
       type: object
