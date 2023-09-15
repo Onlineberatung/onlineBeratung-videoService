@@ -95,7 +95,8 @@ public class VideoCallFacade {
             UserRole.CONSULTANT,
             sessionId,
             videoCallUuid,
-            consultantSessionDto.getAskerId(), TenantContext.getCurrentTenant()));
+            consultantSessionDto.getAskerId(),
+            TenantContext.getCurrentTenant()));
 
     log.info("Started one to one video call for sessionId {}", sessionId);
     return createVideoCallResponseDto;
