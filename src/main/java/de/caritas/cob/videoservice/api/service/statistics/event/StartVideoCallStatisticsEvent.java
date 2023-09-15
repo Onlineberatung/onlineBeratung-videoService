@@ -46,6 +46,7 @@ public class StartVideoCallStatisticsEvent implements StatisticsEvent {
         .sessionId(sessionId)
         .videoCallUuid(videoCallUuid)
         .adviceSeekerId(adviceSeekerId)
+        .tenantId(tenantId)
         .timestamp(CustomOffsetDateTime.nowInUtc());
   }
 }
